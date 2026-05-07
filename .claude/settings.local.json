@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/jzq/MyJob/DexSlide_stm32 -type f \\\\\\(-name *.json -o -name *example* -o -name *test* \\\\\\))",
+      "WebSearch",
+      "WebFetch(domain:docs.ultraleap.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(grep -E \"\\\\.\\(ioc|ld|s\\)$|cmake|settings\")",
+      "Bash(grep -r \"SNAP\\\\|snap\" /home/jzq/MyJob/DexSlide_stm32/software/python/manotorch --include=*.py -i)",
+      "Bash(ls:*)",
+      "Bash(python3 -c \"from manotorch.manolayer import ManoLayer; import inspect; print\\(inspect.signature\\(ManoLayer.forward\\)\\)\")",
+      "Bash(find /home/jzq/MyJob/DexSlide_stm32 -path */manotorch* -name *.py)",
+      "Bash(find /home/jzq/MyJob/DexSlide_stm32 -name HandModel* -o -name hand_model*)",
+      "Bash(find /home/jzq/MyJob/DexSlide_stm32 -name *skeleton* -type f)",
+      "Bash(find /home/jzq/MyJob/DexSlide_stm32 -type f -name skeleton*.json)"
+    ]
+  }
+}
