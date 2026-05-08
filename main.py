@@ -14,7 +14,7 @@ import time
 from pathlib import Path
 
 from dexslide.paths import (
-    DEFAULT_FIRMWARE_CALIBRATION_FILE,
+    DEFAULT_GLOVE_CALIBRATION_FILE,
     DEFAULT_RESULTS_FILE,
     DEFAULT_SKELETON_FILE,
 )
@@ -43,8 +43,8 @@ def cmd_calibrate_skeleton(args):
     print(f"Detailed results saved to: {args.results_file}")
     print(
         "\nNext: calibrate the STM32 ADC-to-angle mapping with "
-        "`python ../../firmware/dexslide_stm32/scripts/glove_calibrate.py --port <PORT>` "
-        "if `glove_calibration.json` is not ready yet."
+        "`python scripts/glove_calibrate.py --port <PORT> --out <DexSlide>/assets/calibration/glove_calibration.json` "
+        "from the dexslide_infra repository if `glove_calibration.json` is not ready yet."
     )
 
     if not args.no_skeleton_plot:
@@ -74,10 +74,12 @@ def cmd_run(args):
     if not calib_file.exists() and args.mode == "raw":
         raise SystemExit(
             f"Glove angle calibration file not found: {calib_file}\n"
-            "Run `python ../../firmware/dexslide_stm32/scripts/glove_calibrate.py --port <PORT>` "
+            "Run `python scripts/glove_calibrate.py --port <PORT> "
+            "--out <DexSlide>/assets/calibration/glove_calibration.json` "
+            "from the dexslide_infra repository "
             "to record the 20-joint ADC mapping, then verify it with "
-            "`python ../../firmware/dexslide_stm32/scripts/ads_live_monitor.py --port <PORT> "
-            "--angles --calib-file glove_calibration.json`."
+            "`python scripts/ads_live_monitor.py --port <PORT> --angles "
+            "--calib-file <DexSlide>/assets/calibration/glove_calibration.json`."
         )
     if not args.port:
         raise SystemExit("No serial port found. Use --port /dev/ttyACM0")
@@ -127,7 +129,7 @@ def main():
     p_skel.add_argument(
         "--input-dir",
         default=str(default_input_dir),
-        help="Input image directory (default: software/python/assets/photos)",
+        help="Input image directory (default: assets/photos)",
     )
     p_skel.add_argument(
         "--results-file",
@@ -172,7 +174,7 @@ def main():
     p_run.add_argument("--baud", type=int, default=115200, help="Baud rate")
     p_run.add_argument("--mode", choices=["raw", "angles"], default="raw")
     p_run.add_argument("--skeleton-file", default=str(DEFAULT_SKELETON_FILE))
-    p_run.add_argument("--calib-file", default=str(DEFAULT_FIRMWARE_CALIBRATION_FILE))
+    p_run.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE))
     p_run.add_argument("--hand", choices=["auto", "left", "right"], default="left")
     p_run.add_argument("--fps", type=float, default=30.0)
     p_run.set_defaults(func=cmd_run)

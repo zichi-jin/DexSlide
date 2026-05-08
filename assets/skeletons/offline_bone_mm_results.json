@@ -1,6 +1,6 @@
 {
   "meta": {
-    "input_dir": "/home/jzq/MyJob/DexSlide_stm32/software/python/assets/photos",
+    "input_dir": "assets/photos",
     "a4_world_mm_tl_tr_br_bl": [
       [
         0.0,

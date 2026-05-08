@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dexslide.paths import DEFAULT_FIRMWARE_CALIBRATION_FILE, DEFAULT_SKELETON_FILE
+from dexslide.paths import DEFAULT_GLOVE_CALIBRATION_FILE, DEFAULT_SKELETON_FILE
 from dexslide.serial_angles import pick_default_port
 from dexslide.visualization.live_matplotlib import run_live_viewer
 
@@ -25,7 +25,7 @@ def main() -> None:
         help="raw: parse MCU I2C line; angles: parse ads_live_monitor --angles line",
     )
     parser.add_argument("--skeleton-file", default=str(DEFAULT_SKELETON_FILE), help="Path to skeleton JSON")
-    parser.add_argument("--calib-file", default=str(DEFAULT_FIRMWARE_CALIBRATION_FILE), help="Glove ADC calibration JSON")
+    parser.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE), help="Glove ADC calibration JSON")
     parser.add_argument("--hand", choices=["auto", "left", "right"], default="left")
     parser.add_argument("--fps", type=float, default=30.0)
     args = parser.parse_args()

@@ -1,5 +1,4 @@
 # Build
-firmware/build/
 *.o
 *.elf
 *.bin
@@ -18,15 +17,12 @@ venv/
 # IDE
 .vscode/
 .idea/
-*.ioc
-firmware/.mxproject
-firmware/Debug/
-firmware/Release/
 
 # OS
 .DS_Store
 Thumbs.db
 
 # User calibration data
-software/python/calibration_data/
-software/python/assets/mano/models/*.pkl
+calibration_data/
+assets/calibration/*.local.json
+assets/mano/models/*.pkl

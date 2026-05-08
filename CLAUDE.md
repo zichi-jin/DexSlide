@@ -11,7 +11,7 @@ The project has two electrical systems:
 - **System B (Tactile Sampling)** — deferred. Denser sensing, STM32H743XIH6, USB hub (SL6243A).
 
 ### Overall Data Pipeline
-1. **Skeleton registration** (offline, bare hand): RGB photos + manual A4 corner marking + homography(mm) + MediaPipe landmarks → `software/python/assets/skeletons/skeleton.json`
+1. **Skeleton registration** (offline, bare hand): RGB photos + manual A4 corner marking + homography(mm) + MediaPipe landmarks → `assets/skeletons/skeleton.json`
 2. **Zero-pose calibration** (glove on, hand flat on surface): Record baseline angles → `zero_pose.json`
 3. **Live use** (glove on): Stream 20 joint angles → forward kinematics with DH params → real-time 3D hand reconstruction
 4. **World-frame localization** (planned): Marker fixed to palm dorsum, tracked by external camera → palm pose in world coordinates. No arm IK needed.
@@ -29,17 +29,17 @@ The project has two electrical systems:
                                                   [Debug LCD]
 ```
 
-### Firmware (`firmware/`)
+### Firmware (`../dexslide_infra`)
 - **MCU:** STM32F103RCT6 (Cortex-M3, 72MHz), HAL-based
 - **I2C1** (PB8/PB9, remapped): Thumb (0x48), Index (0x49), Middle (0x4A)
 - **I2C2** (PB10/PB11): Ring (0x48), Pinky (0x49)
 - **Data flow:** Poll 4 channels × 5 ADCs → pack 20 uint16 into frame → USB CDC TX
 - **Frame format:** `[0xAA55][20×uint16][XOR checksum][0x0D]` = 44 bytes
 
-### PC Software (`software/python/`)
-- **Phase 1 — Skeleton Calibration (default):** Offline RGB photos + manual A4 4-corner marking (TL/TR/BR/BL) → homography to mm plane → MediaPipe landmarks → per-bone lengths + robust multi-image aggregation → `software/python/assets/skeletons/skeleton.json`
+### PC Software
+- **Phase 1 — Skeleton Calibration (default):** Offline RGB photos + manual A4 4-corner marking (TL/TR/BR/BL) → homography to mm plane → MediaPipe landmarks → per-bone lengths + robust multi-image aggregation → `assets/skeletons/skeleton.json`
   - Detailed output: `offline_bone_mm_results.json`
-  - Compact output: `software/python/assets/skeletons/skeleton.json` (default aggregate = median)
+  - Compact output: `assets/skeletons/skeleton.json` (default aggregate = median)
 - **Phase 2 — Zero-Pose Calibration:** Flat-hand serial readings → `zero_pose.json` (angle offsets)
 - **Phase 3 — Real-time Reconstruction:** Forward kinematics (DH parameters) + Vedo 3D viewer
 
@@ -58,7 +58,7 @@ Kinematics chain order (reversed from serial): MCP_back → MCP_front → PIP �
 
 ### Firmware
 ```bash
-cd firmware/dexslide_stm32
+cd ../dexslide_infra
 cmake --preset Debug          # configure (once), requires arm-none-eabi-gcc + CMake 3.22+ + Ninja
 cmake --build build/Debug     # build
 st-flash write build/Debug/dexslide_stm32.bin 0x08000000  # flash
@@ -66,13 +66,12 @@ st-flash write build/Debug/dexslide_stm32.bin 0x08000000  # flash
 
 ### PC Software
 ```bash
-cd software/python
 pip install -r requirements.txt
 
 python main.py calibrate-skeleton                              # Phase 1: offline A4 + manual marking
 python main.py calibrate-skeleton --show-debug                 # Phase 1: per-image mm debug window
 python main.py calibrate-skeleton --reuse-a4                   # Phase 1: reuse first A4 marking
-python ../../firmware/dexslide_stm32/scripts/glove_calibrate.py --port /dev/ttyACM0
+python ../dexslide_infra/scripts/glove_calibrate.py --port /dev/ttyACM0 --out assets/calibration/glove_calibration.json
 python main.py run --port /dev/ttyACM0
 python main.py run --port /dev/ttyACM0                         # Phase 3: live 3D
 python main.py raw --port /dev/ttyACM0                         # Debug: print raw values
@@ -80,11 +79,13 @@ python main.py raw --port /dev/ttyACM0                         # Debug: print ra
 
 ## Firmware Development Notes
 
+Firmware is maintained in the sibling `dexslide_infra` repository, not in this repo.
+
 ### CubeMX Workflow
 The `.ioc` file is the CubeMX project. Re-generating from CubeMX overwrites code **outside** `USER CODE BEGIN/END` blocks. All hand-written firmware code must go inside those blocks. This applies to `main.c`, `stm32f1xx_hal_msp.c`, and `stm32f1xx_it.c`.
 
 ### Adding New Firmware Source Files
-Add new `.c` files to the **top-level** `firmware/dexslide_stm32/CMakeLists.txt` under `target_sources`, not the CubeMX-generated `cmake/stm32cubemx/CMakeLists.txt`.
+Add new `.c` files to the **top-level** `../dexslide_infra/CMakeLists.txt` under `target_sources`, not the CubeMX-generated `cmake/stm32cubemx/CMakeLists.txt`.
 
 ### USB CDC Transmit
 `CDC_Transmit_FS()` is non-blocking — returns `USBD_BUSY` if a prior TX is still pending. The frame packing in `usb_comm.c` calls this.
@@ -107,14 +108,14 @@ No formal test suite exists. Validation is manual:
 
 ## Key Files
 
-- `firmware/Core/Src/ads1115.c` — ADS1115 I2C driver (single-shot, 860 SPS)
-- `firmware/Core/Src/usb_comm.c` — Frame packing and USB CDC transmit
-- `software/python/dexslide/serial_reader.py` — Frame parsing with sync/checksum
-- `software/python/offline_a4_bone_mm.py` — Phase 1 离线A4标定 + mm骨长提取
-- `software/python/plot_compare_skeletons.py` — skeleton叠加对比
-- `software/python/demo_20dof_matplotlib.py` — 20DOF运动可视化
-- `software/python/dexslide/kinematics/hand_model.py` — DH-parameter forward kinematics
-- `docs/pinout.md` — Complete pin and address mapping
+- `../dexslide_infra/Core/Src/main.c` — STM32 ADC polling, USB CDC streaming, and board bring-up
+- `assets/calibration/glove_calibration.json` — PC-side default ADC-to-angle calibration
+- `dexslide/serial_reader.py` — Frame parsing with sync/checksum
+- `dexslide/calibration/offline_a4_bone_mm.py` — Phase 1 离线A4标定 + mm骨长提取
+- `dexslide/calibration/plot_compare_skeletons.py` — skeleton叠加对比
+- `dexslide/visualization/demo_20dof_matplotlib.py` — 20DOF运动可视化
+- `dexslide/kinematics/live_hand.py` — forward kinematics helpers
+- `../dexslide_infra/docs/pinout.md` — Complete pin and address mapping
 
 ## Phase 1 Calibration Architecture (Offline A4 Pipeline)
 
@@ -124,13 +125,13 @@ The skeleton calibration uses an "image plane measurement → world plane mappin
 - **Homography**: map image pixels to A4 metric plane (mm)
 - **Keypoints**: MediaPipe outputs 21 image landmarks, then transformed into mm
 - **Bone lengths**: adjacent-joint Euclidean distances in mm
-- **Aggregation**: robust multi-image statistics (median/mean) build compact `software/python/assets/skeletons/skeleton.json`
+- **Aggregation**: robust multi-image statistics (median/mean) build compact `assets/skeletons/skeleton.json`
 - **Artifacts**: keep both detailed per-image JSON and compact skeleton JSON
 
 ## Hardware Reference
 
-Datasheets in `ChipFiles/`: STM32H743 (reference board — actual MCU is F103), ADS1255 (reference — actual ADC is ADS1115), SL6243A USB hub, RDC506018A encoder.
+Datasheets live in `../dexslide_infra/ChipFiles/`: STM32H743 (reference board — actual MCU is F103), ADS1115, SL6243A USB hub, RDC506018A encoder.
 
 ## Pin Note
 
-I2C1 pins in `docs/pinout.md` (PB6/PB7) reflect default mapping; firmware CubeMX config uses **remapped** PB8/PB9. The CubeMX `.ioc` file is authoritative.
+I2C1 pins in `../dexslide_infra/docs/pinout.md` (PB6/PB7) reflect default mapping; firmware CubeMX config uses **remapped** PB8/PB9. The CubeMX `.ioc` file is authoritative.

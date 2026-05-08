@@ -32,7 +32,7 @@ from dexslide.kinematics.live_hand import (
     canonicalize_palm_xoy,
     finger_points,
 )
-from dexslide.paths import DEFAULT_FIRMWARE_CALIBRATION_FILE, DEFAULT_SKELETON_FILE
+from dexslide.paths import DEFAULT_GLOVE_CALIBRATION_FILE, DEFAULT_SKELETON_FILE
 from dexslide.serial_angles import AngleStreamReader, load_calibration, make_joint_order, pick_default_port
 
 
@@ -55,7 +55,7 @@ def main():
     parser.add_argument("--hand", choices=["left", "right"], default="right")
     parser.add_argument("--live", action="store_true", help="Use live serial stream via AngleStreamReader")
     parser.add_argument("--port", default=pick_default_port())
-    parser.add_argument("--calib-file", default=str(DEFAULT_FIRMWARE_CALIBRATION_FILE))
+    parser.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE))
     parser.add_argument("--fps", type=float, default=30.0)
     args = parser.parse_args()
 

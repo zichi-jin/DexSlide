@@ -25,7 +25,7 @@ from pathlib import Path
 # Ensure parent of the `dexslide` package is on `sys.path` so the script
 # can be executed directly (e.g. `python demo_20dof_matplotlib.py`) from
 # the `visualization/` directory. If you prefer, run the module instead:
-#   cd software/python && python -m dexslide.visualization.demo_20dof_matplotlib
+#   python -m dexslide.visualization.demo_20dof_matplotlib
 import os
 import sys
 
