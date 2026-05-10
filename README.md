@@ -187,6 +187,19 @@ python main.py raw
     ├── glove_live_3d.py
     └── glove_live_mano.py
 ```
+## Headset 相机动作追踪
+### python env setup
+```bash
+cd umi_mono
+# create required conda env
+# install python packages, currently including duplicated packs
+pip install -r requirements.txt
+```
+### data capture and tracking
+```text
+# follow SLAM_readme_mono.txt to setup required softwares, capture required ros data and run python file for trajectory extraction.
+# ros1 version has been tested under Ubuntu20.04, ros2 version remains to be tested.
+```
 
 ## 后续计划
 
