@@ -10,7 +10,7 @@
 ## 1. 采集流程
 
 ### 1.1 环境准备
-- 安装 ROS/ROS2、realsense2 SDK、docker。
+- 安装 ROS/ROS2、realsense2 SDK、realsense-ros、docker。
 - 配置 conda 环境。
 - ROS2 流水线额外依赖：
 ```bash
