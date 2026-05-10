@@ -1,0 +1,15 @@
+{
+    "fps": 30.0,
+    "image_height": 480,
+    "image_width": 640,
+    "intrinsic_type": "StereoI",
+    "intrinsics": {
+      "focal_length": 606.8395,
+      "principal_pt_x": 321.0,
+      "principal_pt_y": 247.0,
+      "radial_distortion_1": -0.0,
+      "radial_distortion_2": -0.0,
+      "radial_distortion_3": 0.0,
+      "radial_distortion_4": -0.0
+    }
+}  
