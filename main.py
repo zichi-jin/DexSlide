@@ -25,6 +25,43 @@ def _load_json(path: str | Path) -> dict:
         return json.load(f)
 
 
+def _parse_group_hand_map(raw: str | None) -> dict[str, str] | None:
+    if raw is None:
+        return None
+    text = raw.strip()
+    if not text:
+        return None
+
+    path = Path(text).expanduser()
+    if path.exists():
+        with path.open("r", encoding="utf-8") as f:
+            obj = json.load(f)
+        if not isinstance(obj, dict):
+            raise SystemExit(f"Invalid --aruco-group-hand-map file, expected dict: {path}")
+        return {str(k): str(v) for k, v in obj.items()}
+
+    mapping: dict[str, str] = {}
+    for chunk in text.split(","):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        if ":" not in chunk:
+            raise SystemExit(
+                "Invalid --aruco-group-hand-map format. "
+                "Use 'group1:hand1,group2:hand2' or a JSON file path."
+            )
+        group, hand_slot = chunk.split(":", 1)
+        group = group.strip()
+        hand_slot = hand_slot.strip()
+        if not group or not hand_slot:
+            raise SystemExit(
+                "Invalid --aruco-group-hand-map entry. "
+                "Use 'group1:hand1,group2:hand2'."
+            )
+        mapping[group] = hand_slot
+    return mapping or None
+
+
 def cmd_calibrate_skeleton(args):
     """Phase 1: Offline skeleton extraction from photos with manual A4 marking."""
     from dexslide.calibration.offline_a4_bone_mm import run_offline_pipeline
@@ -84,15 +121,71 @@ def cmd_run(args):
     if not args.port:
         raise SystemExit("No serial port found. Use --port /dev/ttyACM0")
 
-    run_live_viewer(
-        port=args.port,
-        baud=args.baud,
-        mode=args.mode,
-        skeleton_file=skeleton_file,
-        calib_file=calib_file,
-        hand=args.hand,
-        fps=args.fps,
-    )
+    aruco_group_hand_map = _parse_group_hand_map(args.aruco_group_hand_map)
+    aruco_tracker = None
+    try:
+        if args.aruco_enable:
+            if not args.aruco_camera_intrinsics:
+                raise SystemExit(
+                    "--aruco-enable requires --aruco-camera-intrinsics "
+                    "(path to camera intrinsics json)."
+                )
+            if not args.aruco_yaml:
+                raise SystemExit(
+                    "--aruco-enable requires --aruco-yaml "
+                    "(path to ArUco config yaml)."
+                )
+            aruco_intr_path = Path(args.aruco_camera_intrinsics).expanduser()
+            aruco_yaml_path = Path(args.aruco_yaml).expanduser()
+            if not aruco_intr_path.exists():
+                raise SystemExit(f"ArUco intrinsics file not found: {aruco_intr_path}")
+            if not aruco_yaml_path.exists():
+                raise SystemExit(f"ArUco config yaml not found: {aruco_yaml_path}")
+            if args.aruco_fusion_groups_yaml:
+                groups_path = Path(args.aruco_fusion_groups_yaml).expanduser()
+                if not groups_path.exists():
+                    raise SystemExit(f"ArUco fusion group yaml not found: {groups_path}")
+            from dexslide.vision.aruco_pose_tracker import ArucoPoseTracker
+
+            aruco_tracker = ArucoPoseTracker(
+                source=args.aruco_source,
+                camera_intrinsics=aruco_intr_path,
+                aruco_yaml=aruco_yaml_path,
+                offset_scale=float(args.aruco_offset_scale),
+                merge_pos_threshold=float(args.aruco_merge_pos_threshold),
+                fusion_groups_yaml=args.aruco_fusion_groups_yaml,
+                warning_cooldown_sec=float(args.aruco_warning_cooldown_sec),
+                width=args.aruco_width,
+                height=args.aruco_height,
+                fps=args.aruco_fps,
+                buffer_size=int(args.aruco_buffer_size),
+                num_workers=int(args.aruco_num_workers),
+                refine_subpix=True,
+            )
+            aruco_tracker.start()
+            print(
+                "ArUco pose tracker enabled. "
+                f"source={args.aruco_source}, hand_slot={args.aruco_hand_slot}, "
+                f"hand_group={args.aruco_hand_group or 'auto'}"
+            )
+
+        run_live_viewer(
+            port=args.port,
+            baud=args.baud,
+            mode=args.mode,
+            skeleton_file=skeleton_file,
+            calib_file=calib_file,
+            hand=args.hand,
+            fps=args.fps,
+            aruco_pose_tracker=aruco_tracker,
+            aruco_hand_group=args.aruco_hand_group,
+            aruco_group_hand_map=aruco_group_hand_map,
+            aruco_hand_slot=args.aruco_hand_slot,
+            aruco_pose_hold_sec=float(args.aruco_pose_hold_sec),
+        )
+    finally:
+        if aruco_tracker is not None:
+            aruco_tracker.stop()
 
 
 def cmd_raw_monitor(args):
@@ -177,6 +270,89 @@ def main():
     p_run.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE))
     p_run.add_argument("--hand", choices=["auto", "left", "right"], default="left")
     p_run.add_argument("--fps", type=float, default=30.0)
+    p_run.add_argument(
+        "--aruco-enable",
+        action="store_true",
+        help="Enable realtime ArUco marker pose tracking and inject as hand pose.",
+    )
+    p_run.add_argument(
+        "--aruco-source",
+        default="0",
+        help="ArUco capture source, e.g. 0, /dev/video4, RTSP URL, or video path.",
+    )
+    p_run.add_argument(
+        "--aruco-camera-intrinsics",
+        default=None,
+        help="Camera intrinsics json for ArUco pose estimation.",
+    )
+    p_run.add_argument(
+        "--aruco-yaml",
+        default=None,
+        help="ArUco config yaml (dictionary + marker_size_map).",
+    )
+    p_run.add_argument(
+        "--aruco-fusion-groups-yaml",
+        default=None,
+        help="Optional fusion-group yaml. If omitted, one implicit group 'all' is used.",
+    )
+    p_run.add_argument(
+        "--aruco-hand-group",
+        default=None,
+        help="Optional group name used as the current viewer hand pose source.",
+    )
+    p_run.add_argument(
+        "--aruco-group-hand-map",
+        default=None,
+        help=(
+            "Optional mapping for future multi-hand routing, format: "
+            "'group1:hand1,group2:hand2' or a JSON file path."
+        ),
+    )
+    p_run.add_argument(
+        "--aruco-hand-slot",
+        choices=["hand1", "hand2"],
+        default="hand1",
+        help="Current viewer hand slot label used with --aruco-group-hand-map.",
+    )
+    p_run.add_argument(
+        "--aruco-offset-scale",
+        type=float,
+        default=0.0,
+        help="Offset (meters) along marker center negative z-axis.",
+    )
+    p_run.add_argument(
+        "--aruco-merge-pos-threshold",
+        type=float,
+        default=0.03,
+        help="Max pairwise distance (m) for per-group position fusion.",
+    )
+    p_run.add_argument(
+        "--aruco-warning-cooldown-sec",
+        type=float,
+        default=1.0,
+        help="Cooldown seconds for repeated per-group disagree warnings.",
+    )
+    p_run.add_argument(
+        "--aruco-pose-hold-sec",
+        type=float,
+        default=0.5,
+        help="Drop ArUco pose if snapshot age exceeds this threshold (seconds).",
+    )
+    p_run.add_argument("--aruco-width", type=int, default=None, help="Requested ArUco capture width.")
+    p_run.add_argument("--aruco-height", type=int, default=None, help="Requested ArUco capture height.")
+    p_run.add_argument("--aruco-fps", type=float, default=None, help="Requested ArUco capture FPS.")
+    p_run.add_argument(
+        "--aruco-buffer-size",
+        type=int,
+        default=2,
+        help="ArUco capture buffer size.",
+    )
+    p_run.add_argument(
+        "--aruco-num-workers",
+        type=int,
+        default=1,
+        help="OpenCV thread count for ArUco tracker.",
+    )
     p_run.set_defaults(func=cmd_run)
 
     # Debug
