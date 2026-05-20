@@ -1,0 +1,64 @@
+[0.009s] Invoking command in '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs
+[0.060s] -- The C compiler identification is GNU 13.3.0
+[0.130s] -- The CXX compiler identification is GNU 13.3.0
+[0.164s] -- Detecting C compiler ABI info
+[0.308s] -- Detecting C compiler ABI info - done
+[0.315s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.316s] -- Detecting C compile features
+[0.316s] -- Detecting C compile features - done
+[0.327s] -- Detecting CXX compiler ABI info
+[0.483s] -- Detecting CXX compiler ABI info - done
+[0.493s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.493s] -- Detecting CXX compile features
+[0.494s] -- Detecting CXX compile features - done
+[0.496s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.601s] -- Found Python3: /home/jzq/anaconda3/bin/python3 (found version "3.11.5") found components: Interpreter 
+[0.646s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.665s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[0.670s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.704s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.732s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[0.734s] -- Found std_msgs: 5.3.7 (/opt/ros/jazzy/share/std_msgs/cmake)
+[0.756s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.801s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.803s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.983s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.012s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[1.047s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.096s] -- Found std_srvs: 5.3.7 (/opt/ros/jazzy/share/std_srvs/cmake)
+[1.263s] [31mCMake Error at /opt/ros/jazzy/share/rosidl_adapter/cmake/rosidl_adapt_interfaces.cmake:57 (message):
+[1.263s]   execute_process(/home/jzq/anaconda3/bin/python3 -m rosidl_adapter
+[1.263s]   --package-name jaka_msgs --arguments-file
+[1.263s]   /home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs/rosidl_adapter__arguments__jaka_msgs.json
+[1.263s]   --output-dir
+[1.263s]   /home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs/rosidl_adapter/jaka_msgs
+[1.263s]   --output-file
+[1.263s]   /home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs/rosidl_adapter/jaka_msgs.idls)
+[1.263s]   returned error code 1:
+[1.263s] 
+[1.263s]   Traceback (most recent call last):
+[1.264s] 
+[1.264s]     File "<frozen runpy>", line 198, in _run_module_as_main
+[1.264s]     File "<frozen runpy>", line 88, in _run_code
+[1.264s]     File "/opt/ros/jazzy/lib/python3.12/site-packages/rosidl_adapter/__main__.py", line 19, in <module>
+[1.264s]       sys.exit(main())
+[1.264s]                ^^^^^^
+[1.264s]     File "/opt/ros/jazzy/lib/python3.12/site-packages/rosidl_adapter/main.py", line 53, in main
+[1.264s]       abs_idl_file = convert_to_idl(
+[1.264s]                      ^^^^^^^^^^^^^^^
+[1.264s]     File "/opt/ros/jazzy/lib/python3.12/site-packages/rosidl_adapter/__init__.py", line 18, in convert_to_idl
+[1.264s]       from rosidl_adapter.msg import convert_msg_to_idl
+[1.264s]     File "/opt/ros/jazzy/lib/python3.12/site-packages/rosidl_adapter/msg/__init__.py", line 16, in <module>
+[1.264s]       from rosidl_adapter.resource import expand_template
+[1.264s]     File "/opt/ros/jazzy/lib/python3.12/site-packages/rosidl_adapter/resource/__init__.py", line 19, in <module>
+[1.264s]       import em
+[1.264s] 
+[1.264s]   ModuleNotFoundError: No module named 'em'
+[1.264s] 
+[1.264s] Call Stack (most recent call first):
+[1.264s]   /opt/ros/jazzy/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:132 (rosidl_adapt_interfaces)
+[1.264s]   CMakeLists.txt:18 (rosidl_generate_interfaces)
+[1.264s] 
+[1.264s] [0m
+[1.264s] -- Configuring incomplete, errors occurred!
+[1.271s] Invoked command in '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs

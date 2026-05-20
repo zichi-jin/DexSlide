@@ -161,9 +161,9 @@ def run_live_viewer(
                 joint_id = str(joint["id"])
                 desired = 0.0
                 if joint["finger"] == "thumb" and joint["joint"] == "MCP_front":
-                    desired = 90.0
-                elif joint["finger"] == "thumb" and joint["joint"] == "MCP_back":
                     desired = 60.0
+                elif joint["finger"] == "thumb" and joint["joint"] == "MCP_back":
+                    desired = 90.0
                 current = float(reader.latest_deg.get(joint_id, 0.0))
                 reader.alignment_offsets[joint_id] = current - desired
         fig.canvas.draw_idle()

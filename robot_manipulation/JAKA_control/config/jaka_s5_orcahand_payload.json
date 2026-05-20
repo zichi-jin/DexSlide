@@ -1,0 +1,14 @@
+{
+  "valid": false,
+  "source": "Run JAKA_control/jk_scripts/jaka_payload_tools.py identify to populate this file.",
+  "robot_ip": "192.168.99.44",
+  "tool_id": 1,
+  "payload": {
+    "mass_kg": null,
+    "centroid_mm": null
+  },
+  "units": {
+    "mass_kg": "kg",
+    "centroid_mm": "mm in tool/flange payload frame"
+  }
+}
