@@ -48,6 +48,7 @@ ros2 bag record -o data /camera/camera/color/image_raw /camera/camera/accel/samp
 查看 bag：
 ```bash
 ros2 bag info <bag_dir>
+ros2 run rqt_bag rqt_bag <bag_dir>
 ```
 
 ## 2. 会话目录命名规范
@@ -77,6 +78,8 @@ ros2 bag info <bag_dir>
 说明：
 - `aurco` 目录名要保留这个拼写（与现有代码一致）。
 - `data*` 前缀会被后续阶段自动扫描。
+
+ros2 run rqt_image_view rqt_image_view
 
 ## 3. 运行方式
 
@@ -125,3 +128,47 @@ rosbags-convert /path/to/ros2_bag_dir --dst /path/to/output.bag
 - `example/calibration/aruco_config_wrist.yaml`
 - `config/RealSense_D435i.yaml`
 
+## 7. 在线追踪 (Online tracking)
+
+从 2026-05 起新增。把已建好的 .osa atlas 用于实时 SLAM 定位，输出位姿到 ROS2 / ZMQ。
+
+前置：
+- Phase 0~5 已部署。参考 docs/setup_phase{0..5}*.md。
+- D435i 接 USB3，固件 >= 5.16。
+- .osa atlas 已通过离线流水线（02_create_map.py + 03_batch_slam.py）建好。
+
+### 7.1 一键 launch
+
+```bash
+source /opt/ros/humble/setup.bash
+source /data/codes/DexSlide/umi_mono/ros2_ws/install/setup.bash
+ros2 launch dexslide_slam_publisher dexslide_slam_online.launch.py \
+  map_atlas:=/path/to/map_atlas.osa
+```
+
+另起终端验证：
+```bash
+ros2 topic hz /dexslide/slam/pose  # 应该 ~30 Hz
+```
+
+### 7.2 单独跑（不要 ROS2）
+
+```bash
+/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online \
+  -v /data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt \
+  -s /data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml \
+  -l /path/to/map_atlas.osa \
+  --publisher stdout
+```
+
+### 7.3 Python 消费者
+
+See docs/setup_phase5_python_consumer.md.
+
+### 7.4 故障排查
+
+- tracking 一直 lost: 检查 atlas 是否对应当前环境；vocab MD5 是否匹配
+- skew abort: 升级 D435i 固件
+- ZMQ 连不上: 确认 realsense_online 用 --publisher zmq 或 ros2
+
+Full reference: docs/online_tracking_implementation.md + docs/online_tracking_research.md

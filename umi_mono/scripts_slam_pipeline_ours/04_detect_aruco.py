@@ -26,7 +26,7 @@ def main(input_dirs, camera_intrinsics, aruco_yaml, video, output):
         script_path = pathlib.Path(__file__).parent.parent.joinpath('scripts', 'detect_aruco.py')
 
         cmd = [
-            'python', str(script_path),
+            sys.executable, str(script_path),
             '--input', str(video_path),
             '--output', str(pkl_path),
             '--intrinsics_json', camera_intrinsics,
@@ -39,6 +39,7 @@ def main(input_dirs, camera_intrinsics, aruco_yaml, video, output):
             print("Done!")
         else:
             print("Failed!")
+            raise SystemExit(result.returncode)
 
 if __name__ == "__main__":
     main()

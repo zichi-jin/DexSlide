@@ -1,9 +1,12 @@
 %YAML:1.0
 
+# Online tracking mode settings. Derived from RealSense_D435i.yaml. TASK-033.
+
 #--------------------------------------------------------------------------------------------
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
 File.version: "1.0"
+System.LoadAtlasFromFile: ""   # Override at launch with -DDEX_MAP=<path> or via launch file
 
 Camera.type: "Rectified"
 
@@ -73,13 +76,13 @@ Tracking.minInliers: 30  # 控制最小内点数阈值
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
 #--------------------------------------------------------------------------------------------
-Viewer.KeyFrameSize: 0.05
-Viewer.KeyFrameLineWidth: 1.0
-Viewer.GraphLineWidth: 0.9
-Viewer.PointSize: 2.0
-Viewer.CameraSize: 0.08
-Viewer.CameraLineWidth: 3.0
+Viewer.KeyFrameSize: 0.0
+Viewer.KeyFrameLineWidth: 0.0
+Viewer.GraphLineWidth: 0.0
+Viewer.PointSize: 0.0
+Viewer.CameraSize: 0.0
+Viewer.CameraLineWidth: 0.0
 Viewer.ViewpointX: 0.0
-Viewer.ViewpointY: -0.7
-Viewer.ViewpointZ: -3.5
-Viewer.ViewpointF: 500.0
+Viewer.ViewpointY: 0.0
+Viewer.ViewpointZ: 0.0
+Viewer.ViewpointF: 0.0

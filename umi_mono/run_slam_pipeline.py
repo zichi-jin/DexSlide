@@ -34,17 +34,17 @@ def main(session_dir, calibration_dir):
         map_path = mapping_dir.joinpath('map_atlas.osa')
         
         print("############## 00_process_videos #############")
-        script_path = script_dir.joinpath("00_process_videos.py")
-        assert script_path.is_file()
-        cmd = [
-            'python', str(script_path),
-            '--input_path', str(session),
-            '--demo_dir', str(demo_dir),
-        ]
-        print(cmd)
-        result = subprocess.run(cmd)
+        # script_path = script_dir.joinpath("00_process_videos.py")
+        # assert script_path.is_file()
+        # cmd = [
+        #     'python3', str(script_path),
+        #     '--input_path', str(session),
+        #     '--demo_dir', str(demo_dir),
+        # ]
+        # print(cmd)
+        # result = subprocess.run(cmd)
    
-        assert result.returncode == 0
+        # assert result.returncode == 0
 
         print("############# 02_create_map ###########")
         script_path = script_dir.joinpath("02_create_map.py")
@@ -53,7 +53,7 @@ def main(session_dir, calibration_dir):
         # print(f"Map path: {map_path}")
         if not map_path.is_file():
             cmd = [
-                'python', str(script_path),
+                'python3', str(script_path),
                 '--input_dir', str(mapping_dir),
                 '--map_path', str(map_path),
                 # '--no_mask',  # Add this option if you want to skip masking

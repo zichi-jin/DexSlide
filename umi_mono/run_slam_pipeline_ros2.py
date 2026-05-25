@@ -60,7 +60,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            "python",
+            "python3",
             str(script_path),
             "--input_path",
             str(session_path),
@@ -90,7 +90,7 @@ def main(
 
         if not map_path.is_file():
             cmd = [
-                "python",
+                "python3",
                 str(script_path),
                 "--input_dir",
                 str(mapping_dir),

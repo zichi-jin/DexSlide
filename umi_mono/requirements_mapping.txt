@@ -1,0 +1,28 @@
+# Python 依赖：阶段 A 离线建图流水线
+#
+# 这是给 `python run_mapping_and_desk_aruco_ros2.py <session>` 用的最小 pip 包集合。
+# 阶段 B（实时 SLAM 节点 `realsense_topic_slam_node`）是 C++，不需要任何 pip 包；
+# 下游 Python 消费者只需要系统 apt 的 `ros-humble-rclpy`（不在本文件里）。
+#
+# 上游 UMI 的 `conda_environment.yaml` 包含 pytorch + diffusers + accelerate 等几十 GB
+# 的训练 / 部署依赖，**当前 SLAM 方案完全不需要**，不要用那个 conda env。
+#
+# 安装方式（任选其一）：
+#
+#   (a) anaconda 任意 Python（推荐 ≥ 3.9）：
+#       pip install -r umi_mono/requirements_mapping.txt
+#
+#   (b) 系统 Python 3.10（如果你只想跑阶段 A 不想动 conda）：
+#       /usr/bin/python3 -m pip install --user -r umi_mono/requirements_mapping.txt
+#
+# 注意：
+#   - 阶段 B 启动 SLAM 节点时必须用 `/usr/bin/python3`（rclpy 只兼容系统 3.10）。
+#     用 (b) 装也行；用 (a) 装的话，跑阶段 B 时记得 `conda deactivate`。
+#   - rosbags 是纯 Python，不要装 ros-humble-rosbag2 的 pip 替代品。
+
+click>=8.0,<9.0
+numpy>=1.21,<2.0
+scipy>=1.8,<2.0
+opencv-python>=4.5,<5.0
+tqdm>=4.60,<5.0
+rosbags>=0.9,<1.0

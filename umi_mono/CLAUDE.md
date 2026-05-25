@@ -121,3 +121,51 @@ Each stage script sets `ROOT_DIR = parent.parent` and `os.chdir(ROOT_DIR)` at im
 ## When Adding ROS2 Support to a New Stage
 
 If extending the ROS2 pipeline to read bag data, route through `scripts_slam_pipeline_ros2/ros2_bag_utils.py` rather than importing `rosbags` directly — it already handles `metadata.yaml` discovery, `AnyReader` setup, image-encoding fallbacks (`rgb8`/`bgr8`/`mono8`/`bgra8`), and split-vs-unified IMU topics. Match the existing pattern of overriding only the affected stage (00/07) and reusing ROS1 stages for everything else.
+
+## Online tracking mode (added 2026-05)
+
+Live 6-DoF pose @ 30Hz from D435i, using offline-built `.osa` atlas. ORB-SLAM3 fork at
+`external/ORB_SLAM3_fork/` (pinned SHA `b741dca39015330ef4bcc3a85f89493503ade04b`), NOT a submodule.
+
+### Build commands
+
+```bash
+bash scripts/check_host_env.sh
+bash scripts/install_apt_deps.sh --apply           # one-time
+bash scripts/build_pangolin.sh                     # one-time
+bash scripts/build_sophus.sh                       # one-time
+bash scripts/install_librealsense.sh --apply       # one-time
+bash scripts/setup_orbslam3_fork.sh                # one-time
+bash scripts/build_orbslam3_native.sh              # incremental
+```
+
+Build also touches the `ament_cmake` bridge package:
+
+```bash
+cd ros2_ws && source /opt/ros/humble/setup.bash && colcon build --packages-select dexslide_slam_publisher
+```
+
+### Run commands
+
+```bash
+source /opt/ros/humble/setup.bash
+source ros2_ws/install/setup.bash
+ros2 launch dexslide_slam_publisher dexslide_slam_online.launch.py map_atlas:=<path.osa>
+```
+
+### Known failure modes
+
+- System Python is 3.13 (anaconda) → `rclpy` NOT compatible. Use `/usr/bin/python3` (3.10) for Python tests.
+- `cheng-chi` fork uses C++14 + `Thirdparty/Pangolin` empty dir → `external/Pangolin v0.8` via `CMAKE_PREFIX_PATH`.
+- Vocabulary MD5: `5420bad0713bc97034dd2a9b2f0cc387` on this host's `ORBvoc.txt` (informational only).
+- `librealsense2` dev pkg from Intel PPA, runtime resolves to `/opt/ros/humble`'s bundled `2.57`.
+
+### Docs index
+
+- `docs/online_tracking_research.md`     ← feasibility study
+- `docs/online_tracking_implementation.md`  ← TASK tracker (43 tasks across 7 phases)
+- `docs/setup_phase0_environment.md`     ← host prep
+- `docs/setup_phase1_native_build.md`    ← fork integration
+- `docs/setup_phase2_realsense_online.md`  ← binary implementation
+- `docs/setup_phase3_4_publishers_robustness.md`  ← ZMQ + ROS2 + skew/MD5/recovery
+- `docs/setup_phase5_python_consumer.md` ← Python `SlamPoseSubscriber`

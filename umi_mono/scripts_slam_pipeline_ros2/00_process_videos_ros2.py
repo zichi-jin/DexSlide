@@ -181,7 +181,7 @@ def move_largest_video_to_mapping(demos_dir: pathlib.Path, session_dir: pathlib.
         print(f"{mapping_video} already exists, skip moving.")
         return
 
-    demo_dirs = [x for x in demos_dir.iterdir() if x.is_dir() and x.name != "mapping"]
+    demo_dirs = [x for x in demos_dir.iterdir() if x.is_dir() and x.name.startswith("data")]
     video_info = []
 
     for demo_dir in demo_dirs:
@@ -198,11 +198,12 @@ def move_largest_video_to_mapping(demos_dir: pathlib.Path, session_dir: pathlib.
             )
 
     if not video_info:
-        print("No videos found.")
+        print("No data* videos found for mapping promotion.")
         return
 
     largest = max(video_info, key=lambda x: x["size"])
     largest_name = largest["folder"].name
+    print(f"Promoting {largest_name} to mapping (largest data* video by size).")
 
     src_bag_dir = session_dir / largest_name
     dst_bag_dir = session_dir / "mapping"
@@ -225,10 +226,15 @@ def process_single_bag(args):
     bag_dir, demo_dir, image_topic, accel_topic, gyro_topic, imu_topic = args
     bag_name = bag_dir.name
     output_dir = demo_dir.joinpath(bag_name)
+    video_path = output_dir.joinpath("raw_video.mp4")
+    imu_path = output_dir.joinpath("imu_data.json")
 
-    if output_dir.exists():
+    if output_dir.exists() and video_path.is_file() and imu_path.is_file():
         print(f"{output_dir} already exists, skipping {bag_name}.")
         return None
+    if output_dir.exists():
+        print(f"{output_dir} exists but is incomplete, removing stale outputs for {bag_name}.")
+        shutil.rmtree(output_dir, ignore_errors=True)
 
     try:
         process_ros2_bag(
@@ -242,8 +248,23 @@ def process_single_bag(args):
         print(f"Processed {bag_name} to {output_dir}")
         return str(output_dir)
     except Exception as e:
+        shutil.rmtree(output_dir, ignore_errors=True)
         print(f"Error processing {bag_name}: {e}")
         return None
+
+
+def build_process_args(
+    bag_dirs,
+    demo_dir: pathlib.Path,
+    image_topic: str,
+    accel_topic: str,
+    gyro_topic: str,
+    imu_topic: str,
+):
+    return [
+        (bag_dir, demo_dir, image_topic, accel_topic, gyro_topic, imu_topic)
+        for bag_dir in bag_dirs
+    ]
 
 
 @click.command(help="Process ROS2 bag directories under session path.")
@@ -282,11 +303,14 @@ def main(
         f"Found {len(bag_dirs)} ROS2 bag directories. Processing with {max_workers} workers..."
     )
 
-    process_args = [
-        (bag_dir, demo_dir, image_topic, accel_topic, gyro_topic, imu_topic)
-        for bag_dir in bag_dirs
-        if bag_dir.name != "mapping"
-    ]
+    process_args = build_process_args(
+        bag_dirs=bag_dirs,
+        demo_dir=demo_dir,
+        image_topic=image_topic,
+        accel_topic=accel_topic,
+        gyro_topic=gyro_topic,
+        imu_topic=imu_topic,
+    )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         results = list(executor.map(process_single_bag, process_args))
