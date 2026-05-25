@@ -1,0 +1,23 @@
+running develop
+running egg_info
+creating orca_hand_ros.egg-info
+writing orca_hand_ros.egg-info/PKG-INFO
+writing dependency_links to orca_hand_ros.egg-info/dependency_links.txt
+writing entry points to orca_hand_ros.egg-info/entry_points.txt
+writing requirements to orca_hand_ros.egg-info/requires.txt
+writing top-level names to orca_hand_ros.egg-info/top_level.txt
+writing manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+reading manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+writing manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/python3.12/site-packages/orca-hand-ros.egg-link (link to .)
+Installing orca_hand_node script to /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/orca_hand_ros
+
+Installed /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros
+running symlink_data
+creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index
+creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index
+creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index/packages
+symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/resource/orca_hand_ros -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index/packages
+symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/package.xml -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/orca_hand_ros
+symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/README.md -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/orca_hand_ros
