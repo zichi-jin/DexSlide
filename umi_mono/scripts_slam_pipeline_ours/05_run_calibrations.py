@@ -36,13 +36,15 @@ def main(aurco_dir):
     assert csv_path.is_file()
     
     cmd = [
-        'python', str(script_path),
+        sys.executable, str(script_path),
         '--tag_detection', str(tag_path),
         '--csv_trajectory', str(csv_path),
         '--output', str(slam_tag_path),
         # '--keyframe_only'
     ]
-    subprocess.run(cmd)
+    result = subprocess.run(cmd)
+    if result.returncode != 0:
+        raise SystemExit(result.returncode)
     
     # No need gripper range calibration 
     # Since for robotiq the range is fixed ... 

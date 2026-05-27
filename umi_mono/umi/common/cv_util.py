@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Tuple
 
 import json
@@ -126,6 +128,27 @@ class FisheyeRectConverter:
 
 
 # ================= ArUcO tag =====================
+def _aruco_detector_parameters():
+    if hasattr(cv2.aruco, 'DetectorParameters'):
+        return cv2.aruco.DetectorParameters()
+    return cv2.aruco.DetectorParameters_create()
+
+
+def _detect_aruco_markers(image, dictionary, parameters):
+    if hasattr(cv2.aruco, 'ArucoDetector'):
+        detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+        return detector.detectMarkers(image)
+    return cv2.aruco.detectMarkers(image=image, dictionary=dictionary, parameters=parameters)
+
+
+def _create_charuco_board(size, square_length, marker_length, dictionary):
+    if hasattr(cv2.aruco, 'CharucoBoard'):
+        return cv2.aruco.CharucoBoard(size, square_length, marker_length, dictionary)
+    return cv2.aruco.CharucoBoard_create(
+        size[0], size[1], square_length, marker_length, dictionary
+    )
+
+
 def parse_aruco_config(aruco_config_dict: dict):
     """
     example:
@@ -159,7 +182,7 @@ def parse_charuco_config(aruco_config_dict: dict):
     dictionary_name = aruco_config_dict.get('dictionary_name', 'DICT_4X4_50')
     dictionary = cv2.aruco.getPredefinedDictionary(getattr(cv2.aruco, dictionary_name))
     
-    board = cv2.aruco.CharucoBoard(
+    board = _create_charuco_board(
         (aruco_config_dict['squaresX'], aruco_config_dict['squaresY']),
         aruco_config_dict['squareLength_m'],
         aruco_config_dict['markerLength_m'],
@@ -168,7 +191,7 @@ def parse_charuco_config(aruco_config_dict: dict):
     return board, dictionary
 
 def get_aruco_dict(predefined:str
-                   ) -> cv2.aruco.Dictionary:
+                   ):
     return cv2.aruco.getPredefinedDictionary(
         getattr(cv2.aruco, predefined))
 
@@ -178,9 +201,8 @@ def detect_localize_charuco_tags(frame, camera_matrix, board, dictionary):
     Returns the 4x4 pose matrix and the annotated image.
     """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    detector_params = cv2.aruco.DetectorParameters()
-    detector = cv2.aruco.ArucoDetector(dictionary, detector_params)
-    corners, ids, rejected = detector.detectMarkers(gray)
+    detector_params = _aruco_detector_parameters()
+    corners, ids, rejected = _detect_aruco_markers(gray, dictionary, detector_params)
     dist_coeffs = np.array([0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64)
     tag_dict = dict()
     if ids is not None and len(ids) > 0:
@@ -206,17 +228,17 @@ def detect_localize_charuco_tags(frame, camera_matrix, board, dictionary):
 
 def detect_localize_aruco_tags(
         img: np.ndarray, 
-        aruco_dict: cv2.aruco.Dictionary, 
+        aruco_dict, 
         marker_size_map: Dict[int, float], 
         fisheye_intr_dict: Dict[str, np.ndarray], 
         refine_subpix: bool=True):
     K = fisheye_intr_dict['K']
     D = fisheye_intr_dict['D']
-    param = cv2.aruco.DetectorParameters()
+    param = _aruco_detector_parameters()
     if refine_subpix:
         param.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
-    corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(
-        image=img, dictionary=aruco_dict, parameters=param)
+    corners, ids, rejectedImgPoints = _detect_aruco_markers(
+        img, aruco_dict, param)
     if len(corners) == 0:
         return dict()
 
@@ -248,14 +270,15 @@ def get_charuco_board(
         aruco_dict=cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100), 
         tag_id_offset=50,
         grid_size=(8, 5), square_length_mm=50, tag_length_mm=30):
-    
-    aruco_dict = cv2.aruco.Dictionary(
-        aruco_dict.bytesList[tag_id_offset:], 
-        aruco_dict.markerSize)
-    board = cv2.aruco.CharucoBoard(
+
+    if hasattr(cv2.aruco, 'Dictionary'):
+        aruco_dict = cv2.aruco.Dictionary(
+            aruco_dict.bytesList[tag_id_offset:],
+            aruco_dict.markerSize)
+    board = _create_charuco_board(
         size=grid_size,
-        squareLength=square_length_mm/1000,
-        markerLength=tag_length_mm/1000,
+        square_length=square_length_mm/1000,
+        marker_length=tag_length_mm/1000,
         dictionary=aruco_dict)
     return board
 

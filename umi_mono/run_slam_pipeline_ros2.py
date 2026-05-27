@@ -6,7 +6,6 @@ python run_slam_pipeline_ros2.py <session_dir>
 import os
 import pathlib
 import subprocess
-import sys
 
 import click
 
@@ -61,7 +60,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            sys.executable,
+            "python3",
             str(script_path),
             "--input_path",
             str(session_path),
@@ -91,7 +90,7 @@ def main(
 
         if not map_path.is_file():
             cmd = [
-                sys.executable,
+                "python3",
                 str(script_path),
                 "--input_dir",
                 str(mapping_dir),
@@ -107,7 +106,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            sys.executable,
+            "python",
             str(script_path),
             "--input_dir",
             str(demo_dir),
@@ -132,7 +131,7 @@ def main(
         if not aurco_dir.is_dir():
             raise FileNotFoundError(aurco_dir)
         cmd = [
-            sys.executable,
+            "python",
             str(script_path),
             str(aurco_dir),
             "--camera_intrinsics",
@@ -162,7 +161,7 @@ def main(
         ]
         if len(input_dirs) > 0:
             cmd = [
-                sys.executable,
+                "python",
                 str(script_path),
                 *[str(x) for x in input_dirs],
                 "--camera_intrinsics",
@@ -184,7 +183,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            sys.executable,
+            "python",
             str(script_path),
             "--aurco_dir",
             str(aurco_dir),
@@ -197,7 +196,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            sys.executable,
+            "python",
             str(script_path),
             "--demo_dir",
             str(demo_dir),
@@ -212,7 +211,7 @@ def main(
         if not script_path.is_file():
             raise FileNotFoundError(script_path)
         cmd = [
-            sys.executable,
+            "python",
             str(script_path),
             "--input",
             str(session_path),

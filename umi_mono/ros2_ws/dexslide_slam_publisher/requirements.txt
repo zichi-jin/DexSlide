@@ -1,0 +1,27 @@
+# Python requirements for dexslide_slam_publisher
+#
+# Scope: the core node (realsense_topic_slam_node) is C++; it has NO runtime
+# Python dependencies. The packages listed here are for:
+#   - launch files (Python launch_ros, already provided by ROS2 Humble apt)
+#   - the smoke-test script (mostly shell + ros2 CLI; no pip deps needed)
+#   - any auxiliary diagnostic / validation Python scripts
+#
+# Most ROS-related Python is satisfied by apt (ros-humble-rclpy, ...). The pip
+# packages below are only needed if you want to programmatically inspect bag
+# files outside the ros2 CLI, or write extra validators.
+#
+# IMPORTANT: install with the SYSTEM Python 3.10 (`/usr/bin/python3`):
+#   /usr/bin/python3 -m pip install --user -r requirements.txt
+# Do NOT use anaconda's pip — rclpy and the system Python ABI differ.
+
+# Bag inspection (used by validators)
+rosbags==0.11.2
+
+# Numerics (matches Ubuntu 22.04 apt python3-numpy)
+numpy>=1.21,<2.0
+
+# Image manipulation (only if writing python validators that decode images)
+opencv-python>=4.5,<5.0
+
+# Quaternion / SE(3) math (optional, for trajectory comparison)
+scipy>=1.8,<2.0

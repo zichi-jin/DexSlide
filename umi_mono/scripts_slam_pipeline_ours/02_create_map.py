@@ -22,6 +22,30 @@ import cv2
 
 #from umi.common.cv_util import draw_predefined_mask
 
+
+def ensure_full_pass_mask(video_dir: pathlib.Path) -> pathlib.Path:
+    """Create an all-valid slam mask when one does not exist.
+
+    The downstream tooling treats non-zero pixels in the mask as invalid regions,
+    so a full-pass mask is an all-zero uint8 image matching the video resolution.
+    """
+    mask_path = video_dir.joinpath('slam_mask.png')
+    if mask_path.is_file():
+        return mask_path
+
+    video_path = video_dir.joinpath('raw_video.mp4')
+    cap = cv2.VideoCapture(str(video_path))
+    ok, frame = cap.read()
+    cap.release()
+    if not ok or frame is None:
+        raise RuntimeError(f"Failed to read first frame for mask generation: {video_path}")
+
+    height, width = frame.shape[:2]
+    mask = np.zeros((height, width), dtype=np.uint8)
+    cv2.imwrite(str(mask_path), mask)
+    print(f"Created full-pass slam mask at {mask_path} with shape {width}x{height}.")
+    return mask_path
+
 # %%
 @click.command()
 @click.option('-i', '--input_dir', required=True, help='Directory for mapping video')
@@ -66,6 +90,7 @@ def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
 
     map_mount_source = pathlib.Path(map_path)
     map_mount_target = mount_target.joinpath(map_mount_source.name)
+    csv_local_path = video_dir.joinpath('mapping_camera_trajectory.csv')
 
     repo_root = pathlib.Path(__file__).resolve().parent.parent
     setting_local_path = repo_root.joinpath('config', 'RealSense_D435i.yaml').absolute()
@@ -73,14 +98,29 @@ def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
         raise FileNotFoundError(f"SLAM setting file not found: {setting_local_path}")
     setting_in_container = '/ORB_SLAM3/Examples/Monocular-Inertial/RealSense_D435i.yaml'
 
+    mount_specs = [
+        (str(video_dir), '/data'),
+        (str(map_mount_source.parent), str(map_mount_target.parent)),
+        (str(setting_local_path), str(setting_in_container)),
+    ]
+    unique_mount_specs = []
+    seen_mounts = set()
+    for host_path, container_path in mount_specs:
+        key = (host_path, container_path)
+        if key in seen_mounts:
+            continue
+        seen_mounts.add(key)
+        unique_mount_specs.append((host_path, container_path))
+
     # run SLAM
     cmd = [
         'docker',
         'run',
         '--rm', # delete after finish
-        '--volume', str(video_dir) + ':' + '/data',
-        '--volume', str(map_mount_source.parent) + ':' + str(map_mount_target.parent),
-        '--volume', str(setting_local_path) + ':' + str(setting_in_container),
+    ]
+    for host_path, container_path in unique_mount_specs:
+        cmd.extend(['--volume', f'{host_path}:{container_path}'])
+    cmd.extend([
         docker_image,
         '/ORB_SLAM3/Examples/Monocular-Inertial/gopro_slam',
         '--vocabulary', '/ORB_SLAM3/Vocabulary/ORBvoc.txt',
@@ -89,11 +129,11 @@ def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
         '--input_imu_json', str(json_path),
         '--output_trajectory_csv', str(csv_path),
         '--save_map', str(map_mount_target)
-    ]
+    ])
     mask_local_path = video_dir.joinpath('slam_mask.png')
-    should_use_mask = (not no_mask) and mask_local_path.is_file()
-    if (not no_mask) and (not should_use_mask):
-        print(f"⚠️ slam_mask.png not found in {video_dir}; running SLAM without mask.")
+    should_use_mask = not no_mask
+    if should_use_mask:
+        mask_local_path = ensure_full_pass_mask(video_dir)
 
     if should_use_mask:
         cmd.extend([
@@ -110,6 +150,19 @@ def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
         stderr=stderr_path.open('w')
     )
     print(result)
+    if result.returncode != 0:
+        raise SystemExit(result.returncode)
+
+    if not csv_local_path.is_file():
+        raise FileNotFoundError(
+            f"Expected mapping trajectory not found after SLAM run: {csv_local_path}"
+        )
+    if not map_path.is_file():
+        raise FileNotFoundError(f"Expected atlas file not found after SLAM run: {map_path}")
+    if map_path.stat().st_size <= 1024:
+        raise RuntimeError(
+            f"Atlas file looks invalid ({map_path.stat().st_size} bytes): {map_path}"
+        )
 
 
 # %%

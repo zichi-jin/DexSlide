@@ -16,6 +16,19 @@ def _load_any_reader():
     return AnyReader
 
 
+def _load_default_typestore():
+    try:
+        from rosbags.typesys import Stores, get_typestore  # type: ignore
+    except ImportError as exc:
+        raise RuntimeError(ROSBAGS_INSTALL_HINT) from exc
+    return get_typestore(Stores.ROS2_HUMBLE)
+
+
+def _open_any_reader(paths: Sequence[pathlib.Path]):
+    AnyReader = _load_any_reader()
+    return AnyReader(paths, default_typestore=_load_default_typestore())
+
+
 def ensure_rosbags_available() -> None:
     _load_any_reader()
 
@@ -38,8 +51,7 @@ def discover_ros2_bag_dirs(session_dir: pathlib.Path) -> List[pathlib.Path]:
 
 
 def get_available_topics(bag_dir: pathlib.Path) -> List[str]:
-    AnyReader = _load_any_reader()
-    with AnyReader([bag_dir]) as reader:
+    with _open_any_reader([bag_dir]) as reader:
         return sorted({conn.topic for conn in reader.connections})
 
 
@@ -48,8 +60,7 @@ def iter_deserialized_messages(
     topics: Optional[Sequence[str]] = None,
 ) -> Iterator[Tuple[str, float, object]]:
     """Yield (topic, timestamp_sec, msg) from a ROS2 bag directory."""
-    AnyReader = _load_any_reader()
-    with AnyReader([bag_dir]) as reader:
+    with _open_any_reader([bag_dir]) as reader:
         topic_set = set(topics) if topics else None
         if topic_set is None:
             connections = list(reader.connections)
