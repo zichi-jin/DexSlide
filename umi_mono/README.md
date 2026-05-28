@@ -8,7 +8,7 @@
 > - **阶段 A（离线建图）**：用 ROS2 录的 bag 跑 `run_mapping_and_desk_aruco_ros2.py` 流水线 → 产出 `map_atlas.osa`
 > - **阶段 B（实时 SLAM）**：用 `realsense_topic_slam_node` 加载 `.osa`，订阅 RealSense ROS2 topic（实机或 bag 回放），实时发布 `geometry_msgs/PoseStamped`
 >   
->   **<mark>注意请自行修改代碼/命令的路径位置</mark>**
+>   **<mark>注意请自行修改代碼/命令的路径位置，以及不同ubuntu版本的对应修改</mark>**
 
 ---
 
