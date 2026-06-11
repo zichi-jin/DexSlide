@@ -1,5 +1,5 @@
 // TASK-005 D435i librealsense2 smoke test for online tracking mode.
-// Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+// Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 // Opens color, accel, and gyro streams and measures observed frame rates.
 // Enables global time on supported sensors before starting the pipeline.
 // Prints FPS plus timestamp domain and exits non-zero on failure.

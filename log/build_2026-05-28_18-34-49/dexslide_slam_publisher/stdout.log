@@ -1,0 +1,42 @@
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found geometry_msgs: 5.3.7 (/opt/ros/jazzy/share/geometry_msgs/cmake)
+-- Found tf2_ros: 0.36.20 (/opt/ros/jazzy/share/tf2_ros/cmake)
+-- Found cv_bridge: 4.1.0 (/opt/ros/jazzy/share/cv_bridge/cmake)
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jzq/MyJob/DexSlide/build/dexslide_slam_publisher
+[ 25%] [32mBuilding CXX object CMakeFiles/pose_publisher_node.dir/src/pose_publisher_node.cpp.o[0m
+[ 75%] Built target realsense_topic_slam_node
+[100%] [32m[1mLinking CXX executable pose_publisher_node[0m
+[100%] Built target pose_publisher_node
+-- Install configuration: ""
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/pose_publisher_node
+-- Set non-toolchain portion of runtime path of "/home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/pose_publisher_node" to ""
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/realsense_topic_slam_node
+-- Set non-toolchain portion of runtime path of "/home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/realsense_topic_slam_node" to ""
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/launch
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/launch/dexslide_slam_topics.launch.py
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/launch/dexslide_slam_online.launch.py
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/ament_index/resource_index/package_run_dependencies/dexslide_slam_publisher
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/ament_index/resource_index/parent_prefix_path/dexslide_slam_publisher
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/environment/ament_prefix_path.sh
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/environment/ament_prefix_path.dsv
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/environment/path.sh
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/environment/path.dsv
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/local_setup.bash
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/local_setup.sh
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/local_setup.zsh
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/local_setup.dsv
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/package.dsv
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/ament_index/resource_index/packages/dexslide_slam_publisher
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/cmake/dexslide_slam_publisherConfig.cmake
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/cmake/dexslide_slam_publisherConfig-version.cmake
+-- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/share/dexslide_slam_publisher/package.xml

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TASK-043 manual recovery-time check for realsense_online.
 # Human interaction required: operator occludes the D435i lens for 3 seconds.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Measures time from occlusion release to first subsequent pose line in the log.
 # Requires D435i + atlas for a real run; no-arg path only validates usage.
 
@@ -27,9 +27,9 @@ LOG_PATH=/tmp/recovery_log.txt
 rm -f "$FIFO_PATH" "$LOG_PATH"
 mkfifo "$FIFO_PATH"
 
-BINARY=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
-VOCAB=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
-SETTINGS=/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
+BINARY=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
+VOCAB=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
+SETTINGS=/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
 
 /usr/bin/python3 -u - "$FIFO_PATH" "$LOG_PATH" <<'PY' &
 import sys

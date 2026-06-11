@@ -22,8 +22,8 @@ MIN_POSES=100
 WAIT_LOAD_S=10
 WAIT_AFTER_BAG_S=2
 POSE_TOPIC="/dexslide/slam/pose"
-WORKSPACE_SETUP="/data/codes/DexSlide/umi_mono/ros2_ws/install/setup.bash"
-ROS_SETUP="/opt/ros/humble/setup.bash"
+WORKSPACE_SETUP="/home/jzq/MyJob/DexSlide/umi_mono/ros2_ws/install/setup.bash"
+ROS_SETUP="/opt/ros/jazzy/setup.bash"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in

@@ -21,7 +21,11 @@ def _load_default_typestore():
         from rosbags.typesys import Stores, get_typestore  # type: ignore
     except ImportError as exc:
         raise RuntimeError(ROSBAGS_INSTALL_HINT) from exc
-    return get_typestore(Stores.ROS2_HUMBLE)
+    for store_name in ("ROS2_JAZZY", "ROS2_jazzy", "LATEST"):
+        store = getattr(Stores, store_name, None)
+        if store is not None:
+            return get_typestore(store)
+    raise RuntimeError("No supported ROS2 typestore found in rosbags.typesys.Stores")
 
 
 def _open_any_reader(paths: Sequence[pathlib.Path]):

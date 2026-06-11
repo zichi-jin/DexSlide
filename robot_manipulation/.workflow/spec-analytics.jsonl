@@ -1,0 +1,37 @@
+{"type":"cli","id":"CLI-1779865022500-1","timestamp":"2026-05-27T06:57:02.500Z","command":"spec load","args":{"keyword":"ros2","stdin":false}}
+{"type":"cli","id":"CLI-1779865161623-1","timestamp":"2026-05-27T06:59:21.623Z","command":"spec load","args":{"keyword":"ros2","stdin":false}}
+{"type":"cli","id":"CLI-1779884220408-1","timestamp":"2026-05-27T12:17:00.408Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1779884223098-1","timestamp":"2026-05-27T12:17:03.098Z","command":"spec load","args":{"keyword":"orca","stdin":false}}
+{"type":"cli","id":"CLI-1779886757830-1","timestamp":"2026-05-27T12:59:17.830Z","command":"spec load","args":{"keyword":"AMENT_TRACE_SETUP_FILES","stdin":false}}
+{"type":"cli","id":"CLI-1779948454635-1","timestamp":"2026-05-28T06:07:34.635Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1779948473317-1","timestamp":"2026-05-28T06:07:53.317Z","command":"spec load","args":{"keyword":"ui-conventions","stdin":false}}
+{"type":"cli","id":"CLI-1779949762392-1","timestamp":"2026-05-28T06:29:22.392Z","command":"spec load","args":{"keyword":"shutdown","stdin":false}}
+{"type":"cli","id":"CLI-1779953381008-1","timestamp":"2026-05-28T07:29:41.008Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1779954774166-1","timestamp":"2026-05-28T07:52:54.166Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1779955143417-1","timestamp":"2026-05-28T07:59:03.417Z","command":"spec load","args":{"keyword":"shutdown","stdin":false}}
+{"type":"cli","id":"CLI-1779956263315-1","timestamp":"2026-05-28T08:17:43.315Z","command":"spec load","args":{"keyword":"ros2","stdin":false}}
+{"type":"cli","id":"CLI-1779961542995-1","timestamp":"2026-05-28T09:45:42.995Z","command":"spec load","args":{"keyword":"servo_p","stdin":false}}
+{"type":"cli","id":"CLI-1779963139295-1","timestamp":"2026-05-28T10:12:19.295Z","command":"spec load","args":{"keyword":"servo","stdin":false}}
+{"type":"cli","id":"CLI-1779963686933-1","timestamp":"2026-05-28T10:21:26.933Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1780565592460-1","timestamp":"2026-06-04T09:33:12.460Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}
+{"type":"cli","id":"CLI-1780566685079-1","timestamp":"2026-06-04T09:51:25.079Z","command":"spec load","args":{"keyword":"force","stdin":false}}
+{"type":"cli","id":"CLI-1780567255510-1","timestamp":"2026-06-04T10:00:55.510Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}
+{"type":"cli","id":"CLI-1780567840919-1","timestamp":"2026-06-04T10:10:40.919Z","command":"spec load","args":{"keyword":"导纳","stdin":false}}
+{"type":"cli","id":"CLI-1780568641930-1","timestamp":"2026-06-04T10:24:01.930Z","command":"spec load","args":{"keyword":"servo","stdin":false}}
+{"type":"cli","id":"CLI-1780570042058-1","timestamp":"2026-06-04T10:47:22.058Z","command":"spec load","args":{"keyword":"compliance","stdin":false}}
+{"type":"cli","id":"CLI-1780572307081-1","timestamp":"2026-06-04T11:25:07.081Z","command":"spec load","args":{"keyword":"payload","stdin":false}}
+{"type":"cli","id":"CLI-1780574225808-1","timestamp":"2026-06-04T11:57:05.808Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1780576741158-1","timestamp":"2026-06-04T12:39:01.158Z","command":"spec load","args":{"keyword":"日志","stdin":false}}
+{"type":"cli","id":"CLI-1780647686264-1","timestamp":"2026-06-05T08:21:26.264Z","command":"spec load","args":{"keyword":"log","stdin":false}}
+{"type":"cli","id":"CLI-1780647857327-1","timestamp":"2026-06-05T08:24:17.327Z","command":"spec load","args":{"keyword":"ros2","stdin":false}}
+{"type":"cli","id":"CLI-1780648584807-1","timestamp":"2026-06-05T08:36:24.807Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}
+{"type":"cli","id":"CLI-1780649128834-1","timestamp":"2026-06-05T08:45:28.834Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}
+{"type":"cli","id":"CLI-1780650966617-1","timestamp":"2026-06-05T09:16:06.617Z","command":"spec load","args":{"category":"coding","stdin":false}}
+{"type":"cli","id":"CLI-1780653593264-1","timestamp":"2026-06-05T09:59:53.264Z","command":"spec load","args":{"keyword":"collision","stdin":false}}
+{"type":"cli","id":"CLI-1780653891645-1","timestamp":"2026-06-05T10:04:51.645Z","command":"spec load","args":{"keyword":"motion","stdin":false}}
+{"type":"cli","id":"CLI-1780654131685-1","timestamp":"2026-06-05T10:08:51.685Z","command":"spec load","args":{"keyword":"jaka servo admittance","stdin":false}}
+{"type":"cli","id":"CLI-1780655948923-1","timestamp":"2026-06-05T10:39:08.923Z","command":"spec load","args":{"keyword":"jaka linear script cli","stdin":false}}
+{"type":"cli","id":"CLI-1780656996572-1","timestamp":"2026-06-05T10:56:36.572Z","command":"spec load","args":{"keyword":"jaka ui frontend control","stdin":false}}
+{"type":"cli","id":"CLI-1780657014466-1","timestamp":"2026-06-05T10:56:54.466Z","command":"spec load","args":{"keyword":"ui conventions","stdin":false}}
+{"type":"cli","id":"CLI-1780659583650-1","timestamp":"2026-06-05T11:39:43.650Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
+{"type":"cli","id":"CLI-1780662374304-1","timestamp":"2026-06-05T12:26:14.304Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}

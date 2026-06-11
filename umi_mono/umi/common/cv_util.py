@@ -149,6 +149,40 @@ def _create_charuco_board(size, square_length, marker_length, dictionary):
     )
 
 
+def _estimate_single_marker_pose(corners, marker_size_m, camera_matrix):
+    if hasattr(cv2.aruco, 'estimatePoseSingleMarkers'):
+        rvec, tvec, _marker_points = cv2.aruco.estimatePoseSingleMarkers(
+            corners,
+            marker_size_m,
+            camera_matrix,
+            np.zeros((1, 5), dtype=np.float64),
+        )
+        return rvec.squeeze(), tvec.squeeze()
+
+    half_size = marker_size_m / 2.0
+    object_points = np.array(
+        [
+            [-half_size, half_size, 0.0],
+            [half_size, half_size, 0.0],
+            [half_size, -half_size, 0.0],
+            [-half_size, -half_size, 0.0],
+        ],
+        dtype=np.float64,
+    )
+    image_points = corners.reshape(-1, 2).astype(np.float64)
+    solvepnp_flag = getattr(cv2, 'SOLVEPNP_IPPE_SQUARE', cv2.SOLVEPNP_ITERATIVE)
+    success, rvec, tvec = cv2.solvePnP(
+        object_points,
+        image_points,
+        camera_matrix,
+        np.zeros((1, 5), dtype=np.float64),
+        flags=solvepnp_flag,
+    )
+    if not success:
+        raise RuntimeError('cv2.solvePnP failed for ArUco marker pose estimation')
+    return rvec.squeeze(), tvec.squeeze()
+
+
 def parse_aruco_config(aruco_config_dict: dict):
     """
     example:
@@ -256,12 +290,15 @@ def detect_localize_aruco_tags(
         if np.allclose(undistorted, this_corners, atol=1e-3):
             print(f"Warning: undistorted points are almost the same as original for marker {this_id}.")
             
-        rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(
-            undistorted, marker_size_m, K, np.zeros((1,5)))
+        rvec, tvec = _estimate_single_marker_pose(
+            undistorted,
+            marker_size_m,
+            K,
+        )
         
         tag_dict[this_id] = {
-            'rvec': rvec.squeeze(),
-            'tvec': tvec.squeeze(),
+            'rvec': rvec,
+            'tvec': tvec,
             'corners': this_corners.squeeze()
         }
     return tag_dict

@@ -127,7 +127,7 @@ def thumb_pp_frame(raw4: np.ndarray, palm: dict[str, np.ndarray], hand: str):
         np.eye(3, dtype=np.float64)
         @ rot_x(np.deg2rad(75.0))
         @ rot_z(np.deg2rad(-90.0) + mcp_back)
-        @ rot_y(np.deg2rad(-90.0) + mcp_front)
+        @ rot_y(np.deg2rad(90.0) + mcp_front)
         @ rot_x(np.deg2rad(-5.0))
     )
     return base, r_pp[:, 0], r_pp[:, 1], r_pp[:, 2]

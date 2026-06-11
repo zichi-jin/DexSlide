@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # TASK-007 native ORB_SLAM3 fork build wrapper for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Builds vendored third-party components and the fork root idempotently with CMake.
 # Writes logs and build artifacts only inside the ORB_SLAM3_fork tree.
 # Does not modify source files, install system packages, or use sudo.
 
 set -euo pipefail
 
-FORK="/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork"
+FORK="/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork"
 LOG_FILE="${FORK}/build_orbslam3.log"
-EXTERNAL_PANGOLIN="/data/codes/DexSlide/umi_mono/external/Pangolin/build"
+EXTERNAL_PANGOLIN="/home/jzq/MyJob/DexSlide/umi_mono/external/Pangolin/build"
 JOBS="$(nproc)"
 CLEAN=false
 

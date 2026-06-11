@@ -142,13 +142,13 @@ bash scripts/build_orbslam3_native.sh              # incremental
 Build also touches the `ament_cmake` bridge package:
 
 ```bash
-cd ros2_ws && source /opt/ros/humble/setup.bash && colcon build --packages-select dexslide_slam_publisher
+cd ros2_ws && source /opt/ros/jazzy/setup.bash && colcon build --packages-select dexslide_slam_publisher
 ```
 
 ### Run commands
 
 ```bash
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 source ros2_ws/install/setup.bash
 ros2 launch dexslide_slam_publisher dexslide_slam_online.launch.py map_atlas:=<path.osa>
 ```
@@ -158,7 +158,7 @@ ros2 launch dexslide_slam_publisher dexslide_slam_online.launch.py map_atlas:=<p
 - System Python is 3.13 (anaconda) → `rclpy` NOT compatible. Use `/usr/bin/python3` (3.10) for Python tests.
 - `cheng-chi` fork uses C++14 + `Thirdparty/Pangolin` empty dir → `external/Pangolin v0.8` via `CMAKE_PREFIX_PATH`.
 - Vocabulary MD5: `5420bad0713bc97034dd2a9b2f0cc387` on this host's `ORBvoc.txt` (informational only).
-- `librealsense2` dev pkg from Intel PPA, runtime resolves to `/opt/ros/humble`'s bundled `2.57`.
+- `librealsense2` dev pkg from Intel PPA, runtime resolves to `/opt/ros/jazzy`'s bundled `2.57`.
 
 ### Docs index
 

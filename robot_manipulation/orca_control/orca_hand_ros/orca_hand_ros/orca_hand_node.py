@@ -11,6 +11,14 @@ from std_msgs.msg import Float32MultiArray
 
 
 DEFAULT_ORCA_CORE_PATH = Path(__file__).resolve().parents[2] / "orca_dependencies"
+DEFAULT_CONFIG_PATH = (
+    DEFAULT_ORCA_CORE_PATH
+    / "orca_core"
+    / "models"
+    / "v1"
+    / "orcahand_right"
+    / "config.yaml"
+)
 
 
 class OrcaHandNode(Node):
@@ -20,7 +28,7 @@ class OrcaHandNode(Node):
         super().__init__("orca_hand_node")
 
         self.declare_parameter("orca_core_path", str(DEFAULT_ORCA_CORE_PATH))
-        self.declare_parameter("config_path", "")
+        self.declare_parameter("config_path", str(DEFAULT_CONFIG_PATH))
         self.declare_parameter("topic_name", "/orca_hand/joint_targets")
         self.declare_parameter("dry_run", False)
         self.declare_parameter("init_joints", True)

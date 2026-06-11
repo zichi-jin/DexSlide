@@ -18,7 +18,8 @@ import jkrc
 import time        
 PI = 3.1415926  
 
-robot = jkrc.RC("192.168.99.44")#返回一个机器人对象  
+robot = jkrc.RC("192.168.99.31")#返回一个机器人对象  
+# robot = jkrc.RC("192.168.99.44")#返回一个机器人对象  
 ret = robot.login()#登录  
 ret = robot.power_on()  
 ret = robot.enable_robot()  
@@ -52,9 +53,13 @@ while (1 == flag):
 print("identy_finish")  
 ret = robot.get_torq_sensor_payload_identify_result()  
 print(ret)  
-ret = robot.set_ft_sensor_payload(mass=ret[1][1], centroid=ret[1][2])  
+ret = robot.get_payload()  
+print(ret)  
+ret = robot.set_payload(mass=ret[1][0], centroid=ret[1][1:])  
 print(ret)  
 ret = robot.get_torq_sensor_payload_identify_result()  
+print(ret)  
+ret = robot.get_payload()  
 print(ret)  
 robot.joint_move(joint_pos_origin,0,1,10)  
 print("back")  

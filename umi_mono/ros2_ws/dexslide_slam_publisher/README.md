@@ -1,6 +1,6 @@
 # dexslide_slam_publisher
 
-ROS2 Humble `ament_cmake` package providing two executables for online SLAM pose publication:
+ROS2 jazzy `ament_cmake` package providing two executables for online SLAM pose publication:
 
 | Executable | Source | Use case |
 |---|---|---|
@@ -13,8 +13,8 @@ tf2 broadcast: `map` → `camera_color_optical_frame`
 ## Build
 
 ```bash
-source /opt/ros/humble/setup.bash
-cd /data/codes/DexSlide/umi_mono/ros2_ws
+source /opt/ros/jazzy/setup.bash
+cd /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws
 colcon build --packages-select dexslide_slam_publisher
 source install/setup.bash
 ```
@@ -53,7 +53,7 @@ This launches both `realsense_online` and `pose_publisher_node` together.
 ## Test
 
 ```bash
-bash /data/codes/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
+bash /home/jzq/MyJob/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
   --map /data/codes/umi_mono_data/demos/mapping/map_atlas.osa \
   --bag /data/codes/umi_mono_data/aurco
 ```

@@ -1,6 +1,6 @@
 """TASK-026..TASK-030 world-pose subscriber utilities for DexSlide.
 
-Provides a ROS2 Humble PoseStamped subscriber with time-aligned SE(3) lookup.
+Provides a ROS2 jazzy PoseStamped subscriber with time-aligned SE(3) lookup.
 Manual SLERP is implemented with numpy because scipy is not installed on
 system /usr/bin/python3.
 """

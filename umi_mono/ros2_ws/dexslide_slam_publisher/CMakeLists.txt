@@ -17,7 +17,7 @@ pkg_check_modules(LIBZMQ REQUIRED libzmq)
 
 add_executable(pose_publisher_node src/pose_publisher_node.cpp)
 target_include_directories(pose_publisher_node PRIVATE
-  /data/codes/DexSlide/umi_mono/external/cppzmq
+  /home/jzq/MyJob/DexSlide/umi_mono/external/cppzmq
   ${LIBZMQ_INCLUDE_DIRS}
 )
 target_link_directories(pose_publisher_node PRIVATE ${LIBZMQ_LIBRARY_DIRS})
@@ -25,8 +25,8 @@ target_link_libraries(pose_publisher_node ${LIBZMQ_LIBRARIES})
 ament_target_dependencies(pose_publisher_node rclcpp geometry_msgs tf2_ros)
 
 # ----- new realsense_topic_slam_node -----
-set(ORB_SLAM3_FORK_ROOT /data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork)
-list(APPEND CMAKE_PREFIX_PATH /data/codes/DexSlide/umi_mono/external/Pangolin/build)
+set(ORB_SLAM3_FORK_ROOT /home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork)
+list(APPEND CMAKE_PREFIX_PATH /home/jzq/MyJob/DexSlide/umi_mono/external/Pangolin/build)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
@@ -64,7 +64,7 @@ target_link_options(realsense_topic_slam_node PRIVATE
   "-Wl,-rpath,${ORB_SLAM3_FORK_ROOT}/lib"
   "-Wl,-rpath,${ORB_SLAM3_FORK_ROOT}/Thirdparty/DBoW2/lib"
   "-Wl,-rpath,${ORB_SLAM3_FORK_ROOT}/Thirdparty/g2o/lib"
-  "-Wl,-rpath,/data/codes/DexSlide/umi_mono/external/Pangolin/build"
+  "-Wl,-rpath,/home/jzq/MyJob/DexSlide/umi_mono/external/Pangolin/build"
 )
 ament_target_dependencies(realsense_topic_slam_node
   rclcpp
@@ -78,8 +78,7 @@ install(TARGETS pose_publisher_node realsense_topic_slam_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()

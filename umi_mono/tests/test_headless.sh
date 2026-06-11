@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TASK-039 headless runtime check for realsense_online.
 # Runs localization-only mode with DISPLAY unset and rejects X11/display errors.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Timeout exit 124 is acceptable; clean exit 0 is also acceptable.
 # Requires D435i + atlas for a real run; no-arg path only validates usage.
 
@@ -23,9 +23,9 @@ if [ ! -f "$ATLAS_PATH" ]; then
 fi
 
 LOG_PATH=/tmp/headless_run.log
-BINARY=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
-VOCAB=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
-SETTINGS=/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
+BINARY=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
+VOCAB=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
+SETTINGS=/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
 
 set +e
 (

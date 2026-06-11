@@ -18,7 +18,7 @@ pip install rosbags
 ```
 
 ### 1.2 ROS1 采集（旧流程）
-```bash
+```bash        
 roslaunch realsense2_camera rs_camera.launch
 rostopic echo /camera/color/metadata
 rostopic echo /camera/accel/sample
@@ -48,7 +48,8 @@ ros2 bag record -o data /camera/camera/color/image_raw /camera/camera/accel/samp
 查看 bag：
 ```bash
 ros2 bag info <bag_dir>
-ros2 run rqt_bag rqt_bag <bag_dir>
+
+
 ```
 
 ## 2. 会话目录命名规范
@@ -140,8 +141,8 @@ rosbags-convert /path/to/ros2_bag_dir --dst /path/to/output.bag
 ### 7.1 一键 launch
 
 ```bash
-source /opt/ros/humble/setup.bash
-source /data/codes/DexSlide/umi_mono/ros2_ws/install/setup.bash
+source /opt/ros/jazzy/setup.bash
+source /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws/install/setup.bash
 ros2 launch dexslide_slam_publisher dexslide_slam_online.launch.py \
   map_atlas:=/path/to/map_atlas.osa
 ```
@@ -154,9 +155,9 @@ ros2 topic hz /dexslide/slam/pose  # 应该 ~30 Hz
 ### 7.2 单独跑（不要 ROS2）
 
 ```bash
-/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online \
-  -v /data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt \
-  -s /data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml \
+/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online \
+  -v /home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt \
+  -s /home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml \
   -l /path/to/map_atlas.osa \
   --publisher stdout
 ```

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TASK-003 Pangolin v0.8 source build helper for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Clones Pangolin v0.8 into umi_mono/external/Pangolin and builds it idempotently.
 # Optional install step writes only to /usr/local and requires explicit confirmation.
 # Does not modify apt, apt sources, or files outside the Pangolin external tree.
