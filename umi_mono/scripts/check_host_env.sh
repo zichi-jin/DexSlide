@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # TASK-001 host environment check for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Verifies required host tools and writable workspace preconditions.
 # Read-only checks only; no installation or system modification.
 # Prints Name | Detected | Required | Status and exits non-zero on hard misses.
 
 set -euo pipefail
 
-ROOT_DIR="/data/codes/DexSlide"
+ROOT_DIR="/home/jzq/MyJob/DexSlide"
 
 declare -a ROW_NAMES=()
 declare -a ROW_DETECTED=()
@@ -131,7 +131,7 @@ check_python3() {
     if [[ -n "$detected" ]] && version_ge "$detected" "3.10"; then
       if version_ge "$detected" "3.13"; then
         status="[WARN]"
-        echo "system python >= 3.13; ROS2 Humble uses its own python3.10" >&2
+        echo "system python >= 3.13; ROS2 jazzy uses its own python3.10" >&2
       else
         status="[OK]"
       fi

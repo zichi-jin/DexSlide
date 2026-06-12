@@ -1,6 +1,7 @@
 #include <System.h>
 
-#include <cv_bridge/cv_bridge.h>
+// #include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -35,9 +36,9 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
         tf_broadcaster_(std::make_unique<tf2_ros::TransformBroadcaster>(*this)) {
     vocab_ = this->declare_parameter<std::string>(
         "vocab",
-        "/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt");
+        "/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt");
     settings_ = this->declare_parameter<std::string>(
-        "settings", "/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml");
+        "settings", "/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml");
     map_atlas_ = this->declare_parameter<std::string>("map_atlas", "");
     image_topic_ =
         this->declare_parameter<std::string>("image_topic", "/camera/camera/color/image_raw");

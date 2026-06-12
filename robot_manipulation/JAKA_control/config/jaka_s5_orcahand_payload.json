@@ -1,0 +1,18 @@
+{
+  "valid": true,
+  "source": "scripts/jaka_admittance_motion_trial.py auto identify",
+  "robot_ip": "192.168.99.44",
+  "tool_id": 1,
+  "payload": {
+    "mass_kg": 1.42369,
+    "centroid_mm": [
+      -2.16123,
+      -0.334533,
+      82.454084
+    ]
+  },
+  "units": {
+    "mass_kg": "kg",
+    "centroid_mm": "mm in tool/flange payload frame"
+  }
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TASK-005 librealsense2 dev package installer for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Installs librealsense2-dev from a pre-configured Intel PPA when explicitly asked.
 # Default mode is dry-run and never uses sudo without --apply and confirmation.
 # Does not modify apt source files or remove any package.

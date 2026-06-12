@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TASK-004 Sophus v1.22.10 source build helper for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Clones Sophus 1.22.10 into umi_mono/external/Sophus and builds it idempotently.
 # Default behavior keeps artifacts inside the external/Sophus tree only.
 # Optional install step writes to /usr/local and requires explicit confirmation.

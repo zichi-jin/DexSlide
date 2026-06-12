@@ -1,0 +1,357 @@
+{
+  "version": 2,
+  "generatedAt": 1780910909088,
+  "entries": [
+    {
+      "id": "knowhow-20260513-1737",
+      "type": "knowhow",
+      "title": "DexSlide umi_mono ROS2 SLAM environment handoff",
+      "summary": "## Session ID",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "draft",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": null,
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-001",
+      "type": "knowhow",
+      "title": "Session ID",
+      "summary": "KNW-20260513-1737",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-002",
+      "type": "knowhow",
+      "title": "Project Root",
+      "summary": "`/home/jzq/MyJob/DexSlide/umi_mono`",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-003",
+      "type": "knowhow",
+      "title": "Objective",
+      "summary": "Read `SLAM_readme_mono.md` and configure the environment needed for the mono SLAM pipeline, using the existing `dexslide` Conda environment instead of creating the repo's standard `umi` environment.",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-004",
+      "type": "knowhow",
+      "title": "Recent Conversation Context",
+      "summary": "- User first asked to read `umi_mono/slam_readme_mono.md`, configure the required environment, and first check whether Codex can install, download, and read/write system docs. - Permission check found the default sandbox failed even for bas",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-005",
+      "type": "knowhow",
+      "title": "Decisions",
+      "summary": "- Use existing Conda env: `/home/jzq/anaconda3/envs/dexslide`. - Prefer direct env Python: `/home/jzq/anaconda3/envs/dexslide/bin/python`. - Prefer `pip` over `conda` for dependency completion. - Do not create the repo-standard `umi` env. A",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-006",
+      "type": "knowhow",
+      "title": "Environment Findings",
+      "summary": "- OS: Ubuntu 24.04 LTS (`noble`). - User: `jzq`, member of `sudo`, but `sudo -n true` failed with `sudo: a password is required`. - Network: GitHub reachable via `curl -I https://github.com`. - Existing ROS2 stack: `/opt/ros/jazzy/bin/ros2`",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-007",
+      "type": "knowhow",
+      "title": "Python Dependencies Added To dexslide",
+      "summary": "Installed with: ```bash /home/jzq/anaconda3/envs/dexslide/bin/python -m pip install pandas zarr numcodecs av scikit-video dill threadpoolctl imagecodecs PyExifTool docker ``` Earlier also installed: ```bash conda run -n dexslide python -",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-008",
+      "type": "knowhow",
+      "title": "Verification Completed",
+      "summary": "These commands succeeded with `/home/jzq/anaconda3/envs/dexslide/bin/python`: ```bash python run_slam_pipeline_ros2.py --help python scripts_slam_pipeline_ros2/00_process_videos_ros2.py --help python scripts_slam_pipeline_ros2/07_storage_h",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-009",
+      "type": "knowhow",
+      "title": "Pending System Work",
+      "summary": "Install Docker CLI/daemon and ExifTool CLI from a local terminal, not through chat password: ```bash sudo apt-get update sudo apt-get install -y docker.io docker-compose-v2 docker-buildx libimage-exiftool-perl sudo systemctl enable --now d",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-010",
+      "type": "knowhow",
+      "title": "How To Resume Next Time",
+      "summary": "Ask Codex to read this file first: ```text 请先读取 /home/jzq/MyJob/DexSlide/umi_mono/.workflow/knowhow/KNW-20260513-1737.md，然后继续配置/验证 umi_mono 的 ROS2 SLAM 环境。 ``` Recommended run setup after system dependencies are installed: ```bash conda ",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-011",
+      "type": "knowhow",
+      "title": "Working Tree Notes",
+      "summary": "At the time of capture, `git status --short` showed pre-existing/unrelated changes: ```text D SLAM_readme_mono.txt ?? ../robot_manipulation/ ?? SLAM_readme_mono.md ``` This handoff added `.workflow/knowhow/KNW-20260513-1737.md`.",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    },
+    {
+      "id": "knowhow-KNW-20260513-1737-012",
+      "type": "knowhow",
+      "title": "Constraints For Future Codex",
+      "summary": "- Reply in Simplified Chinese. - Avoid Conda unless necessary; use `/home/jzq/anaconda3/envs/dexslide/bin/python -m pip ...`. - Do not use passwords pasted in chat. - System installs require user-side sudo interaction. - Docker is required ",
+      "tags": [
+        "handoff",
+        "dexslide",
+        "umi_mono",
+        "ros2",
+        "slam",
+        "environment"
+      ],
+      "status": "active",
+      "created": "2026-05-13T09:41:42.528Z",
+      "updated": "2026-05-13T09:41:42.529Z",
+      "scope": null,
+      "category": "session",
+      "createdBy": null,
+      "sourceRef": null,
+      "parent": "knowhow-20260513-1737",
+      "related": [],
+      "source": {
+        "kind": "file",
+        "path": "knowhow/KNW-20260513-1737.md"
+      }
+    }
+  ]
+}

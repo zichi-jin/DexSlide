@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TASK-023 integration check for atlas immutability in localization-only mode.
 # Verifies that realsense_online with --load_map does not mutate the atlas file.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Leaves runtime logs on disk for diagnosis on failure.
 # Safe for no-device hosts: atlas hash must remain unchanged either way.
 
@@ -30,12 +30,12 @@ if [[ ! "$DURATION" =~ ^[1-9][0-9]*$ ]]; then
 fi
 
 PRE_HASH=$(sha256sum "$ATLAS_PATH" | awk '{print $1}')
-LOG_PATH=$(mktemp /data/codes/DexSlide/umi_mono/tests/test_atlas_immutable.XXXXXX.log)
+LOG_PATH=$(mktemp /home/jzq/MyJob/DexSlide/umi_mono/tests/test_atlas_immutable.XXXXXX.log)
 
 set +e
-timeout "$DURATION" /data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online \
-  -v /data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt \
-  -s /data/codes/DexSlide/umi_mono/config/RealSense_D435i.yaml \
+timeout "$DURATION" /home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online \
+  -v /home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt \
+  -s /home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i.yaml \
   -l "$ATLAS_PATH" >"$LOG_PATH" 2>&1
 RUN_EXIT=$?
 set -e

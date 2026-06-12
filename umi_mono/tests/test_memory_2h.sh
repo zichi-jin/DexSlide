@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TASK-040 two-hour RSS growth check for realsense_online.
 # Samples resident memory every 60 seconds and fails if growth exceeds 5%.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Writes samples to /tmp/memory_2h.csv for later inspection.
 # Requires D435i + atlas for a real run; no-arg path only validates usage.
 
@@ -25,9 +25,9 @@ fi
 CSV_PATH=/tmp/memory_2h.csv
 echo "elapsed_seconds,rss_kb" > "$CSV_PATH"
 
-BINARY=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
-VOCAB=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
-SETTINGS=/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
+BINARY=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
+VOCAB=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
+SETTINGS=/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
 
 "$BINARY" \
   -v "$VOCAB" \

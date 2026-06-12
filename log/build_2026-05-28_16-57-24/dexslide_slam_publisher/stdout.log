@@ -1,0 +1,2 @@
+[ 25%] [32mBuilding CXX object CMakeFiles/realsense_topic_slam_node.dir/src/realsense_topic_slam_node.cpp.o[0m
+[ 75%] Built target pose_publisher_node

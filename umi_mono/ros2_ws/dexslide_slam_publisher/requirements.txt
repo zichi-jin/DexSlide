@@ -2,11 +2,11 @@
 #
 # Scope: the core node (realsense_topic_slam_node) is C++; it has NO runtime
 # Python dependencies. The packages listed here are for:
-#   - launch files (Python launch_ros, already provided by ROS2 Humble apt)
+#   - launch files (Python launch_ros, already provided by ROS2 jazzy apt)
 #   - the smoke-test script (mostly shell + ros2 CLI; no pip deps needed)
 #   - any auxiliary diagnostic / validation Python scripts
 #
-# Most ROS-related Python is satisfied by apt (ros-humble-rclpy, ...). The pip
+# Most ROS-related Python is satisfied by apt (ros-jazzy-rclpy, ...). The pip
 # packages below are only needed if you want to programmatically inspect bag
 # files outside the ros2 CLI, or write extra validators.
 #

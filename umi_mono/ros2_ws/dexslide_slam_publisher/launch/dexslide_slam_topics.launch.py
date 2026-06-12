@@ -11,11 +11,11 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "vocab",
-                default_value="/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt",
+                default_value="/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt",
             ),
             DeclareLaunchArgument(
                 "settings",
-                default_value="/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml",
+                default_value="/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml",
             ),
             DeclareLaunchArgument("map_atlas", default_value=""),
             DeclareLaunchArgument(
@@ -36,11 +36,11 @@ def generate_launch_description():
             DeclareLaunchArgument("tx_slam_tag", default_value=""),
             DeclareLaunchArgument(
                 "camera_intrinsics",
-                default_value="/data/codes/DexSlide/umi_mono/example/calibration/d435i_960_540.json",
+                default_value="/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/d435i_960_540.json",
             ),
             DeclareLaunchArgument(
                 "aruco_yaml",
-                default_value="/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml",
+                default_value="/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml",
             ),
             DeclareLaunchArgument("target_marker_id", default_value="10"),
             DeclareLaunchArgument("world_frame", default_value="world"),

@@ -50,6 +50,7 @@ def main(
 
     for session in session_dir:
         session_path = pathlib.Path(os.path.expanduser(session)).absolute()
+        print('session_path', session_path)
         demo_dir = session_path.joinpath("demos")
         mapping_dir = demo_dir.joinpath("mapping")
         aurco_dir = demo_dir.joinpath("aurco")

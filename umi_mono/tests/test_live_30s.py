@@ -17,10 +17,10 @@ from pathlib import Path
 
 
 BINARY = Path(
-    "/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online"
+    "/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online"
 )
-VOCAB = Path("/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt")
-SETTINGS = Path("/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml")
+VOCAB = Path("/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt")
+SETTINGS = Path("/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml")
 
 
 def parse_args() -> argparse.Namespace:

@@ -1,0 +1,985 @@
+[0.065s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install', '--packages-select', 'jaka_msgs', 'jaka_driver']
+[0.065s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['jaka_msgs', 'jaka_driver'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x76eb4bd90230>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x76eb4bd6bfb0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x76eb4bd6bfb0>>)
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.090s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.090s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/jzq/MyJob/DexSlide/robot_manipulation'
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.090s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['ignore', 'ignore_ament_install']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'ignore'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'ignore_ament_install'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['colcon_pkg']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'colcon_pkg'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['colcon_meta']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'colcon_meta'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['ros']
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'ros'
+[0.107s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['cmake', 'python']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'cmake'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'python'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extensions ['python_setup_py']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control) by extension 'python_setup_py'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['ignore', 'ignore_ament_install']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'ignore'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'ignore_ament_install'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['colcon_pkg']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'colcon_pkg'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['colcon_meta']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'colcon_meta'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['ros']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'ros'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['cmake', 'python']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'cmake'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'python'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extensions ['python_setup_py']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies) by extension 'python_setup_py'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['ignore', 'ignore_ament_install']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'ignore'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'ignore_ament_install'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['colcon_pkg']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'colcon_pkg'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['colcon_meta']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'colcon_meta'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['ros']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'ros'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['cmake', 'python']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'cmake'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'python'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extensions ['python_setup_py']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/JAKA_dependecies/x86_64-linux-gnu) by extension 'python_setup_py'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['ignore', 'ignore_ament_install']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'ignore'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'ignore_ament_install'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['colcon_pkg']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'colcon_pkg'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['colcon_meta']
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'colcon_meta'
+[0.108s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['ros']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'ros'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['cmake', 'python']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'cmake'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'python'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extensions ['python_setup_py']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/config) by extension 'python_setup_py'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['ignore', 'ignore_ament_install']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'ignore'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'ignore_ament_install'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['colcon_pkg']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'colcon_pkg'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['colcon_meta']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'colcon_meta'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['ros']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'ros'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['cmake', 'python']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'cmake'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'python'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extensions ['python_setup_py']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2) by extension 'python_setup_py'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/build) by extensions ['ignore', 'ignore_ament_install']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/build) by extension 'ignore'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/build) ignored
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['ignore', 'ignore_ament_install']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'ignore'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'ignore_ament_install'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['colcon_pkg']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'colcon_pkg'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['colcon_meta']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'colcon_meta'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['ros']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'ros'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['cmake', 'python']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'cmake'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'python'
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extensions ['python_setup_py']
+[0.109s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/images) by extension 'python_setup_py'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/install) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/install) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/install) ignored
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/log) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/log) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/log) ignored
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'ignore_ament_install'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['colcon_pkg']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'colcon_pkg'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['colcon_meta']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'colcon_meta'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['ros']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'ros'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['cmake', 'python']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'cmake'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'python'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extensions ['python_setup_py']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src) by extension 'python_setup_py'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/build) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/build) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/build) ignored
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/install) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/install) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/install) ignored
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extension 'ignore'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extension 'ignore_ament_install'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extensions ['colcon_pkg']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extension 'colcon_pkg'
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extensions ['colcon_meta']
+[0.110s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extension 'colcon_meta'
+[0.111s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extensions ['ros']
+[0.111s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a12_moveit_config) by extension 'ros'
+[0.112s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_a12_moveit_config' with type 'ros.ament_cmake' and name 'jaka_a12_moveit_config'
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extension 'ignore'
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extension 'ignore_ament_install'
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extensions ['colcon_pkg']
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extension 'colcon_pkg'
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extensions ['colcon_meta']
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extension 'colcon_meta'
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extensions ['ros']
+[0.112s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_a5_moveit_config) by extension 'ros'
+[0.113s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_a5_moveit_config' with type 'ros.ament_cmake' and name 'jaka_a5_moveit_config'
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extension 'ignore'
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extension 'ignore_ament_install'
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extensions ['colcon_pkg']
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extension 'colcon_pkg'
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extensions ['colcon_meta']
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extension 'colcon_meta'
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extensions ['ros']
+[0.113s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c12_moveit_config) by extension 'ros'
+[0.114s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_c12_moveit_config' with type 'ros.ament_cmake' and name 'jaka_c12_moveit_config'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extension 'ignore'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extension 'ignore_ament_install'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extensions ['colcon_pkg']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extension 'colcon_pkg'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extensions ['colcon_meta']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extension 'colcon_meta'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extensions ['ros']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c5_moveit_config) by extension 'ros'
+[0.114s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_c5_moveit_config' with type 'ros.ament_cmake' and name 'jaka_c5_moveit_config'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extension 'ignore'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extension 'ignore_ament_install'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extensions ['colcon_pkg']
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extension 'colcon_pkg'
+[0.114s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extensions ['colcon_meta']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extension 'colcon_meta'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extensions ['ros']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_c7_moveit_config) by extension 'ros'
+[0.115s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_c7_moveit_config' with type 'ros.ament_cmake' and name 'jaka_c7_moveit_config'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extensions ['ignore', 'ignore_ament_install']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extension 'ignore'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extension 'ignore_ament_install'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extensions ['colcon_pkg']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extension 'colcon_pkg'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extensions ['colcon_meta']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extension 'colcon_meta'
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extensions ['ros']
+[0.115s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_description) by extension 'ros'
+[0.116s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_description' with type 'ros.ament_cmake' and name 'jaka_description'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extensions ['ignore', 'ignore_ament_install']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extension 'ignore'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extension 'ignore_ament_install'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extensions ['colcon_pkg']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extension 'colcon_pkg'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extensions ['colcon_meta']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extension 'colcon_meta'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extensions ['ros']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_driver) by extension 'ros'
+[0.116s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_driver' with type 'ros.ament_cmake' and name 'jaka_driver'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extension 'ignore'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extension 'ignore_ament_install'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extensions ['colcon_pkg']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extension 'colcon_pkg'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extensions ['colcon_meta']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extension 'colcon_meta'
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extensions ['ros']
+[0.116s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config) by extension 'ros'
+[0.117s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config' with type 'ros.ament_cmake' and name 'jaka_minicobo_moveit_config'
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extensions ['ignore', 'ignore_ament_install']
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extension 'ignore'
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extension 'ignore_ament_install'
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extensions ['colcon_pkg']
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extension 'colcon_pkg'
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extensions ['colcon_meta']
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extension 'colcon_meta'
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extensions ['ros']
+[0.117s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_msgs) by extension 'ros'
+[0.117s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_msgs' with type 'ros.ament_cmake' and name 'jaka_msgs'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extensions ['ignore', 'ignore_ament_install']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extension 'ignore'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extension 'ignore_ament_install'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extensions ['colcon_pkg']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extension 'colcon_pkg'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extensions ['colcon_meta']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extension 'colcon_meta'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extensions ['ros']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_planner) by extension 'ros'
+[0.118s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_planner' with type 'ros.ament_cmake' and name 'jaka_planner'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extension 'ignore'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extension 'ignore_ament_install'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extensions ['colcon_pkg']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extension 'colcon_pkg'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extensions ['colcon_meta']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extension 'colcon_meta'
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extensions ['ros']
+[0.118s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config) by extension 'ros'
+[0.119s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config' with type 'ros.ament_cmake' and name 'jaka_pro12_moveit_config'
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extension 'ignore'
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extension 'ignore_ament_install'
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extensions ['colcon_pkg']
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extension 'colcon_pkg'
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extensions ['colcon_meta']
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extension 'colcon_meta'
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extensions ['ros']
+[0.119s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config) by extension 'ros'
+[0.120s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config' with type 'ros.ament_cmake' and name 'jaka_pro16_moveit_config'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extension 'ignore'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extension 'ignore_ament_install'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extensions ['colcon_pkg']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extension 'colcon_pkg'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extensions ['colcon_meta']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extension 'colcon_meta'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extensions ['ros']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config) by extension 'ros'
+[0.120s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config' with type 'ros.ament_cmake' and name 'jaka_pro18_moveit_config'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extension 'ignore'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extension 'ignore_ament_install'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extensions ['colcon_pkg']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extension 'colcon_pkg'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extensions ['colcon_meta']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extension 'colcon_meta'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extensions ['ros']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config) by extension 'ros'
+[0.121s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config' with type 'ros.ament_cmake' and name 'jaka_pro5_moveit_config'
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extension 'ignore'
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extension 'ignore_ament_install'
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extensions ['colcon_pkg']
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extension 'colcon_pkg'
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extensions ['colcon_meta']
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extension 'colcon_meta'
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extensions ['ros']
+[0.121s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config) by extension 'ros'
+[0.122s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config' with type 'ros.ament_cmake' and name 'jaka_pro7_moveit_config'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extension 'ignore'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extension 'ignore_ament_install'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extensions ['colcon_pkg']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extension 'colcon_pkg'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extensions ['colcon_meta']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extension 'colcon_meta'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extensions ['ros']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s12_moveit_config) by extension 'ros'
+[0.122s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_s12_moveit_config' with type 'ros.ament_cmake' and name 'jaka_s12_moveit_config'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extension 'ignore'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extension 'ignore_ament_install'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extensions ['colcon_pkg']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extension 'colcon_pkg'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extensions ['colcon_meta']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extension 'colcon_meta'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extensions ['ros']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s5_moveit_config) by extension 'ros'
+[0.123s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_s5_moveit_config' with type 'ros.ament_cmake' and name 'jaka_s5_moveit_config'
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extension 'ignore'
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extension 'ignore_ament_install'
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extensions ['colcon_pkg']
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extension 'colcon_pkg'
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extensions ['colcon_meta']
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extension 'colcon_meta'
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extensions ['ros']
+[0.123s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_s7_moveit_config) by extension 'ros'
+[0.124s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_s7_moveit_config' with type 'ros.ament_cmake' and name 'jaka_s7_moveit_config'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extension 'ignore'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extension 'ignore_ament_install'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extensions ['colcon_pkg']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extension 'colcon_pkg'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extensions ['colcon_meta']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extension 'colcon_meta'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extensions ['ros']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config) by extension 'ros'
+[0.124s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu12_moveit_config'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extension 'ignore'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extension 'ignore_ament_install'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extensions ['colcon_pkg']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extension 'colcon_pkg'
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extensions ['colcon_meta']
+[0.124s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extension 'colcon_meta'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extensions ['ros']
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config) by extension 'ros'
+[0.125s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu18_moveit_config'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extension 'ignore'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extension 'ignore_ament_install'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extensions ['colcon_pkg']
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extension 'colcon_pkg'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extensions ['colcon_meta']
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extension 'colcon_meta'
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extensions ['ros']
+[0.125s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config) by extension 'ros'
+[0.126s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu20_moveit_config'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extension 'ignore'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extension 'ignore_ament_install'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extensions ['colcon_pkg']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extension 'colcon_pkg'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extensions ['colcon_meta']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extension 'colcon_meta'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extensions ['ros']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config) by extension 'ros'
+[0.126s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu30_moveit_config'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extension 'ignore'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extension 'ignore_ament_install'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extensions ['colcon_pkg']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extension 'colcon_pkg'
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extensions ['colcon_meta']
+[0.126s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extension 'colcon_meta'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extensions ['ros']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config) by extension 'ros'
+[0.127s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu3_moveit_config'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extension 'ignore'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extension 'ignore_ament_install'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extensions ['colcon_pkg']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extension 'colcon_pkg'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extensions ['colcon_meta']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extension 'colcon_meta'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extensions ['ros']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config) by extension 'ros'
+[0.128s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu5_moveit_config'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extension 'ignore_ament_install'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extensions ['colcon_pkg']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extension 'colcon_pkg'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extensions ['colcon_meta']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extension 'colcon_meta'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extensions ['ros']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config) by extension 'ros'
+[0.128s] DEBUG:colcon.colcon_core.package_identification:Package 'JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config' with type 'ros.ament_cmake' and name 'jaka_zu7_moveit_config'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/log) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/log) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jaka_ros2/src/log) ignored
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['ignore', 'ignore_ament_install']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'ignore'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'ignore_ament_install'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['colcon_pkg']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'colcon_pkg'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['colcon_meta']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'colcon_meta'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['ros']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'ros'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['cmake', 'python']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'cmake'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'python'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extensions ['python_setup_py']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts) by extension 'python_setup_py'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'ignore'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'ignore_ament_install'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['colcon_pkg']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'colcon_pkg'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['colcon_meta']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'colcon_meta'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['ros']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'ros'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['cmake', 'python']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'cmake'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'python'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extensions ['python_setup_py']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(JAKA_control/jk_scripts/__pycache__) by extension 'python_setup_py'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.129s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['ignore', 'ignore_ament_install']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'ignore'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'ignore_ament_install'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['colcon_pkg']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'colcon_pkg'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['colcon_meta']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'colcon_meta'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['ros']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'ros'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['cmake', 'python']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'cmake'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'python'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extensions ['python_setup_py']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control) by extension 'python_setup_py'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['ignore', 'ignore_ament_install']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'ignore'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'ignore_ament_install'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['colcon_pkg']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'colcon_pkg'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['colcon_meta']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'colcon_meta'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['ros']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'ros'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['cmake', 'python']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'cmake'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'python'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extensions ['python_setup_py']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies) by extension 'python_setup_py'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['ignore', 'ignore_ament_install']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'ignore'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'ignore_ament_install'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['colcon_pkg']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'colcon_pkg'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['colcon_meta']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'colcon_meta'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['ros']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'ros'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['cmake', 'python']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'cmake'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'python'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extensions ['python_setup_py']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/demo) by extension 'python_setup_py'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['ignore', 'ignore_ament_install']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'ignore'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'ignore_ament_install'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['colcon_pkg']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'colcon_pkg'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['colcon_meta']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'colcon_meta'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['ros']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'ros'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['cmake', 'python']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'cmake'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'python'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extensions ['python_setup_py']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs) by extension 'python_setup_py'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['ignore', 'ignore_ament_install']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'ignore'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'ignore_ament_install'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['colcon_pkg']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'colcon_pkg'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['colcon_meta']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'colcon_meta'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['ros']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'ros'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['cmake', 'python']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'cmake'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'python'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extensions ['python_setup_py']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/css) by extension 'python_setup_py'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['ignore', 'ignore_ament_install']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'ignore'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'ignore_ament_install'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['colcon_pkg']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'colcon_pkg'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['colcon_meta']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'colcon_meta'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['ros']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'ros'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['cmake', 'python']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'cmake'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'python'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extensions ['python_setup_py']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/img) by extension 'python_setup_py'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['ignore', 'ignore_ament_install']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'ignore'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'ignore_ament_install'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['colcon_pkg']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'colcon_pkg'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['colcon_meta']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'colcon_meta'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['ros']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'ros'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['cmake', 'python']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'cmake'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'python'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extensions ['python_setup_py']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages) by extension 'python_setup_py'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['ignore', 'ignore_ament_install']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'ignore'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'ignore_ament_install'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['colcon_pkg']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'colcon_pkg'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['colcon_meta']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'colcon_meta'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['ros']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'ros'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['cmake', 'python']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'cmake'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'python'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extensions ['python_setup_py']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/getting-started-docs) by extension 'python_setup_py'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['ignore', 'ignore_ament_install']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'ignore'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'ignore_ament_install'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['colcon_pkg']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'colcon_pkg'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['colcon_meta']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'colcon_meta'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['ros']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'ros'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['cmake', 'python']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'cmake'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'python'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extensions ['python_setup_py']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/docs/pages/orca-core-docs) by extension 'python_setup_py'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['ignore', 'ignore_ament_install']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'ignore'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'ignore_ament_install'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['colcon_pkg']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'colcon_pkg'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['colcon_meta']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'colcon_meta'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['ros']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'ros'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['cmake', 'python']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'cmake'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'python'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extensions ['python_setup_py']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core) by extension 'python_setup_py'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'ignore'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'ignore_ament_install'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['colcon_pkg']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'colcon_pkg'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['colcon_meta']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'colcon_meta'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['ros']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'ros'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['cmake', 'python']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'cmake'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'python'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extensions ['python_setup_py']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/__pycache__) by extension 'python_setup_py'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['ignore', 'ignore_ament_install']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'ignore'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'ignore_ament_install'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['colcon_pkg']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'colcon_pkg'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['colcon_meta']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'colcon_meta'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['ros']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'ros'
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['cmake', 'python']
+[0.133s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'cmake'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'python'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extensions ['python_setup_py']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/api) by extension 'python_setup_py'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['ignore', 'ignore_ament_install']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'ignore'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'ignore_ament_install'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['colcon_pkg']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'colcon_pkg'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['colcon_meta']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'colcon_meta'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['ros']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'ros'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['cmake', 'python']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'cmake'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'python'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extensions ['python_setup_py']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware) by extension 'python_setup_py'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'ignore'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'ignore_ament_install'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['colcon_pkg']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'colcon_pkg'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['colcon_meta']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'colcon_meta'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['ros']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'ros'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['cmake', 'python']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'cmake'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'python'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extensions ['python_setup_py']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/__pycache__) by extension 'python_setup_py'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['ignore', 'ignore_ament_install']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'ignore'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'ignore_ament_install'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['colcon_pkg']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'colcon_pkg'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['colcon_meta']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'colcon_meta'
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['ros']
+[0.134s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'ros'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['cmake', 'python']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'cmake'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'python'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extensions ['python_setup_py']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/hardware/feetech) by extension 'python_setup_py'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['ignore', 'ignore_ament_install']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'ignore'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'ignore_ament_install'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['colcon_pkg']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'colcon_pkg'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['colcon_meta']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'colcon_meta'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['ros']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'ros'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['cmake', 'python']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'cmake'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'python'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extensions ['python_setup_py']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models) by extension 'python_setup_py'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['ignore', 'ignore_ament_install']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'ignore'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'ignore_ament_install'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['colcon_pkg']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'colcon_pkg'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['colcon_meta']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'colcon_meta'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['ros']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'ros'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['cmake', 'python']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'cmake'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'python'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extensions ['python_setup_py']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1) by extension 'python_setup_py'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['ignore', 'ignore_ament_install']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'ignore'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'ignore_ament_install'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['colcon_pkg']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'colcon_pkg'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['colcon_meta']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'colcon_meta'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['ros']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'ros'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['cmake', 'python']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'cmake'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'python'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extensions ['python_setup_py']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_left) by extension 'python_setup_py'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'ignore_ament_install'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['colcon_pkg']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'colcon_pkg'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['colcon_meta']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'colcon_meta'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['ros']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'ros'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['cmake', 'python']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'cmake'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'python'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extensions ['python_setup_py']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v1/orcahand_right) by extension 'python_setup_py'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'ignore_ament_install'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['colcon_pkg']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'colcon_pkg'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['colcon_meta']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'colcon_meta'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['ros']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'ros'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['cmake', 'python']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'cmake'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'python'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extensions ['python_setup_py']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2) by extension 'python_setup_py'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'ignore_ament_install'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['colcon_pkg']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'colcon_pkg'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['colcon_meta']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'colcon_meta'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['ros']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'ros'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['cmake', 'python']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'cmake'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'python'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extensions ['python_setup_py']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_left) by extension 'python_setup_py'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['ignore', 'ignore_ament_install']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'ignore'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'ignore_ament_install'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['colcon_pkg']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'colcon_pkg'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['colcon_meta']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'colcon_meta'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['ros']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'ros'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['cmake', 'python']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'cmake'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'python'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extensions ['python_setup_py']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_right) by extension 'python_setup_py'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['ignore', 'ignore_ament_install']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'ignore'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'ignore_ament_install'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['colcon_pkg']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'colcon_pkg'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['colcon_meta']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'colcon_meta'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['ros']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'ros'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['cmake', 'python']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'cmake'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'python'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extensions ['python_setup_py']
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_left) by extension 'python_setup_py'
+[0.137s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['ignore', 'ignore_ament_install']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'ignore'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'ignore_ament_install'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['colcon_pkg']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'colcon_pkg'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['colcon_meta']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'colcon_meta'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['ros']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'ros'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['cmake', 'python']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'cmake'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'python'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extensions ['python_setup_py']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/models/v2/orcahand_touch_right) by extension 'python_setup_py'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['ignore', 'ignore_ament_install']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'ignore'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'ignore_ament_install'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['colcon_pkg']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'colcon_pkg'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['colcon_meta']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'colcon_meta'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['ros']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'ros'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['cmake', 'python']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'cmake'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'python'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extensions ['python_setup_py']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils) by extension 'python_setup_py'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'ignore'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'ignore_ament_install'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['colcon_pkg']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'colcon_pkg'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['colcon_meta']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'colcon_meta'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['ros']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'ros'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['cmake', 'python']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'cmake'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'python'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extensions ['python_setup_py']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/orca_core/utils/__pycache__) by extension 'python_setup_py'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['ignore', 'ignore_ament_install']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'ignore'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'ignore_ament_install'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['colcon_pkg']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'colcon_pkg'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['colcon_meta']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'colcon_meta'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['ros']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'ros'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['cmake', 'python']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'cmake'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'python'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extensions ['python_setup_py']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/replay_sequences) by extension 'python_setup_py'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['ignore', 'ignore_ament_install']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'ignore'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'ignore_ament_install'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['colcon_pkg']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'colcon_pkg'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['colcon_meta']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'colcon_meta'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['ros']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'ros'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['cmake', 'python']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'cmake'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'python'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extensions ['python_setup_py']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts) by extension 'python_setup_py'
+[0.315s] ERROR:colcon.colcon_core.package_identification:Exception in package identification extension 'python_setup_py' in 'orca_control/orca_dependencies/scripts': Command '['/usr/bin/python3', '-c', 'import sys;from contextlib import suppress;exec("with suppress(ImportError):    from setuptools.extern.packaging.specifiers    import SpecifierSet");exec("with suppress(ImportError):    from packaging.specifiers import SpecifierSet");from distutils.core import run_setup;dist = run_setup(    \'setup.py\', script_args=(\'--dry-run\',), stop_after=\'config\');skip_keys = (\'cmdclass\', \'distclass\', \'ext_modules\', \'metadata\');data = {    key: value for key, value in dist.__dict__.items()     if (        not key.startswith(\'_\') and         not callable(value) and         key not in skip_keys and         key not in dist.display_option_names    )};data[\'metadata\'] = {    k: v for k, v in dist.metadata.__dict__.items()     if k not in (\'license_files\', \'provides_extras\')};sys.stdout.buffer.write(repr(data).encode(\'utf-8\'))']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/colcon_core/package_identification/__init__.py", line 144, in _identify
+    retval = extension.identify(_reused_descriptor_instance)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/colcon_python_setup_py/package_identification/python_setup_py.py", line 48, in identify
+    config = get_setup_information(setup_py)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/colcon_python_setup_py/package_identification/python_setup_py.py", line 249, in get_setup_information
+    _setup_information_cache[hashable_env] = _get_setup_information(
+                                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/colcon_python_setup_py/package_identification/python_setup_py.py", line 296, in _get_setup_information
+    result = subprocess.run(
+             ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '-c', 'import sys;from contextlib import suppress;exec("with suppress(ImportError):    from setuptools.extern.packaging.specifiers    import SpecifierSet");exec("with suppress(ImportError):    from packaging.specifiers import SpecifierSet");from distutils.core import run_setup;dist = run_setup(    \'setup.py\', script_args=(\'--dry-run\',), stop_after=\'config\');skip_keys = (\'cmdclass\', \'distclass\', \'ext_modules\', \'metadata\');data = {    key: value for key, value in dist.__dict__.items()     if (        not key.startswith(\'_\') and         not callable(value) and         key not in skip_keys and         key not in dist.display_option_names    )};data[\'metadata\'] = {    k: v for k, v in dist.metadata.__dict__.items()     if k not in (\'license_files\', \'provides_extras\')};sys.stdout.buffer.write(repr(data).encode(\'utf-8\'))']' returned non-zero exit status 1.
+
+[0.315s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.315s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'ignore'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'ignore_ament_install'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['colcon_pkg']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'colcon_pkg'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['colcon_meta']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'colcon_meta'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['ros']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'ros'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['cmake', 'python']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'cmake'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'python'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extensions ['python_setup_py']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/scripts/__pycache__) by extension 'python_setup_py'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['ignore', 'ignore_ament_install']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'ignore'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'ignore_ament_install'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['colcon_pkg']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'colcon_pkg'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['colcon_meta']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'colcon_meta'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['ros']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'ros'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['cmake', 'python']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'cmake'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'python'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extensions ['python_setup_py']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests) by extension 'python_setup_py'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['ignore', 'ignore_ament_install']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'ignore'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'ignore_ament_install'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['colcon_pkg']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'colcon_pkg'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['colcon_meta']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'colcon_meta'
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['ros']
+[0.316s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'ros'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['cmake', 'python']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'cmake'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'python'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extensions ['python_setup_py']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(orca_control/orca_dependencies/tests/reference) by extension 'python_setup_py'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['ignore', 'ignore_ament_install']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'ignore'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'ignore_ament_install'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['colcon_pkg']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'colcon_pkg'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['colcon_meta']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'colcon_meta'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['ros']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'ros'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['cmake', 'python']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'cmake'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'python'
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extensions ['python_setup_py']
+[0.317s] Level 1:colcon.colcon_core.package_identification:_identify(retarget) by extension 'python_setup_py'
+[0.317s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.317s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.317s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.317s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.317s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_description' in 'JAKA_control/jaka_ros2/src/jaka_description'
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_a12_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_a12_moveit_config'
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_a5_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_a5_moveit_config'
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_c12_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_c12_moveit_config'
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_c5_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_c5_moveit_config'
+[0.333s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_c7_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_c7_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_minicobo_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_minicobo_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_planner' in 'JAKA_control/jaka_ros2/src/jaka_planner'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_pro12_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_pro12_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_pro16_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_pro16_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_pro18_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_pro18_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_pro5_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_pro5_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_pro7_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_pro7_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_s12_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_s12_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_s5_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_s5_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_s7_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_s7_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu12_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu12_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu18_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu18_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu20_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu20_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu30_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu30_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu3_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu3_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu5_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu5_moveit_config'
+[0.334s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'jaka_zu7_moveit_config' in 'JAKA_control/jaka_ros2/src/jaka_zu7_moveit_config'
+[0.334s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.334s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.335s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/install
+[0.336s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 297 installed packages in /opt/ros/jazzy
+[0.336s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_target' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_clean_cache' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_clean_first' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'cmake_force_configure' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'ament_cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'catkin_cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_msgs' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.359s] DEBUG:colcon.colcon_core.verb:Building package 'jaka_msgs' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs', 'merge_install': False, 'path': '/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs', 'symlink_install': True, 'test_result_base': None}
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_target' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_clean_cache' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_clean_first' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'cmake_force_configure' from command line to 'False'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'ament_cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'catkin_cmake_args' from command line to 'None'
+[0.359s] Level 5:colcon.colcon_core.verb:set package 'jaka_driver' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.359s] DEBUG:colcon.colcon_core.verb:Building package 'jaka_driver' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_driver', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_driver', 'merge_install': False, 'path': '/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_driver', 'symlink_install': True, 'test_result_base': None}
+[0.359s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.360s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.360s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs' with build type 'ament_cmake'
+[0.361s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs'
+[0.362s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.362s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.362s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.370s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs
+[1.632s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/jzq/MyJob/DexSlide/robot_manipulation/build/jaka_msgs' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs
+[1.648s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(jaka_msgs)
+[1.650s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs' for CMake module files
+[1.650s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs' for CMake config files
+[1.651s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/bin'
+[1.651s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/lib/pkgconfig/jaka_msgs.pc'
+[1.651s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/lib/python3.12/site-packages'
+[1.651s] Level 1:colcon.colcon_core.environment:checking '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/bin'
+[1.651s] INFO:colcon.colcon_core.shell:Creating package script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/jaka_msgs/package.ps1'
+[1.652s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/jaka_msgs/package.dsv'
+[1.653s] INFO:colcon.colcon_core.shell:Creating package script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/jaka_msgs/package.sh'
+[1.653s] INFO:colcon.colcon_core.shell:Creating package script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/jaka_msgs/package.bash'
+[1.654s] INFO:colcon.colcon_core.shell:Creating package script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/jaka_msgs/package.zsh'
+[1.655s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/jzq/MyJob/DexSlide/robot_manipulation/install/jaka_msgs/share/colcon-core/packages/jaka_msgs)
+[1.665s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[1.666s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[1.666s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '1'
+[1.666s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[1.677s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[1.677s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[1.677s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[1.700s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[1.700s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/local_setup.ps1'
+[1.701s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/jzq/MyJob/DexSlide/robot_manipulation/install/_local_setup_util_ps1.py'
+[1.702s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/setup.ps1'
+[1.704s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/local_setup.sh'
+[1.704s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/jzq/MyJob/DexSlide/robot_manipulation/install/_local_setup_util_sh.py'
+[1.705s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/setup.sh'
+[1.707s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/local_setup.bash'
+[1.708s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/setup.bash'
+[1.709s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/local_setup.zsh'
+[1.710s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/jzq/MyJob/DexSlide/robot_manipulation/install/setup.zsh'

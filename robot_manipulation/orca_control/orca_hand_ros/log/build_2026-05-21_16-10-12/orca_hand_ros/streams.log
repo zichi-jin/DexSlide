@@ -1,0 +1,25 @@
+[0.497s] Invoking command in '/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros': CONDA_PROMPT_MODIFIER=(dexslide) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/build --no-deps symlink_data
+[0.704s] running develop
+[0.823s] running egg_info
+[0.824s] creating orca_hand_ros.egg-info
+[0.834s] writing orca_hand_ros.egg-info/PKG-INFO
+[0.835s] writing dependency_links to orca_hand_ros.egg-info/dependency_links.txt
+[0.835s] writing entry points to orca_hand_ros.egg-info/entry_points.txt
+[0.835s] writing requirements to orca_hand_ros.egg-info/requires.txt
+[0.835s] writing top-level names to orca_hand_ros.egg-info/top_level.txt
+[0.835s] writing manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+[0.857s] reading manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+[0.857s] writing manifest file 'orca_hand_ros.egg-info/SOURCES.txt'
+[0.869s] running build_ext
+[0.869s] Creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/python3.12/site-packages/orca-hand-ros.egg-link (link to .)
+[0.869s] Installing orca_hand_node script to /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/orca_hand_ros
+[0.869s] 
+[0.869s] Installed /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros
+[0.869s] running symlink_data
+[0.869s] creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index
+[0.869s] creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index
+[0.870s] creating /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index/packages
+[0.870s] symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/resource/orca_hand_ros -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/ament_index/resource_index/packages
+[0.870s] symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/package.xml -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/orca_hand_ros
+[0.870s] symbolically linking /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/README.md -> /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/share/orca_hand_ros
+[0.892s] Invoked command in '/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros' returned '0': CONDA_PROMPT_MODIFIER=(dexslide) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/install/orca_hand_ros/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/build --no-deps symlink_data

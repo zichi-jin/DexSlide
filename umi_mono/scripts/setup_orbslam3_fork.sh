@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TASK-006 ORB_SLAM3 fork setup helper for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Clones cheng-chi/ORB_SLAM3 as a regular git clone and pins it to a commit SHA.
 # Unpacks ORB vocabulary when needed and records the pinned SHA atomically.
 # Does not use submodules or modify top-level git metadata.

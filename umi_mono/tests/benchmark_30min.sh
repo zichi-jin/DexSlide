@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # TASK-038 30-minute stdout pose benchmark for realsense_online.
 # Measures inter-message timing and capture-to-publish latency from stdout pose lines.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Writes summary JSON to /tmp/benchmark_30min_YYYYMMDD_HHMMSS.json.
 # Requires D435i + atlas for a real run; no-arg path is safe on any host.
 
@@ -32,9 +32,9 @@ JSON_PATH=/tmp/benchmark_30min_${STAMP}.json
 export DEXSLIDE_BENCHMARK_JSON="$JSON_PATH"
 
 DURATION_SECONDS=$((DURATION_MINUTES * 60))
-BINARY=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
-VOCAB=/data/codes/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
-SETTINGS=/data/codes/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
+BINARY=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Examples/Monocular-Inertial/realsense_online
+VOCAB=/home/jzq/MyJob/DexSlide/umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
+SETTINGS=/home/jzq/MyJob/DexSlide/umi_mono/config/RealSense_D435i_online.yaml
 
 set +e
 timeout "${DURATION_SECONDS}" "$BINARY" \

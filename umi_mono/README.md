@@ -6,10 +6,9 @@
 > 全套流程分两阶段：
 >
 > - **阶段 A（离线建图）**：用 ROS2 录的 bag 跑 `run_mapping_and_desk_aruco_ros2.py` 流水线 → 产出 `map_atlas.osa`
->
 > - **阶段 B（实时 SLAM）**：用 `realsense_topic_slam_node` 加载 `.osa`，订阅 RealSense ROS2 topic（实机或 bag 回放），实时发布 `geometry_msgs/PoseStamped`；可选启动 ArUco world-pose 节点，实时输出指定 marker 在桌面标定 world frame 下的位姿
 >
->   **<mark>注意请自行修改代碼/命令的路径位置</mark>**
+>   **<mark>注意请自行修改代碼/命令的路径位置，以及不同ubuntu版本的对应修改</mark>**
 
 ---
 
@@ -56,7 +55,7 @@
 | OS           | Ubuntu 22.04 LTS（22.04.x 任意小版本）                             |
 | 内存           | ≥ 16 GB                                                     |
 | **D435i 相机** | 固件 ≥ 5.16；USB 3.x 端口（实机模式必需，bag 回放不需要）                      |
-| ROS2         | Humble Hawksbill                                            |
+| ROS2         | jazzy Hawksbill                                            |
 | 系统 Python    | `/usr/bin/python3` = 3.10.x（**不要用 anaconda**，rclpy ABI 不兼容） |
 | Docker       | 仅阶段 A 离线建图需要（`chicheng/orb_slam3:latest`）                   |
 | 网络           | 能 clone GitHub + apt update；国内需代理                           |
@@ -109,8 +108,8 @@
 
 ```bash
 # 0. 拉项目
-git clone <your-repo-url> /data/codes/DexSlide
-cd /data/codes/DexSlide
+git clone <your-repo-url> /home/jzq/MyJob/DexSlide
+cd /home/jzq/MyJob/DexSlide
 
 # 1. 主机环境快速检查（只读）
 bash umi_mono/scripts/check_host_env.sh
@@ -131,30 +130,30 @@ bash umi_mono/scripts/build_sophus.sh
 bash umi_mono/scripts/install_librealsense.sh             # dry-run
 echo yes | bash umi_mono/scripts/install_librealsense.sh --apply
 
-# 6. ROS2 Humble + 关键包（如未装）
+# 6. ROS2 jazzy + 关键包（如未装）
 sudo apt install -y \
-  ros-humble-desktop \
-  ros-humble-cv-bridge \
-  ros-humble-tf2-ros \
-  ros-humble-geometry-msgs \
-  ros-humble-sensor-msgs \
-  ros-humble-realsense2-camera \
+  ros-jazzy-desktop \
+  ros-jazzy-cv-bridge \
+  ros-jazzy-tf2-ros \
+  ros-jazzy-geometry-msgs \
+  ros-jazzy-sensor-msgs \
+  ros-jazzy-realsense2-camera \
   python3-colcon-common-extensions
 
 # 7. ORB-SLAM3 fork（cheng-chi snapshot）clone + SHA pin + Vocabulary 解压
 bash umi_mono/scripts/setup_orbslam3_fork.sh
 
 # 8. cppzmq 头文件（脚本里没自动化，手动一次性 clone）
-cd /data/codes/DexSlide/umi_mono/external
+cd /home/jzq/MyJob/DexSlide/umi_mono/external
 git clone --depth 1 --branch v4.10.0 https://github.com/zeromq/cppzmq.git
-cd /data/codes/DexSlide
+cd /home/jzq/MyJob/DexSlide
 
 # 9. 编译 ORB-SLAM3 fork（含 libORB_SLAM3.so 与 legacy realsense_online）
 bash umi_mono/scripts/build_orbslam3_native.sh
 
 # 10. 编译 ROS2 节点（含 realsense_topic_slam_node + 老的 pose_publisher_node）
-source /opt/ros/humble/setup.bash
-cd /data/codes/DexSlide/umi_mono/ros2_ws
+source /opt/ros/jazzy/setup.bash
+cd /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws
 colcon build --packages-select dexslide_slam_publisher
 
 # 11. 阶段 A 才需要：Docker + 镜像 pull
@@ -168,8 +167,8 @@ docker pull chicheng/orb_slam3:latest          # 仅在你要重新建图时
 完成。后续日常增量编译（改了 `realsense_topic_slam_node.cpp` 后）：
 
 ```bash
-source /opt/ros/humble/setup.bash
-cd /data/codes/DexSlide/umi_mono/ros2_ws
+source /opt/ros/jazzy/setup.bash
+cd /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws
 colcon build --packages-select dexslide_slam_publisher
 ```
 
@@ -177,20 +176,20 @@ colcon build --packages-select dexslide_slam_publisher
 
 > **不要**用上游 `conda_environment.yaml` —— 那是给 GoPro + diffusion policy 训练用的（pytorch / diffusers / accelerate / ~30 GB），跟当前 SLAM 方案没关系。当前方案的 Python 依赖只有以下范围：
 
-| 阶段 / 角色                                                                   | Python 解释器                                 | 需要的包                                                              | 装法                                                                               |
-| ------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **阶段 A 建图流水线**（`run_mapping_and_desk_aruco_ros2.py` 调用 stage 00/02/04/05） | 任何 Python ≥ 3.9（系统 3.10 / conda / venv 都可） | `click`、`numpy`、`scipy`、`opencv-python`、`PyYAML`、`tqdm`、`rosbags` | `pip install -r umi_mono/requirements_mapping.txt`                               |
-| **阶段 B 实时 SLAM 节点**（`realsense_topic_slam_node` 本身）                       | **不需要 Python**                             | —                                                                 | C++ 二进制，C++17                                                                    |
-| **阶段 B launch 文件**                                                        | `/usr/bin/python3` 3.10（由 ROS2 Humble 提供）  | `launch`、`launch_ros`、`rclpy`、`ament_index_python`                | apt 装 `ros-humble-desktop` 时自动给                                                  |
-| **阶段 B 可选 ArUco world-pose 节点**（`aruco_world_pose_node.py`）               | `/usr/bin/python3` 3.10                    | `rclpy`、`cv_bridge`（apt）+ `numpy`、`opencv-python`、`PyYAML`        | apt + `pip install -r umi_mono/ros2_ws/dexslide_slam_publisher/requirements.txt` |
-| **下游 Python 消费 pose**（`rclpy.Subscriber` / DexSlide 主程序）                  | `/usr/bin/python3` 3.10                    | `rclpy`（apt 提供）+ 你自己的业务包                                          | 同上                                                                               |
-| **本仓库的 pytest 单元测试**（如 `tests/test_slam_pose_subscriber.py`）              | `/usr/bin/python3` 3.10                    | `pytest`（apt 提供） + `numpy`                                        | 同上                                                                               |
+| 阶段 / 角色 | Python 解释器 | 需要的包 | 装法 |
+|---|---|---|---|
+| **阶段 A 建图流水线**（`run_mapping_and_desk_aruco_ros2.py` 调用 stage 00/02/04/05） | 任何 Python ≥ 3.9（系统 3.10 / conda / venv 都可） | `click`、`numpy`、`scipy`、`opencv-python`、`PyYAML`、`tqdm`、`rosbags` | `pip install -r umi_mono/requirements_mapping.txt` |
+| **阶段 B 实时 SLAM 节点**（`realsense_topic_slam_node` 本身） | **不需要 Python** | — | C++ 二进制，C++17 |
+| **阶段 B launch 文件** | `/usr/bin/python3` 3.10（由 ROS2 jazzy 提供） | `launch`、`launch_ros`、`rclpy`、`ament_index_python` | apt 装 `ros-jazzy-desktop` 时自动给 |
+| **阶段 B 可选 ArUco world-pose 节点**（`aruco_world_pose_node.py`） | `/usr/bin/python3` 3.10 | `rclpy`、`cv_bridge`（apt）+ `numpy`、`opencv-python`、`PyYAML` | apt + `pip install -r umi_mono/ros2_ws/dexslide_slam_publisher/requirements.txt` |
+| **下游 Python 消费 pose**（`rclpy.Subscriber` / DexSlide 主程序） | `/usr/bin/python3` 3.10 | `rclpy`（apt 提供）+ 你自己的业务包 | 同上 |
+| **本仓库的 pytest 单元测试**（如 `tests/test_slam_pose_subscriber.py`） | `/usr/bin/python3` 3.10 | `pytest`（apt 提供） + `numpy` | 同上 |
 
 #### 关键约定
 
 1. **跑阶段 B 时必须用 `/usr/bin/python3`**（rclpy 只跟系统 Python 3.10 二进制兼容；anaconda 3.x 跑 launch 文件会 `ModuleNotFoundError: rclpy`）。
 2. **跑阶段 A 不强制用系统 Python** —— 因为它走的是 `rosbags`（纯 Python，无 ABI 绑定），任何 ≥3.9 的 Python 都行。
-3. **anaconda 用户**：若用 conda env 跑阶段 A，**进入阶段 B 前先 `conda deactivate`**，再 source ROS2 Humble。
+3. **anaconda 用户**：若用 conda env 跑阶段 A，**进入阶段 B 前先 `conda deactivate`**，再 source ROS2 jazzy。
 4. **`pip install --user -r requirements_mapping.txt`** 装在 `~/.local/lib/python3.10/site-packages`，不污染系统包，也不需要 sudo。
 
 #### 与上游 README 的区别
@@ -226,7 +225,7 @@ ls umi_mono/ros2_ws/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/
 ls umi_mono/ros2_ws/install/dexslide_slam_publisher/share/dexslide_slam_publisher/launch/dexslide_slam_topics.launch.py
 
 # D. Launch 文件 args 可被识别
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 source umi_mono/ros2_ws/install/setup.bash
 ROS_LOG_DIR=/tmp/ros-log ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py --show-args
 #   期望：能看到 vocab/settings/map_atlas/image_topic/.../aruco_world_pose_topic/.../activate_localization_mode 共 21 个参数
@@ -260,7 +259,7 @@ mkdir -p ~/dexslide_data/session_$(date +%Y%m%d)
 cd ~/dexslide_data/session_$(date +%Y%m%d)
 
 # 启动 D435i 驱动
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 ros2 launch realsense2_camera rs_launch.py \
   enable_gyro:=true enable_accel:=true \
   unite_imu_method:=0 \
@@ -273,7 +272,7 @@ ros2 launch realsense2_camera rs_launch.py \
 
 ```bash
 # 1) 建图 bag —— 围绕场景慢速绕一圈 60 s 以上，要有回环
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 ros2 bag record -o mapping \
   /camera/camera/color/image_raw \
   /camera/camera/accel/sample \
@@ -289,7 +288,7 @@ ros2 bag record -o aurco \
 录完目录形如：
 
 ```
-~/dexslide_data/session_<date>/
+~/dexslide_data/session_$(date +%Y%m%d)/
 ├── mapping/
 │   ├── metadata.yaml
 │   └── mapping_0.db3
@@ -301,11 +300,11 @@ ros2 bag record -o aurco \
 ### 2.2 跑建图流水线（5 阶段）
 
 ```bash
-cd /data/codes/DexSlide/umi_mono
+cd /home/jzq/MyJob/DexSlide/umi_mono
 conda deactivate 2>/dev/null      # 防止 anaconda 干扰
-source /opt/ros/humble/setup.bash # 仅当你需要 ros2 bag 解析时也可（流水线本身用 Docker）
+source /opt/ros/jazzy/setup.bash # 仅当你需要 ros2 bag 解析时也可（流水线本身用 Docker）
 
-python run_mapping_and_desk_aruco_ros2.py ~/dexslide_data/session_<date>
+python run_mapping_and_desk_aruco_ros2.py ~/dexslide_data/session_$(date +%Y%m%d)
 ```
 
 这条命令会按顺序跑完：
@@ -321,7 +320,7 @@ python run_mapping_and_desk_aruco_ros2.py ~/dexslide_data/session_<date>
 ### 2.3 阶段 A 产物验证
 
 ```bash
-SESSION=~/dexslide_data/session_<date>
+SESSION=~/dexslide_data/session_$(date +%Y%m%d)
 
 # 关键产物存在？
 ls -la $SESSION/demos/mapping/map_atlas.osa            # 几十~几百 MB
@@ -329,8 +328,8 @@ ls -la $SESSION/demos/aurco/tx_slam_tag.json           # < 1 KB JSON
 ls -la $SESSION/demos/aurco/camera_trajectory.csv      # CSV，应有几百行
 
 # 地图加载 sanity check（用 topic SLAM 节点试加载，5 秒就能看出来）
-source /opt/ros/humble/setup.bash
-source /data/codes/DexSlide/umi_mono/ros2_ws/install/setup.bash
+source /opt/ros/jazzy/setup.bash
+source /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws/install/setup.bash
 ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
   map_atlas:=$SESSION/demos/mapping/map_atlas.osa &
 LAUNCH_PID=$!
@@ -359,8 +358,8 @@ kill -SIGINT $LAUNCH_PID
 每个新终端都先 source：
 
 ```bash
-source /opt/ros/humble/setup.bash
-source /data/codes/DexSlide/umi_mono/ros2_ws/install/setup.bash
+source /opt/ros/jazzy/setup.bash
+source /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws/install/setup.bash
 ```
 
 ### 3.1 启动 SLAM 节点（不管数据源）
@@ -444,7 +443,7 @@ ros2 run tf2_ros tf2_echo map camera_color_optical_frame
 ```
 
 > **重要 — 关于 `ros2 topic echo` 的 QoS 坑**：节点 publisher 是 `BEST_EFFORT`（`SensorDataQoS`）。
-> `ros2 topic echo` 在 Humble 上默认会尝试自动匹配，但 **discovery 窗口偶尔会输给** publisher 已发但 subscriber 还没识别的竞态，结果一条都收不到。
+> `ros2 topic echo` 在 jazzy 上默认会尝试自动匹配，但 **discovery 窗口偶尔会输给** publisher 已发但 subscriber 还没识别的竞态，结果一条都收不到。
 > **建议**：手动加 `--qos-reliability best_effort --qos-durability volatile` 永久避免这个坑。`ros2 topic hz` 默认就 OK，不用加 flag。
 
 ### 3.5 实时检测指定 ArUco 的 world 坐标
@@ -456,7 +455,7 @@ ros2 run tf2_ros tf2_echo map camera_color_optical_frame
 实时要检测哪个 ArUco 由 `target_marker_id` 和 `aruco_yaml` 决定。默认检测的是 wrist marker：
 
 - `target_marker_id:=10`
-- `aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml`
+- `aruco_yaml:=/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml`
 
 也就是说，默认不是检测标定时那块桌面 ArUco，而是检测 ArUco-10，并输出它在标定 world frame 下的 pose。内部坐标链路为：
 
@@ -472,7 +471,7 @@ ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
   enable_aruco_world:=true \
   tx_slam_tag:=/path/to/demos/aurco/tx_slam_tag.json \
   target_marker_id:=10 \
-  aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml
+  aruco_yaml:=/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml
 ```
 
 查看输出：
@@ -492,7 +491,7 @@ ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
   enable_aruco_world:=true \
   tx_slam_tag:=/path/to/demos/aurco/tx_slam_tag.json \
   target_marker_id:=13 \
-  aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config.yaml
+  aruco_yaml:=/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/aruco_config.yaml
 ```
 
 这种情况下输出的 `world -> aruco_marker` 理论上应接近 identity；实际会有 ArUco 检测噪声和实时 SLAM 抖动。
@@ -530,7 +529,7 @@ ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
 一条命令端到端验证（无需 D435i，用 bag 回放）：
 
 ```bash
-bash /data/codes/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
+bash /home/jzq/MyJob/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
   --map /data/codes/umi_mono_data/demos/mapping/map_atlas.osa \
   --bag /data/codes/umi_mono_data/aurco
 ```
@@ -558,7 +557,7 @@ bash /data/codes/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
 
 ```bash
 conda deactivate 2>/dev/null
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 /usr/bin/python3 - <<'PY'
 import rclpy
@@ -764,7 +763,7 @@ bash umi_mono/scripts/build_sophus.sh
 bash umi_mono/scripts/setup_orbslam3_fork.sh
 bash umi_mono/scripts/build_orbslam3_native.sh
 /usr/bin/python3 -m pip install --user -r umi_mono/requirements_mapping.txt
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 (cd umi_mono/ros2_ws && colcon build --packages-select dexslide_slam_publisher)
 
 # 阶段 A：录数据 + 建图
@@ -775,7 +774,7 @@ ros2 bag record -o aurco   /camera/camera/color/image_raw \
 python run_mapping_and_desk_aruco_ros2.py <session_dir>
 
 # 阶段 B：实时 SLAM
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 source umi_mono/ros2_ws/install/setup.bash
 ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
   map_atlas:=<session>/demos/mapping/map_atlas.osa

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # TASK-005 D435i smoke-test runner for online tracking mode.
-# Tracker: /data/codes/DexSlide/umi_mono/docs/online_tracking_implementation.md
+# Tracker: /home/jzq/MyJob/DexSlide/umi_mono/docs/online_tracking_implementation.md
 # Compiles the local librealsense2 smoke test against the installed dev package.
 # Requires librealsense2-dev to be present and never uses sudo.
 # Prints the test exit code and propagates it to the caller.

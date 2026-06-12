@@ -1,0 +1,18 @@
+{
+  "package_name": "jaka_msgs",
+  "non_idl_tuples": [
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:msg/RobotMsg.msg",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/Move.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/ServoMoveEnable.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/ServoMove.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/SetTcpFrame.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/SetUserFrame.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/SetPayload.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/SetCollision.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/SetIO.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/GetIO.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/ClearError.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/GetFK.srv",
+    "/home/jzq/MyJob/DexSlide/robot_manipulation/JAKA_control/jaka_ros2/src/jaka_msgs:srv/GetIK.srv"
+  ]
+}

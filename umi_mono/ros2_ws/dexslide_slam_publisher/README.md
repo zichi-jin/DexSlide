@@ -1,6 +1,6 @@
 # dexslide_slam_publisher
 
-ROS2 Humble `ament_cmake` package providing executables for online SLAM pose publication and optional ArUco world-frame localization:
+ROS2 jazzy `ament_cmake` package providing executables for online SLAM pose publication and optional ArUco world-frame localization:
 
 | Executable | Source | Use case |
 |---|---|---|
@@ -16,8 +16,8 @@ Optional ArUco tf2 broadcast: `world` → `aruco_marker`
 ## Build
 
 ```bash
-source /opt/ros/humble/setup.bash
-cd /data/codes/DexSlide/umi_mono/ros2_ws
+source /opt/ros/jazzy/setup.bash
+cd /home/jzq/MyJob/DexSlide/umi_mono/ros2_ws
 colcon build --packages-select dexslide_slam_publisher
 source install/setup.bash
 ```
@@ -48,7 +48,7 @@ ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
   enable_aruco_world:=true \
   tx_slam_tag:=/path/to/demos/aurco/tx_slam_tag.json \
   target_marker_id:=10 \
-  aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml
+  aruco_yaml:=/home/jzq/MyJob/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml
 ```
 
 See [docs/realsense_topic_slam_usage.md](../../docs/realsense_topic_slam_usage.md)
@@ -67,7 +67,7 @@ This launches both `realsense_online` and `pose_publisher_node` together.
 ## Test
 
 ```bash
-bash /data/codes/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
+bash /home/jzq/MyJob/DexSlide/umi_mono/scripts/test_realsense_topic_slam.sh \
   --map /data/codes/umi_mono_data/demos/mapping/map_atlas.osa \
   --bag /data/codes/umi_mono_data/aurco
 ```
@@ -83,5 +83,5 @@ Python validators need:
 /usr/bin/python3 -m pip install --user -r requirements.txt
 ```
 
-Use the **system** Python (`/usr/bin/python3`, 3.10) — anaconda Python is
+Use the **system** Python (`/usr/bin/python3`, 3.10) - anaconda Python is
 incompatible with `rclpy` on this fork.
