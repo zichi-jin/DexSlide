@@ -356,8 +356,9 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
   }
 
   void publish_pose_and_tf(const Sophus::SE3f& Tcw, double current_t) {
-    const Eigen::Vector3f t = Tcw.translation();
-    const Eigen::Quaternionf q = Tcw.so3().unit_quaternion();
+    const Sophus::SE3f Twc = Tcw.inverse();
+    const Eigen::Vector3f t = Twc.translation();
+    const Eigen::Quaternionf q = Twc.so3().unit_quaternion();
     const double abs_t = current_t + session_origin_t_;
     const rclcpp::Time stamp(static_cast<int64_t>(abs_t * 1e9));
 

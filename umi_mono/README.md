@@ -2,12 +2,13 @@
 
 > **版本**：2026-05 整合版 · 当前方案 = `realsense_topic_slam_node`（ROS2 topic 订阅 + 内嵌 ORB-SLAM3 fork + PoseStamped 直接发布）
 > **整合自**：`USER_GUIDE.md`、`setup_phase0~7_*.md`、`realsense_topic_slam_usage.md`、`VALIDATION_GUIDE.md`、`SLAM_readme_mono.txt`
-> 
+>
 > 全套流程分两阶段：
-> 
+>
 > - **阶段 A（离线建图）**：用 ROS2 录的 bag 跑 `run_mapping_and_desk_aruco_ros2.py` 流水线 → 产出 `map_atlas.osa`
-> - **阶段 B（实时 SLAM）**：用 `realsense_topic_slam_node` 加载 `.osa`，订阅 RealSense ROS2 topic（实机或 bag 回放），实时发布 `geometry_msgs/PoseStamped`
->   
+>
+> - **阶段 B（实时 SLAM）**：用 `realsense_topic_slam_node` 加载 `.osa`，订阅 RealSense ROS2 topic（实机或 bag 回放），实时发布 `geometry_msgs/PoseStamped`；可选启动 ArUco world-pose 节点，实时输出指定 marker 在桌面标定 world frame 下的位姿
+>
 >   **<mark>注意请自行修改代碼/命令的路径位置</mark>**
 
 ---
@@ -176,13 +177,14 @@ colcon build --packages-select dexslide_slam_publisher
 
 > **不要**用上游 `conda_environment.yaml` —— 那是给 GoPro + diffusion policy 训练用的（pytorch / diffusers / accelerate / ~30 GB），跟当前 SLAM 方案没关系。当前方案的 Python 依赖只有以下范围：
 
-| 阶段 / 角色 | Python 解释器 | 需要的包 | 装法 |
-|---|---|---|---|
-| **阶段 A 建图流水线**（`run_mapping_and_desk_aruco_ros2.py` 调用 stage 00/02/04/05） | 任何 Python ≥ 3.9（系统 3.10 / conda / venv 都可） | `click`、`numpy`、`scipy`、`opencv-python`、`tqdm`、`rosbags` | `pip install -r umi_mono/requirements_mapping.txt` |
-| **阶段 B 实时 SLAM 节点**（`realsense_topic_slam_node` 本身） | **不需要 Python** | — | C++ 二进制，C++17 |
-| **阶段 B launch 文件** | `/usr/bin/python3` 3.10（由 ROS2 Humble 提供） | `launch`、`launch_ros`、`rclpy`、`ament_index_python` | apt 装 `ros-humble-desktop` 时自动给 |
-| **下游 Python 消费 pose**（`rclpy.Subscriber` / DexSlide 主程序） | `/usr/bin/python3` 3.10 | `rclpy`（apt 提供）+ 你自己的业务包 | 同上 |
-| **本仓库的 pytest 单元测试**（如 `tests/test_slam_pose_subscriber.py`） | `/usr/bin/python3` 3.10 | `pytest`（apt 提供） + `numpy` | 同上 |
+| 阶段 / 角色                                                                   | Python 解释器                                 | 需要的包                                                              | 装法                                                                               |
+| ------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **阶段 A 建图流水线**（`run_mapping_and_desk_aruco_ros2.py` 调用 stage 00/02/04/05） | 任何 Python ≥ 3.9（系统 3.10 / conda / venv 都可） | `click`、`numpy`、`scipy`、`opencv-python`、`PyYAML`、`tqdm`、`rosbags` | `pip install -r umi_mono/requirements_mapping.txt`                               |
+| **阶段 B 实时 SLAM 节点**（`realsense_topic_slam_node` 本身）                       | **不需要 Python**                             | —                                                                 | C++ 二进制，C++17                                                                    |
+| **阶段 B launch 文件**                                                        | `/usr/bin/python3` 3.10（由 ROS2 Humble 提供）  | `launch`、`launch_ros`、`rclpy`、`ament_index_python`                | apt 装 `ros-humble-desktop` 时自动给                                                  |
+| **阶段 B 可选 ArUco world-pose 节点**（`aruco_world_pose_node.py`）               | `/usr/bin/python3` 3.10                    | `rclpy`、`cv_bridge`（apt）+ `numpy`、`opencv-python`、`PyYAML`        | apt + `pip install -r umi_mono/ros2_ws/dexslide_slam_publisher/requirements.txt` |
+| **下游 Python 消费 pose**（`rclpy.Subscriber` / DexSlide 主程序）                  | `/usr/bin/python3` 3.10                    | `rclpy`（apt 提供）+ 你自己的业务包                                          | 同上                                                                               |
+| **本仓库的 pytest 单元测试**（如 `tests/test_slam_pose_subscriber.py`）              | `/usr/bin/python3` 3.10                    | `pytest`（apt 提供） + `numpy`                                        | 同上                                                                               |
 
 #### 关键约定
 
@@ -193,14 +195,14 @@ colcon build --packages-select dexslide_slam_publisher
 
 #### 与上游 README 的区别
 
-| 上游 `README.md` 提到的 | 当前方案是否需要 |
-|---|---|
-| `mamba env create -f conda_environment.yaml`（含 pytorch / accelerate / diffusers / wandb / mujoco / k3d / gym 等） | ❌ 完全不需要 |
-| `sudo apt install libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf` | ❌ 只有上游 diffusion policy viewer 需要 |
-| `sudo apt install libspnav-dev spacenavd` (SpaceMouse) | ❌ 只有上游 `eval_real.py` 需要 |
-| `run_slam_pipeline.py example_demo_session`（GoPro 全流程） | ❌ 我们用 `run_mapping_and_desk_aruco_ros2.py`（仅 mapping + ArUco 标定 5 步） |
-| `train.py` + `accelerate ... train.py`（diffusion policy 训练） | ❌ 不在当前方案范围 |
-| `eval_real.py` + UR5/Franka/WSG50/GoPro/SpaceMouse 硬件配置 | ❌ 不在当前方案范围 |
+| 上游 `README.md` 提到的                                                                                              | 当前方案是否需要                                                             |
+| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `mamba env create -f conda_environment.yaml`（含 pytorch / accelerate / diffusers / wandb / mujoco / k3d / gym 等） | ❌ 完全不需要                                                              |
+| `sudo apt install libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf`                                             | ❌ 只有上游 diffusion policy viewer 需要                                    |
+| `sudo apt install libspnav-dev spacenavd` (SpaceMouse)                                                          | ❌ 只有上游 `eval_real.py` 需要                                             |
+| `run_slam_pipeline.py example_demo_session`（GoPro 全流程）                                                          | ❌ 我们用 `run_mapping_and_desk_aruco_ros2.py`（仅 mapping + ArUco 标定 5 步） |
+| `train.py` + `accelerate ... train.py`（diffusion policy 训练）                                                     | ❌ 不在当前方案范围                                                           |
+| `eval_real.py` + UR5/Franka/WSG50/GoPro/SpaceMouse 硬件配置                                                         | ❌ 不在当前方案范围                                                           |
 
 ### 1.5 安装验证（一次性自检 checklist）
 
@@ -216,7 +218,7 @@ md5sum umi_mono/external/ORB_SLAM3_fork/Vocabulary/ORBvoc.txt
 #   期望: 5420bad0713bc97034dd2a9b2f0cc387
 
 # B. Python 依赖（阶段 A 用）
-/usr/bin/python3 -c "import click, numpy, scipy, cv2, tqdm, rosbags; print('OK')"
+/usr/bin/python3 -c "import click, numpy, scipy, cv2, yaml, tqdm, rosbags; print('OK')"
 #   期望: OK；任何 ModuleNotFoundError 都重跑 pip install -r umi_mono/requirements_mapping.txt
 
 # C. ROS2 节点构建产物
@@ -226,8 +228,8 @@ ls umi_mono/ros2_ws/install/dexslide_slam_publisher/share/dexslide_slam_publishe
 # D. Launch 文件 args 可被识别
 source /opt/ros/humble/setup.bash
 source umi_mono/ros2_ws/install/setup.bash
-ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py --show-args | head -30
-#   期望：能看到 vocab/settings/map_atlas/image_topic/.../activate_localization_mode 11 个参数
+ROS_LOG_DIR=/tmp/ros-log ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py --show-args
+#   期望：能看到 vocab/settings/map_atlas/image_topic/.../aruco_world_pose_topic/.../activate_localization_mode 共 21 个参数
 
 # E. （实机模式）D435i 烟囱测试
 bash umi_mono/scripts/run_d435i_smoke.sh
@@ -445,7 +447,57 @@ ros2 run tf2_ros tf2_echo map camera_color_optical_frame
 > `ros2 topic echo` 在 Humble 上默认会尝试自动匹配，但 **discovery 窗口偶尔会输给** publisher 已发但 subscriber 还没识别的竞态，结果一条都收不到。
 > **建议**：手动加 `--qos-reliability best_effort --qos-durability volatile` 永久避免这个坑。`ros2 topic hz` 默认就 OK，不用加 flag。
 
-### 3.5 Launch 参数全表
+### 3.5 实时检测指定 ArUco 的 world 坐标
+
+`enable_aruco_world` 是实时 ArUco 检测开关。默认 `false` 时，阶段 B 只运行原来的 SLAM localize：发布 `/dexslide/slam/pose` 和 `map -> camera_color_optical_frame`，不会检测任何 ArUco，也不会读取 `tx_slam_tag.json`。只有启动时显式传 `enable_aruco_world:=true`，才会额外启动 ArUco world-pose 节点 /dexslide/aruco/world_pose。
+
+阶段 A 的 `demos/aurco/tx_slam_tag.json` 只负责定义 world frame：它记录桌面/base ArUco 在 SLAM map 里的位姿，实时阶段会用它计算 `T_world_slam = inv(T_slam_base_tag)`。
+
+实时要检测哪个 ArUco 由 `target_marker_id` 和 `aruco_yaml` 决定。默认检测的是 wrist marker：
+
+- `target_marker_id:=10`
+- `aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml`
+
+也就是说，默认不是检测标定时那块桌面 ArUco，而是检测 ArUco-10，并输出它在标定 world frame 下的 pose。内部坐标链路为：
+
+```text
+T_world_marker = inv(T_slam_base_tag) @ T_slam_camera @ T_camera_marker
+```
+
+启动方式：
+
+```bash
+ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
+  map_atlas:=/path/to/map_atlas.osa \
+  enable_aruco_world:=true \
+  tx_slam_tag:=/path/to/demos/aurco/tx_slam_tag.json \
+  target_marker_id:=10 \
+  aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config_wrist.yaml
+```
+
+查看输出：
+
+```bash
+ros2 topic echo /dexslide/aruco/world_pose --once \
+    --qos-reliability best_effort --qos-durability volatile
+
+ros2 run tf2_ros tf2_echo world aruco_marker
+```
+
+如果你要实时检测“和标定时同一个桌面 ArUco”，把 config 和 id 切到桌面标定配置。例如标定 tag 是 13 时：
+
+```bash
+ros2 launch dexslide_slam_publisher dexslide_slam_topics.launch.py \
+  map_atlas:=/path/to/map_atlas.osa \
+  enable_aruco_world:=true \
+  tx_slam_tag:=/path/to/demos/aurco/tx_slam_tag.json \
+  target_marker_id:=13 \
+  aruco_yaml:=/data/codes/DexSlide/umi_mono/example/calibration/aruco_config.yaml
+```
+
+这种情况下输出的 `world -> aruco_marker` 理论上应接近 identity；实际会有 ArUco 检测噪声和实时 SLAM 抖动。
+
+### 3.6 Launch 参数全表
 
 | 参数                           | 类型     | 默认                                              | 说明                                                                                      |
 | ---------------------------- | ------ | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -458,6 +510,15 @@ ros2 run tf2_ros tf2_echo map camera_color_optical_frame
 | `pose_topic`                 | string | `/dexslide/slam/pose`                           | 发 PoseStamped topic 名                                                                   |
 | `map_frame`                  | string | `map`                                           | tf 父坐标系                                                                                 |
 | `camera_frame`               | string | `camera_color_optical_frame`                    | tf 子坐标系                                                                                 |
+| `enable_aruco_world`         | bool   | `false`                                         | 实时 ArUco 检测总开关；默认 false 时只跑原 SLAM localize，不检测 ArUco、不读取 `tx_slam_tag`                  |
+| `tx_slam_tag`                | string | （空）                                             | 阶段 A 产物 `demos/aurco/tx_slam_tag.json`；启用 `enable_aruco_world` 时必填                      |
+| `camera_intrinsics`          | string | `example/calibration/d435i_960_540.json`        | ArUco 检测使用的相机内参                                                                         |
+| `aruco_yaml`                 | string | `example/calibration/aruco_config_wrist.yaml`   | ArUco 字典和 marker 尺寸配置；默认用于 wrist ArUco-10                                               |
+| `target_marker_id`           | int    | `10`                                            | 实时检测并输出 world pose 的 marker id                                                          |
+| `world_frame`                | string | `world`                                         | ArUco world-pose 输出的父坐标系，由 `tx_slam_tag` 中的桌面/base ArUco 定义                             |
+| `marker_frame`               | string | `aruco_marker`                                  | ArUco world-pose TF 子坐标系                                                                |
+| `aruco_world_pose_topic`     | string | `/dexslide/aruco/world_pose`                    | 指定 ArUco 在 world frame 下的 `PoseStamped` 输出 topic                                        |
+| `aruco_max_pose_dt`          | double | `0.1`                                           | 图像帧与 SLAM pose 的最大时间匹配差，单位秒                                                             |
 | `max_lost_frames`            | int    | `900`                                           | 连续丢失 N 帧后 soft reset（清计数器，不重置地图）                                                        |
 | `accel_gyro_pair_window_s`   | double | `0.020`                                         | accel/gyro 时戳差 ≤ 此值时配对                                                                  |
 | `activate_localization_mode` | bool   | `false`                                         | 调 `ActivateLocalizationMode()`。默认 false 与 `gopro_slam.cc` 一致；地图修改只发生在内存里，磁盘 `.osa` 始终不变 |
@@ -649,6 +710,8 @@ umi_mono/
 │       ├── src/
 │       │   ├── realsense_topic_slam_node.cpp    # ← 当前方案核心 (~434 行)
 │       │   └── pose_publisher_node.cpp          # legacy ZMQ→ROS2 桥
+│       ├── scripts/
+│       │   └── aruco_world_pose_node.py         # 可选：实时 ArUco camera→SLAM→world pose
 │       ├── launch/
 │       │   ├── dexslide_slam_topics.launch.py   # ← 当前方案 launch
 │       │   └── dexslide_slam_online.launch.py   # legacy

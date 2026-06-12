@@ -23,5 +23,8 @@ numpy>=1.21,<2.0
 # Image manipulation (only if writing python validators that decode images)
 opencv-python>=4.5,<5.0
 
+# YAML configs (used by aruco_world_pose_node.py)
+PyYAML>=6.0,<7.0
+
 # Quaternion / SE(3) math (optional, for trajectory comparison)
 scipy>=1.8,<2.0
