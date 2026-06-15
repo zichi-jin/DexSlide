@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import time
 from bisect import bisect_left
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -18,9 +19,40 @@ from sensor_msgs.msg import Image
 from tf2_ros import TransformBroadcaster
 
 
-DEFAULT_REPO_ROOT = "/data/codes/DexSlide/umi_mono"
-if DEFAULT_REPO_ROOT not in sys.path:
-    sys.path.append(DEFAULT_REPO_ROOT)
+def _resolve_repo_root() -> str:
+    candidates = []
+
+    env_root = os.environ.get("DEXSLIDE_UMI_MONO_ROOT")
+    if env_root:
+        candidates.append(Path(env_root).expanduser())
+
+    candidates.extend(
+        [
+            Path("/home/jzq/MyJob/DexSlide/umi_mono"),
+            Path("/data/codes/DexSlide/umi_mono"),
+        ]
+    )
+
+    here = Path(__file__).resolve()
+    try:
+        candidates.append(here.parents[5])
+    except IndexError:
+        pass
+
+    for candidate in candidates:
+        if candidate.joinpath("umi/common/cv_util.py").is_file():
+            candidate_str = str(candidate)
+            if candidate_str not in sys.path:
+                sys.path.append(candidate_str)
+            return candidate_str
+
+    fallback = str(Path("/home/jzq/MyJob/DexSlide/umi_mono"))
+    if fallback not in sys.path:
+        sys.path.append(fallback)
+    return fallback
+
+
+DEFAULT_REPO_ROOT = _resolve_repo_root()
 
 from umi.common.cv_util import (  # noqa: E402
     convert_fisheye_intrinsics_resolution,
@@ -132,9 +164,21 @@ class PoseBuffer:
             candidates.append(idx - 1)
         best_idx = min(candidates, key=lambda i: abs(self.times[i] - t))
         dt = abs(self.times[best_idx] - t)
-        if dt > max_dt:
+        if dt > max_dt + 1e-6:
             return None
         return dt, self.poses[best_idx]
+
+    def nearest_dt(self, t: float) -> Optional[float]:
+        if not self.times:
+            return None
+        idx = bisect_left(self.times, t)
+        candidates = []
+        if idx < len(self.times):
+            candidates.append(idx)
+        if idx > 0:
+            candidates.append(idx - 1)
+        best_idx = min(candidates, key=lambda i: abs(self.times[i] - t))
+        return abs(self.times[best_idx] - t)
 
 
 class ArucoWorldPoseNode(Node):
@@ -158,7 +202,7 @@ class ArucoWorldPoseNode(Node):
         self.target_marker_id = int(
             self.declare_parameter("target_marker_id", 10).value
         )
-        self.max_pose_dt = float(self.declare_parameter("max_pose_dt", 0.1).value)
+        self.max_pose_dt = float(self.declare_parameter("max_pose_dt", 0.2).value)
         self.input_pose_is_twc = bool(
             self.declare_parameter("input_pose_is_twc", True).value
         )
@@ -194,6 +238,19 @@ class ArucoWorldPoseNode(Node):
         self.bridge = CvBridge()
         self.pose_buffer = PoseBuffer(max_size=pose_buffer_size)
         self.intr_by_resolution: Dict[Tuple[int, int], Dict[str, np.ndarray]] = {}
+        self.pose_rx_count = 0
+        self.image_rx_count = 0
+        self.publish_count = 0
+        self.detect_count = 0
+        self.target_detect_count = 0
+        self.last_pose_stamp: Optional[float] = None
+        self.last_image_stamp: Optional[float] = None
+        self.last_publish_stamp: Optional[float] = None
+        self.last_pose_match_dt: Optional[float] = None
+        self.last_detected_ids: List[int] = []
+        self.last_no_publish_reason = "startup"
+        self.last_status_log_time = 0.0
+        self.status_log_period_s = 2.0
 
         qos = QoSProfile(
             depth=10,
@@ -206,6 +263,7 @@ class ArucoWorldPoseNode(Node):
             PoseStamped, self.slam_pose_topic, self.on_slam_pose, qos
         )
         self.create_subscription(Image, self.image_topic, self.on_image, qos)
+        self.create_timer(self.status_log_period_s, self.log_status)
 
         self.get_logger().info(
             f"Tracking ArUco-{self.target_marker_id} on {self.image_topic}; "
@@ -235,7 +293,10 @@ class ArucoWorldPoseNode(Node):
             return
         if not self.input_pose_is_twc:
             mat = np.linalg.inv(mat)
-        self.pose_buffer.append(stamp_to_float(msg.header.stamp), mat)
+        pose_t = stamp_to_float(msg.header.stamp)
+        self.pose_buffer.append(pose_t, mat)
+        self.pose_rx_count += 1
+        self.last_pose_stamp = pose_t
 
     def intrinsics_for(self, width: int, height: int) -> Dict[str, np.ndarray]:
         key = (width, height)
@@ -248,30 +309,57 @@ class ArucoWorldPoseNode(Node):
 
     def on_image(self, msg: Image) -> None:
         image_t = stamp_to_float(msg.header.stamp)
+        self.image_rx_count += 1
+        self.last_image_stamp = image_t
         pose_match = self.pose_buffer.nearest(image_t, self.max_pose_dt)
         if pose_match is None:
-            self.get_logger().debug("No time-aligned SLAM pose for ArUco frame")
+            nearest_dt = self.pose_buffer.nearest_dt(image_t)
+            self.last_pose_match_dt = nearest_dt
+            if nearest_dt is None:
+                self.last_no_publish_reason = "no_slam_pose_received"
+            else:
+                self.last_no_publish_reason = (
+                    f"slam_pose_stale(dt={nearest_dt:.3f}s > {self.max_pose_dt:.3f}s)"
+                )
             return
-        _, t_slam_camera = pose_match
+        pose_dt, t_slam_camera = pose_match
+        self.last_pose_match_dt = pose_dt
 
         try:
             frame_bgr = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         except Exception as e:
+            self.last_no_publish_reason = f"image_convert_failed({e})"
             self.get_logger().warn(f"Failed to convert image: {e}")
             return
 
         height, width = frame_bgr.shape[:2]
         intr = self.intrinsics_for(width, height)
-        tag_dict = detect_localize_aruco_tags(
-            img=cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB),
-            aruco_dict=self.aruco_dict,
-            marker_size_map=self.marker_size_map,
-            fisheye_intr_dict=intr,
-            refine_subpix=True,
-        )
+        try:
+            tag_dict = detect_localize_aruco_tags(
+                img=cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB),
+                aruco_dict=self.aruco_dict,
+                marker_size_map=self.marker_size_map,
+                fisheye_intr_dict=intr,
+                refine_subpix=True,
+            )
+        except Exception as e:
+            self.last_no_publish_reason = f"aruco_detect_failed({e})"
+            self.get_logger().error(f"Aruco detection failed: {e}")
+            return
+        self.last_detected_ids = sorted(int(x) for x in tag_dict.keys())
+        if tag_dict:
+            self.detect_count += 1
         if self.target_marker_id not in tag_dict:
+            if self.last_detected_ids:
+                self.last_no_publish_reason = (
+                    "target_marker_missing(detected_ids="
+                    f"{self.last_detected_ids}, target={self.target_marker_id})"
+                )
+            else:
+                self.last_no_publish_reason = "no_aruco_detected"
             return
 
+        self.target_detect_count += 1
         tag = tag_dict[self.target_marker_id]
         t_camera_marker = tvec_rvec_to_mat(tag["tvec"], tag["rvec"])
         t_world_marker = self.t_world_slam @ t_slam_camera @ t_camera_marker
@@ -290,6 +378,11 @@ class ArucoWorldPoseNode(Node):
         msg.pose.orientation.z = qz
         msg.pose.orientation.w = qw
         self.pose_pub.publish(msg)
+        self.publish_count += 1
+        self.last_publish_stamp = stamp_to_float(stamp)
+        self.last_no_publish_reason = (
+            f"published(target={self.target_marker_id}, pose_dt={self.last_pose_match_dt:.3f}s)"
+        )
 
         if self.broadcast_tf:
             tf_msg = TransformStamped()
@@ -304,6 +397,38 @@ class ArucoWorldPoseNode(Node):
             tf_msg.transform.translation.z = msg.pose.position.z
             tf_msg.transform.rotation = msg.pose.orientation
             self.tf_broadcaster.sendTransform(tf_msg)
+
+    def log_status(self) -> None:
+        now = time.monotonic()
+        if now - self.last_status_log_time < self.status_log_period_s:
+            return
+        self.last_status_log_time = now
+
+        if self.last_pose_stamp is None:
+            pose_age_str = "none"
+        elif self.last_image_stamp is None:
+            pose_age_str = "waiting_image"
+        else:
+            pose_age_str = f"{abs(self.last_image_stamp - self.last_pose_stamp):.3f}s"
+
+        if self.last_pose_match_dt is None:
+            pose_match_dt_str = "none"
+        else:
+            pose_match_dt_str = f"{self.last_pose_match_dt:.3f}s"
+
+        self.get_logger().info(
+            "Aruco status: "
+            f"poses={self.pose_rx_count}, "
+            f"images={self.image_rx_count}, "
+            f"aruco_frames={self.detect_count}, "
+            f"target_hits={self.target_detect_count}, "
+            f"publishes={self.publish_count}, "
+            f"buffer={len(self.pose_buffer.times)}, "
+            f"last_pose_gap={pose_age_str}, "
+            f"last_match_dt={pose_match_dt_str}, "
+            f"last_ids={self.last_detected_ids}, "
+            f"last_result={self.last_no_publish_reason}"
+        )
 
 
 def main(args=None):

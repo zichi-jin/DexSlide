@@ -3,8 +3,9 @@
 # Serial communication
 pyserial>=3.5
 
-# Offline skeleton extraction
-opencv-python>=4.8
+# Offline skeleton extraction + ArUco detection
+opencv-contrib-python>=4.8
+PyYAML>=6.0
 # Keep MediaPipe on the classic `solutions` API used by LandmarkDetector.
 mediapipe==0.10.14
 
@@ -12,6 +13,9 @@ mediapipe==0.10.14
 numpy>=1.24
 matplotlib>=3.8
 vedo>=2024.5
+
+# Retargeting runtime dependencies are listed separately in
+# `requirements-retargeting.txt` because they pull in heavier kinematics libs.
 
 # Optional MANO overlay script (`scripts/glove_live_mano.py`) uses the bundled
 # MANO model files plus numpy/matplotlib/pickle from the standard library.

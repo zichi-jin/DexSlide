@@ -23,6 +23,7 @@
 #include <memory>
 #include <mutex>
 #include <atomic>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -52,6 +53,8 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     max_lost_frames_ = this->declare_parameter<int>("max_lost_frames", 900);
     accel_gyro_pair_window_s_ =
         this->declare_parameter<double>("accel_gyro_pair_window_s", 0.020);
+    startup_warmup_s_ = this->declare_parameter<double>("startup_warmup_s", 0.50);
+    startup_min_imu_samples_ = this->declare_parameter<int>("startup_min_imu_samples", 20);
     activate_localization_mode_ =
         this->declare_parameter<bool>("activate_localization_mode", false);
 
@@ -88,6 +91,12 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     RCLCPP_INFO(get_logger(), "max_lost_frames        | %d", max_lost_frames_);
     RCLCPP_INFO(
         get_logger(), "accel_gyro_pair_window_s | %.3f", accel_gyro_pair_window_s_);
+    RCLCPP_INFO(get_logger(), "startup_warmup_s       | %.3f", startup_warmup_s_);
+    RCLCPP_INFO(get_logger(), "startup_min_imu_samples| %d", startup_min_imu_samples_);
+    RCLCPP_INFO(
+        get_logger(),
+        "activate_localization_mode | %s",
+        activate_localization_mode_ ? "true" : "false");
 
     try {
       slam_ = std::make_shared<ORB_SLAM3::System>(
@@ -171,6 +180,29 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     return std::isfinite(t.x()) && std::isfinite(t.y()) && std::isfinite(t.z()) &&
            std::isfinite(q.x()) && std::isfinite(q.y()) && std::isfinite(q.z()) &&
            std::isfinite(q.w());
+  }
+
+  static const char* tracking_state_name(int state) {
+    switch (state) {
+      case ORB_SLAM3::Tracking::SYSTEM_NOT_READY:
+        return "SYSTEM_NOT_READY";
+      case ORB_SLAM3::Tracking::NO_IMAGES_YET:
+        return "NO_IMAGES_YET";
+      case ORB_SLAM3::Tracking::NOT_INITIALIZED:
+        return "NOT_INITIALIZED";
+      case ORB_SLAM3::Tracking::OK:
+        return "OK";
+      case ORB_SLAM3::Tracking::RECENTLY_LOST:
+        return "RECENTLY_LOST";
+      case ORB_SLAM3::Tracking::LOST:
+        return "LOST";
+      case ORB_SLAM3::Tracking::OK_KLT:
+        return "OK_KLT";
+      case ORB_SLAM3::Tracking::INIT_RELOCALIZE:
+        return "INIT_RELOCALIZE";
+      default:
+        return "UNKNOWN";
+    }
   }
 
   cv::Mat to_bgr_image(const sensor_msgs::msg::Image::ConstSharedPtr& msg) {
@@ -268,11 +300,50 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     }
 
     const double current_t = session_relative(msg->header.stamp);
+    if (current_t <= 0.0) {
+      return;
+    }
+
+    if (!startup_ready_) {
+      const size_t buffered_imu = imu_buf_.size();
+      if (current_t < startup_warmup_s_ ||
+          buffered_imu < static_cast<size_t>(std::max(1, startup_min_imu_samples_))) {
+        RCLCPP_INFO_THROTTLE(
+            get_logger(),
+            *get_clock(),
+            1000,
+            "Waiting for SLAM warmup: t=%.3f/%.3f s, imu_buf=%zu/%d",
+            current_t,
+            startup_warmup_s_,
+            buffered_imu,
+            startup_min_imu_samples_);
+        return;
+      }
+      startup_ready_ = true;
+      RCLCPP_INFO(
+          get_logger(),
+          "SLAM startup gate passed: t=%.3f s, imu_buf=%zu",
+          current_t,
+          buffered_imu);
+    }
+
     process_frame(image, current_t);
   }
 
   void process_frame(const cv::Mat& image, double current_t) {
+    if (current_t <= prev_t_) {
+      RCLCPP_WARN_THROTTLE(
+          get_logger(), *get_clock(), 1000, "Skipping non-monotonic frame timestamp %.6f <= %.6f", current_t, prev_t_);
+      return;
+    }
+
     const std::vector<ImuSample> drained = imu_buf_.drain_until(current_t);
+    if (drained.empty()) {
+      RCLCPP_WARN_THROTTLE(
+          get_logger(), *get_clock(), 1000, "Skipping frame at t=%.6f: no IMU samples available", current_t);
+      return;
+    }
+
     std::vector<ORB_SLAM3::IMU::Point> v_imu;
     v_imu.reserve(drained.size());
     for (const ImuSample& s : drained) {
@@ -280,6 +351,18 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
         continue;
       }
       v_imu.emplace_back(s.a.x(), s.a.y(), s.a.z(), s.w.x(), s.w.y(), s.w.z(), s.t);
+    }
+
+    if (v_imu.empty()) {
+      RCLCPP_WARN_THROTTLE(
+          get_logger(),
+          *get_clock(),
+          1000,
+          "Skipping frame at t=%.6f: drained %zu IMU samples but none were usable (prev_t=%.6f)",
+          current_t,
+          drained.size(),
+          prev_t_);
+      return;
     }
 
     std::pair<Sophus::SE3f, bool> loc_result;
@@ -294,9 +377,21 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     const Sophus::SE3f& Tcw = loc_result.first;
     const bool ok = loc_result.second;
     const bool pose_valid = is_pose_valid(Tcw);
+    const int tracking_state = slam_->GetTrackingState();
 
     if (!ok || !pose_valid) {
       ++consecutive_lost_;
+      RCLCPP_WARN_THROTTLE(
+          get_logger(),
+          *get_clock(),
+          1000,
+          "Tracking unavailable at t=%.6f: ok=%s pose_valid=%s state=%s(%d) lost=%d",
+          current_t,
+          ok ? "true" : "false",
+          pose_valid ? "true" : "false",
+          tracking_state_name(tracking_state),
+          tracking_state,
+          consecutive_lost_);
       if (consecutive_lost_ > max_lost_frames_) {
         RCLCPP_INFO_THROTTLE(
             get_logger(), *get_clock(), 1000, "Triggering soft reset (lost > max)");
@@ -307,6 +402,14 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
     }
 
     consecutive_lost_ = 0;
+    RCLCPP_INFO_THROTTLE(
+        get_logger(),
+        *get_clock(),
+        2000,
+        "Tracking OK at t=%.6f: state=%s(%d)",
+        current_t,
+        tracking_state_name(tracking_state),
+        tracking_state);
     publish_pose_and_tf(Tcw, current_t);
     prev_t_ = current_t;
   }
@@ -400,6 +503,8 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
   std::string camera_frame_;
   int max_lost_frames_ = 900;
   double accel_gyro_pair_window_s_ = 0.020;
+  double startup_warmup_s_ = 0.50;
+  int startup_min_imu_samples_ = 20;
   bool activate_localization_mode_ = false;
 
   std::shared_ptr<ORB_SLAM3::System> slam_;
@@ -409,6 +514,7 @@ class RealsenseTopicSlamNode : public rclcpp::Node {
   std::mutex session_mutex_;
   double session_origin_t_ = 0.0;
   bool session_initialized_ = false;
+  bool startup_ready_ = false;
 
   std::mutex motion_mutex_;
   double prev_t_ = 0.0;

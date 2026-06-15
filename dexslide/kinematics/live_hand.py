@@ -8,6 +8,31 @@ FINGERS = ["thumb", "index", "middle", "ring", "pinky"]
 FINGER_OFFSET = {"thumb": 0, "index": 4, "middle": 8, "ring": 12, "pinky": 16}
 
 
+def _thumb_sign(base: np.ndarray, hand: str) -> float:
+    if hand == "left":
+        return -1.0
+    if hand == "right":
+        return 1.0
+    return -1.0 if float(base[1]) < 0.0 else 1.0
+
+
+def thumb_pp_frame(raw4: np.ndarray, palm: dict[str, np.ndarray], hand: str):
+    _dip, _pip, mcp_front, mcp_back = [float(v) for v in raw4]
+    base = palm["thumb"].copy()
+    thumb_sign = _thumb_sign(base, hand)
+    z_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+    spread_dir = rot_z(mcp_back) @ np.array([0.0, thumb_sign, 0.0], dtype=np.float64)
+    bend_axis = _unit(np.cross(z_axis, spread_dir), np.array([1.0, 0.0, 0.0], dtype=np.float64))
+    x_pp = _unit(
+        np.cos(mcp_front) * spread_dir - np.sin(mcp_front) * z_axis,
+        spread_dir,
+    )
+    y_pp = bend_axis
+    z_pp = _unit(np.cross(x_pp, y_pp), z_axis)
+    return base, x_pp, y_pp, z_pp
+
+
+
 def _norm(v: np.ndarray) -> float:
     return float(np.linalg.norm(v))
 
@@ -119,18 +144,6 @@ def finger_lengths(name: str, skeleton: dict) -> list[float]:
         float(finger.get("distal", 14.0)),
     ]
 
-
-def thumb_pp_frame(raw4: np.ndarray, palm: dict[str, np.ndarray], hand: str):
-    _dip, _pip, mcp_front, mcp_back = [float(v) for v in raw4]
-    base = palm["thumb"].copy()
-    r_pp = (
-        np.eye(3, dtype=np.float64)
-        @ rot_x(np.deg2rad(75.0))
-        @ rot_z(np.deg2rad(-90.0) + mcp_back)
-        @ rot_y(np.deg2rad(90.0) + mcp_front)
-        @ rot_x(np.deg2rad(-5.0))
-    )
-    return base, r_pp[:, 0], r_pp[:, 1], r_pp[:, 2]
 
 
 def finger_points(

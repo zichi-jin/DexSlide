@@ -80,6 +80,7 @@ install(TARGETS pose_publisher_node realsense_topic_slam_node
 
 install(PROGRAMS
   scripts/aruco_world_pose_node.py
+  scripts/plot_world_pose_3d.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

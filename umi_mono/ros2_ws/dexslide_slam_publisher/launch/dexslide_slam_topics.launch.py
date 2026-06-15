@@ -48,7 +48,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "aruco_world_pose_topic", default_value="/dexslide/aruco/world_pose"
             ),
-            DeclareLaunchArgument("aruco_max_pose_dt", default_value="0.1"),
+            DeclareLaunchArgument("aruco_max_pose_dt", default_value="0.2"),
             DeclareLaunchArgument("max_lost_frames", default_value="900"),
             DeclareLaunchArgument("accel_gyro_pair_window_s", default_value="0.020"),
             DeclareLaunchArgument("activate_localization_mode", default_value="false"),

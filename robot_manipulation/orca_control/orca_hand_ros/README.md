@@ -8,7 +8,8 @@ The node subscribes to:
 
 Message data must be ordered exactly as the active OrcaHand `config.yaml` `joint_ids`.
 Values are passed to `OrcaHand.set_joint_positions()` without unit conversion, so use
-the same unit convention as the OrcaHand config and calibration files.
+the same unit convention as the OrcaHand config and calibration files. In the local
+`orca_core` implementation this means radians.
 
 ## Build
 
@@ -43,5 +44,5 @@ Example publisher:
 
 ```bash
 ros2 topic pub --once /orca_hand/joint_targets std_msgs/msg/Float32MultiArray \
-  "{data: [0, 50, 0, 20, 20, 0, 10, 20, 0, 10, 20, 0, 10, 20, 0, 10, 20]}"
+  "{data: [0.0, 0.6, 0.2, 0.3, 0.1, 0.2, 0.4, 0.0, 0.2, 0.4, 0.0, 0.2, 0.4, 0.0, 0.2, 0.4, 0.0]}"
 ```

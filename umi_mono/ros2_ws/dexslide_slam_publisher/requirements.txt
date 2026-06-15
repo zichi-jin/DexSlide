@@ -20,11 +20,11 @@ rosbags==0.11.2
 # Numerics (matches Ubuntu 22.04 apt python3-numpy)
 numpy>=1.21,<2.0
 
-# Image manipulation (only if writing python validators that decode images)
-opencv-python>=4.5,<5.0
+# Image manipulation + ArUco support used by aruco_world_pose_node.py
+opencv-contrib-python>=4.5,<5.0
 
 # YAML configs (used by aruco_world_pose_node.py)
 PyYAML>=6.0,<7.0
 
-# Quaternion / SE(3) math (optional, for trajectory comparison)
+# Auxiliary helper dependency used by some validator/image utility paths
 scipy>=1.8,<2.0

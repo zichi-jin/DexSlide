@@ -9,7 +9,6 @@ import math
 import copy
 import numpy as np
 import cv2
-import scipy.interpolate as si
 
 # =================== intrinsics ===================
 
@@ -505,12 +504,14 @@ def get_gripper_with_finger_mask(img, height=0.37, top_width=0.25, bottom_width=
     return img
 
 def inpaint_tag(img, corners, tag_scale=1.4, n_samples=16):
+    from scipy.interpolate import interp1d
+
     # scale corners with respect to geometric center
     center = np.mean(corners, axis=0)
     scaled_corners = tag_scale * (corners - center) + center
     
     # sample pixels on the boundary to obtain median color
-    sample_points = si.interp1d(
+    sample_points = interp1d(
         [0,1,2,3,4], list(scaled_corners) + [scaled_corners[0]], 
         axis=0)(np.linspace(0,4,n_samples)).astype(np.int32)
     sample_colors = img[

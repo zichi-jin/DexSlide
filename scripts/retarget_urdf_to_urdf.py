@@ -39,8 +39,8 @@ OUTPUT
    "<output>.meta.json"
 
 OTHER REQUIRED FILES / PARAMETERS
-- dex-retargeting python package must be installed:
-    pip install dex_retargeting
+- bundled dex_retargeting runtime dependencies must be installed in the current interpreter:
+    pip install -r requirements-retargeting.txt
 - source URDF and target URDF must use meter units consistently.
 - If source trajectory joint order differs from source URDF dof order,
   provide --source-joint-names-file OR include joint_names in --source-qpos.
@@ -231,7 +231,8 @@ def _try_import_dex_retargeting():
         from dex_retargeting.robot_wrapper import RobotWrapper
     except ImportError as ex:
         raise RuntimeError(
-            "dex_retargeting is not installed. Install with: pip install dex_retargeting"
+            "Bundled dex_retargeting could not be imported. Install runtime dependencies with: "
+            "pip install -r requirements-retargeting.txt"
         ) from ex
     return RetargetingConfig, RobotWrapper
 
@@ -380,4 +381,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

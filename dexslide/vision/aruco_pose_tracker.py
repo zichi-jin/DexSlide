@@ -109,19 +109,137 @@ def _parse_aruco_config(aruco_config_dict: dict[str, Any]) -> dict[str, Any]:
     return {"aruco_dict": aruco_dict, "marker_size_map": marker_size_map}
 
 
+def _aruco_detector_parameters():
+    if hasattr(cv2.aruco, "DetectorParameters"):
+        return cv2.aruco.DetectorParameters()
+    return cv2.aruco.DetectorParameters_create()
+
+
+def _detect_aruco_markers(image, dictionary, parameters):
+    if hasattr(cv2.aruco, "ArucoDetector"):
+        detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+        return detector.detectMarkers(image)
+    return cv2.aruco.detectMarkers(image=image, dictionary=dictionary, parameters=parameters)
+
+
+def _configure_aruco_detector_parameters(
+    parameters,
+    *,
+    refine_subpix: bool,
+    motion_tolerant: bool,
+):
+    if refine_subpix:
+        parameters.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
+        parameters.cornerRefinementWinSize = max(int(parameters.cornerRefinementWinSize), 5)
+        parameters.cornerRefinementMaxIterations = max(
+            int(parameters.cornerRefinementMaxIterations),
+            40,
+        )
+        parameters.cornerRefinementMinAccuracy = min(
+            float(parameters.cornerRefinementMinAccuracy),
+            0.05,
+        )
+    else:
+        parameters.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_NONE
+
+    if not motion_tolerant:
+        return parameters
+
+    parameters.adaptiveThreshWinSizeMin = 3
+    parameters.adaptiveThreshWinSizeMax = max(int(parameters.adaptiveThreshWinSizeMax), 53)
+    parameters.adaptiveThreshWinSizeStep = 4
+    parameters.minMarkerPerimeterRate = min(float(parameters.minMarkerPerimeterRate), 0.01)
+    parameters.maxMarkerPerimeterRate = max(float(parameters.maxMarkerPerimeterRate), 4.0)
+    parameters.minCornerDistanceRate = min(float(parameters.minCornerDistanceRate), 0.01)
+    parameters.minDistanceToBorder = min(int(parameters.minDistanceToBorder), 1)
+    parameters.polygonalApproxAccuracyRate = max(
+        float(parameters.polygonalApproxAccuracyRate),
+        0.06,
+    )
+    parameters.perspectiveRemovePixelPerCell = max(
+        int(parameters.perspectiveRemovePixelPerCell),
+        6,
+    )
+    parameters.maxErroneousBitsInBorderRate = max(
+        float(parameters.maxErroneousBitsInBorderRate),
+        0.6,
+    )
+    parameters.errorCorrectionRate = max(float(parameters.errorCorrectionRate), 0.75)
+    if hasattr(parameters, "useAruco3Detection"):
+        parameters.useAruco3Detection = True
+    return parameters
+
+
+def _prepare_aruco_detection_image(img_bgr: np.ndarray) -> np.ndarray:
+    if img_bgr.ndim == 2:
+        return img_bgr
+    return cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+
+
+def _estimate_single_marker_pose(
+    corners: np.ndarray,
+    marker_size_m: float,
+    camera_matrix: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    if hasattr(cv2.aruco, "estimatePoseSingleMarkers"):
+        rvec, tvec, _marker_points = cv2.aruco.estimatePoseSingleMarkers(
+            corners,
+            marker_size_m,
+            camera_matrix,
+            np.zeros((1, 5), dtype=np.float64),
+        )
+        return rvec.squeeze(), tvec.squeeze()
+
+    half_size = marker_size_m / 2.0
+    object_points = np.array(
+        [
+            [-half_size, half_size, 0.0],
+            [half_size, half_size, 0.0],
+            [half_size, -half_size, 0.0],
+            [-half_size, -half_size, 0.0],
+        ],
+        dtype=np.float64,
+    )
+    image_points = corners.reshape(-1, 2).astype(np.float64)
+    solvepnp_flag = getattr(cv2, "SOLVEPNP_IPPE_SQUARE", cv2.SOLVEPNP_ITERATIVE)
+    success, rvec, tvec = cv2.solvePnP(
+        object_points,
+        image_points,
+        camera_matrix,
+        np.zeros((1, 5), dtype=np.float64),
+        flags=solvepnp_flag,
+    )
+    if not success:
+        raise RuntimeError("cv2.solvePnP failed for ArUco marker pose estimation")
+    return rvec.squeeze(), tvec.squeeze()
+
+
 def _detect_localize_aruco_tags(
     img_bgr: np.ndarray,
     aruco_dict: cv2.aruco.Dictionary,
     marker_size_map: dict[int, float],
     fisheye_intr_dict: dict[str, np.ndarray],
     refine_subpix: bool = True,
+    motion_tolerant: bool = False,
 ) -> dict[int, dict[str, np.ndarray]]:
     k = fisheye_intr_dict["K"]
     d = fisheye_intr_dict["D"]
-    param = cv2.aruco.DetectorParameters()
-    if refine_subpix:
-        param.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
-    corners, ids, _ = cv2.aruco.detectMarkers(image=img_bgr, dictionary=aruco_dict, parameters=param)
+    detect_img = _prepare_aruco_detection_image(img_bgr)
+
+    param = _configure_aruco_detector_parameters(
+        _aruco_detector_parameters(),
+        refine_subpix=refine_subpix,
+        motion_tolerant=motion_tolerant,
+    )
+    corners, ids, _ = _detect_aruco_markers(detect_img, aruco_dict, param)
+    if (ids is None or len(corners) == 0) and motion_tolerant:
+        retry_img = cv2.equalizeHist(detect_img)
+        retry_param = _configure_aruco_detector_parameters(
+            _aruco_detector_parameters(),
+            refine_subpix=False,
+            motion_tolerant=True,
+        )
+        corners, ids, _ = _detect_aruco_markers(retry_img, aruco_dict, retry_param)
     if ids is None or len(corners) == 0:
         return {}
 
@@ -137,15 +255,14 @@ def _detect_localize_aruco_tags(
         else:
             undistorted = cv2.undistortPoints(this_corners, k, d, P=k)
 
-        rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(
+        rvec, tvec = _estimate_single_marker_pose(
             undistorted,
             marker_size_m,
             k,
-            np.zeros((1, 5), dtype=np.float64),
         )
         tag_dict[this_id] = {
-            "rvec": rvec.squeeze(),
-            "tvec": tvec.squeeze(),
+            "rvec": np.asarray(rvec, dtype=np.float64).reshape(3),
+            "tvec": np.asarray(tvec, dtype=np.float64).reshape(3),
             "corners": this_corners.squeeze(),
         }
     return tag_dict
