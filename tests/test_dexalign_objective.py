@@ -13,7 +13,7 @@ from dexslide.calibration.dexalign.skeleton_param import flatten_skeleton
 from dexslide.calibration.dexalign.types import AlignmentDataset, AlignmentFrame
 from dexslide.paths import DEFAULT_SKELETON_FILE
 from dexslide.retargeting.human_model import HUMAN_LANDMARK_NAMES, DexSlideHumanModel
-from dexslide.world_pose.hand_cube_overlay import make_transform
+from dexslide.kinematics.transforms import make_transform
 
 
 def _base_dataset() -> tuple[dict, np.ndarray, np.ndarray]:

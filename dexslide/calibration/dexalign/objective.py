@@ -3,11 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-import cv2
 import numpy as np
 
 from dexslide.retargeting.human_model import HUMAN_LANDMARK_NAMES, DexSlideHumanModel
-from dexslide.world_pose.hand_cube_overlay import make_transform, transform_points
+from dexslide.kinematics.transforms import (
+    rvec_tvec_to_transform,
+    transform_points,
+    transform_to_rvec_tvec,
+)
 
 from .skeleton_param import SKELETON_PARAM_SIZE, unflatten_skeleton
 from .types import AlignmentDataset
@@ -50,14 +53,13 @@ class AlignmentEvaluation:
 
 def pack_marker2hand_transform(transform_marker2hand_mm: np.ndarray) -> np.ndarray:
     transform = np.asarray(transform_marker2hand_mm, dtype=np.float64).reshape(4, 4)
-    rotvec, _ = cv2.Rodrigues(transform[:3, :3])
-    return np.concatenate([transform[:3, 3], rotvec.reshape(3)], axis=0)
+    rotvec, trans = transform_to_rvec_tvec(transform)
+    return np.concatenate([trans, rotvec], axis=0)
 
 
 def unpack_marker2hand_params(params: np.ndarray) -> np.ndarray:
     values = np.asarray(params, dtype=np.float64).reshape(6)
-    rot, _ = cv2.Rodrigues(values[3:].reshape(3, 1))
-    return make_transform(rot, values[:3])
+    return rvec_tvec_to_transform(values[3:], values[:3])
 
 
 def compose_parameter_vector(theta_skeleton: np.ndarray, marker2hand_params: np.ndarray) -> np.ndarray:

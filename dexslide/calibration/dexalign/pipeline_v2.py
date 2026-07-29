@@ -19,7 +19,7 @@ from dexslide.kinematics.live_hand import (
     thumb_chain_rx_rad,
 )
 from dexslide.retargeting.human_model import HUMAN_LANDMARK_NAMES
-from dexslide.world_pose.hand_cube_overlay import invert_transform, transform_points
+from dexslide.kinematics.transforms import invert_transform, transform_points
 
 from .objective import AlignmentEvaluation, KEYPOINT_CLASS_WEIGHTS
 from .skeleton_param import FINGER_BONE_LAYOUT

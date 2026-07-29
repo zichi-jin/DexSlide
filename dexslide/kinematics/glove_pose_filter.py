@@ -8,10 +8,12 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.kinematics.transforms import (
+    clip_norm,
     make_transform,
     quaternion_xyzw_to_rotmat,
     rotmat_to_quaternion_xyzw,
+    slerp_quaternion_xyzw,
 )
 
 
@@ -33,43 +35,10 @@ class GlovePoseFilterResult:
     dt_s: float | None
 
 
-def _clip_norm(vector: np.ndarray, max_norm: float) -> np.ndarray:
-    vec = np.asarray(vector, dtype=np.float64).reshape(-1)
-    norm = float(np.linalg.norm(vec))
-    if norm <= max(float(max_norm), 1e-12):
-        return vec
-    return vec * (float(max_norm) / norm)
-
-
 def _alpha_from_tau(dt_s: float, tau_s: float) -> float:
     tau = max(float(tau_s), 1e-4)
     dt = max(float(dt_s), 1e-6)
     return float(1.0 - math.exp(-dt / tau))
-
-
-def _slerp_quaternion(q1_xyzw: np.ndarray, q2_xyzw: np.ndarray, alpha: float) -> np.ndarray:
-    qa = np.asarray(q1_xyzw, dtype=np.float64).reshape(4)
-    qb = np.asarray(q2_xyzw, dtype=np.float64).reshape(4)
-    qa /= max(float(np.linalg.norm(qa)), 1e-12)
-    qb /= max(float(np.linalg.norm(qb)), 1e-12)
-
-    dot = float(np.dot(qa, qb))
-    if dot < 0.0:
-        qb = -qb
-        dot = -dot
-
-    alpha_clamped = float(np.clip(alpha, 0.0, 1.0))
-    if dot > 0.9995:
-        blended = (1.0 - alpha_clamped) * qa + alpha_clamped * qb
-        return blended / max(float(np.linalg.norm(blended)), 1e-12)
-
-    theta_0 = float(np.arccos(np.clip(dot, -1.0, 1.0)))
-    sin_theta_0 = float(np.sin(theta_0))
-    theta = theta_0 * alpha_clamped
-    scale_a = float(np.sin(theta_0 - theta) / max(sin_theta_0, 1e-12))
-    scale_b = float(np.sin(theta) / max(sin_theta_0, 1e-12))
-    blended = scale_a * qa + scale_b * qb
-    return blended / max(float(np.linalg.norm(blended)), 1e-12)
 
 
 class GlovePoseFilter:
@@ -109,7 +78,7 @@ class GlovePoseFilter:
         obs_translation = np.asarray(observed[:3, 3], dtype=np.float64)
         pos_alpha = _alpha_from_tau(dt_s, self._config.position_time_constant_s)
         filtered_translation = prev_translation + pos_alpha * (obs_translation - prev_translation)
-        filtered_translation = prev_translation + _clip_norm(
+        filtered_translation = prev_translation + clip_norm(
             filtered_translation - prev_translation,
             0.001 * float(self._config.max_position_step_mm),
         )
@@ -118,7 +87,7 @@ class GlovePoseFilter:
         obs_rotation = np.asarray(observed[:3, :3], dtype=np.float64)
         rot_alpha = _alpha_from_tau(dt_s, self._config.rotation_time_constant_s)
         filtered_rotation = quaternion_xyzw_to_rotmat(
-            _slerp_quaternion(
+            slerp_quaternion_xyzw(
                 rotmat_to_quaternion_xyzw(prev_rotation),
                 rotmat_to_quaternion_xyzw(obs_rotation),
                 rot_alpha,
@@ -128,7 +97,7 @@ class GlovePoseFilter:
         delta_rotation = filtered_rotation @ prev_rotation.T
         delta_rotvec, _ = cv2.Rodrigues(delta_rotation)
         max_rotation_step_rad = math.radians(float(self._config.max_rotation_step_deg))
-        delta_rotvec = _clip_norm(delta_rotvec.reshape(3), max_rotation_step_rad)
+        delta_rotvec = clip_norm(delta_rotvec.reshape(3), max_rotation_step_rad)
         filtered_rotation, _ = cv2.Rodrigues(delta_rotvec.reshape(3, 1))
         filtered_rotation = np.asarray(filtered_rotation, dtype=np.float64).reshape(3, 3) @ prev_rotation
 

@@ -37,19 +37,24 @@ from dexslide.paths import (
     DIRECT_ARUCO_CALIBRATION_DIR,
 )
 from dexslide.retargeting.human_model import DexSlideHumanModel
+from dexslide.kinematics.transforms import (
+    invert_transform,
+    make_transform,
+    rvec_tvec_to_transform,
+    rotmat_to_quaternion_xyzw,
+    transform_points,
+    transform_to_rvec_tvec,
+)
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags
+from dexslide.visualization.aruco_overlay import draw_axes, draw_marker_outline
 from dexslide.world_pose.hand_cube_overlay import (
     HandCubeOverlayConfig,
     _build_marker_observations,
     _compute_marker_reprojection_errors,
     _seed_camera_body_pose,
     _solve_body_pose_camera_from_observations,
-    invert_transform,
-    make_transform,
     resolve_marker_body_tag_pose_branches,
     resolve_hand_overlay_asset_paths,
-    rotmat_to_quaternion_xyzw,
-    transform_to_rvec_tvec,
 )
 
 try:
@@ -110,18 +115,13 @@ def _rs_intrinsics_to_opencv_dict(intr: Any) -> dict[str, np.ndarray]:
     }
 
 
-def _transform_from_rvec_tvec(rvec: np.ndarray, tvec: np.ndarray) -> np.ndarray:
-    rot, _ = cv2.Rodrigues(np.asarray(rvec, dtype=np.float64).reshape(3, 1))
-    return make_transform(rot, np.asarray(tvec, dtype=np.float64).reshape(3))
-
-
 def _make_camera_frame_result_from_tag_dict(tag_dict: dict[int, dict[str, Any]]) -> dict[str, Any]:
     targets: dict[str, dict[str, Any]] = {}
     for marker_id, tag in tag_dict.items():
         targets[str(int(marker_id))] = {
             "detected": True,
             "target_in_camera": {
-                "matrix": _transform_from_rvec_tvec(tag["rvec"], tag["tvec"]).tolist(),
+                "matrix": rvec_tvec_to_transform(tag["rvec"], tag["tvec"]).tolist(),
             },
             "undistorted_corners": np.asarray(
                 tag.get("undistorted_corners", tag.get("corners")),
@@ -340,57 +340,25 @@ def _draw_projected_axes(
     axis_length_m: float,
     label: str,
 ) -> None:
-    axis_points = np.array(
-        [
-            [0.0, 0.0, 0.0],
-            [axis_length_m, 0.0, 0.0],
-            [0.0, axis_length_m, 0.0],
-            [0.0, 0.0, axis_length_m],
-        ],
-        dtype=np.float64,
-    )
     rvec, tvec = transform_to_rvec_tvec(transform_camera_body)
-    projected, _ = cv2.projectPoints(
-        axis_points.reshape(-1, 1, 3),
-        np.asarray(rvec, dtype=np.float64).reshape(3, 1),
-        np.asarray(tvec, dtype=np.float64).reshape(3, 1),
-        np.asarray(camera_matrix, dtype=np.float64).reshape(3, 3),
-        np.zeros((1, 5), dtype=np.float64),
-    )
-    points_2d = projected.reshape(-1, 2)
-    origin = tuple(np.round(points_2d[0]).astype(int))
-    colors = [(0, 0, 255), (0, 255, 0), (255, 0, 0)]
-    for idx, color in enumerate(colors, start=1):
-        endpoint = tuple(np.round(points_2d[idx]).astype(int))
-        cv2.line(image_bgr, origin, endpoint, color, 2, cv2.LINE_AA)
-    cv2.putText(
+    draw_axes(
         image_bgr,
+        {
+            "K": np.asarray(camera_matrix, dtype=np.float64).reshape(3, 3),
+            "D": np.zeros((1, 5), dtype=np.float64),
+        },
+        rvec,
+        tvec,
+        axis_length_m,
         label,
-        (origin[0] + 8, origin[1] - 8),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.55,
         (255, 255, 255),
-        1,
-        cv2.LINE_AA,
     )
 
 
 def _draw_marker_outlines(image_bgr: np.ndarray, tag_dict: dict[int, dict[str, Any]]) -> None:
     for marker_id, tag in sorted(tag_dict.items(), key=lambda item: int(item[0])):
         corners = np.asarray(tag.get("corners"), dtype=np.float64).reshape(4, 2)
-        poly = np.round(corners).astype(np.int32).reshape(-1, 1, 2)
-        cv2.polylines(image_bgr, [poly], True, (0, 215, 255), 2, cv2.LINE_AA)
-        anchor = tuple(poly[0, 0].tolist())
-        cv2.putText(
-            image_bgr,
-            str(int(marker_id)),
-            anchor,
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.55,
-            (0, 215, 255),
-            2,
-            cv2.LINE_AA,
-        )
+        draw_marker_outline(image_bgr, corners, (0, 215, 255), str(int(marker_id)))
 
 
 def _draw_status_lines(image_bgr: np.ndarray, lines: list[str]) -> np.ndarray:

@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import yaml
 
+from dexslide.kinematics.transforms import invert_transform, rvec_tvec_to_transform
 from dexslide import paths
 from dexslide.vision import aruco_pose_tracker as apt
 from dexslide.world_pose import direct_aruco_tracker as dat
@@ -15,21 +16,21 @@ def test_normalize_target_marker_ids_excludes_duplicates_and_table() -> None:
 
 
 def test_invert_transform_roundtrip() -> None:
-    transform = dat._transform_from_rvec_tvec(
+    transform = rvec_tvec_to_transform(
         np.array([0.2, -0.3, 0.4], dtype=np.float64),
         np.array([0.5, -0.6, 0.7], dtype=np.float64),
     )
-    inv = dat._invert_transform(transform)
+    inv = invert_transform(transform)
     np.testing.assert_allclose(transform @ inv, np.eye(4), atol=1e-7)
     np.testing.assert_allclose(inv @ transform, np.eye(4), atol=1e-7)
 
 
 def test_relative_transform_from_camera_poses_recovers_known_target_pose() -> None:
-    t_camera_table = dat._transform_from_rvec_tvec(
+    t_camera_table = rvec_tvec_to_transform(
         np.array([0.0, 0.0, math.pi / 3.0], dtype=np.float64),
         np.array([0.4, -0.2, 1.1], dtype=np.float64),
     )
-    t_table_target = dat._transform_from_rvec_tvec(
+    t_table_target = rvec_tvec_to_transform(
         np.array([0.1, -0.2, 0.05], dtype=np.float64),
         np.array([0.15, 0.25, -0.05], dtype=np.float64),
     )
@@ -40,7 +41,7 @@ def test_relative_transform_from_camera_poses_recovers_known_target_pose() -> No
 
 
 def test_pose_dict_from_transform_contains_expected_position_and_matrix() -> None:
-    transform = dat._transform_from_rvec_tvec(
+    transform = rvec_tvec_to_transform(
         np.zeros(3, dtype=np.float64),
         np.array([1.2, -3.4, 5.6], dtype=np.float64),
     )
@@ -72,11 +73,11 @@ def test_direct_aruco_default_assets_exist_and_match_expected_sizes() -> None:
 
 
 def test_build_direct_aruco_frame_result_emits_relative_target_pose() -> None:
-    t_camera_table = dat._transform_from_rvec_tvec(
+    t_camera_table = rvec_tvec_to_transform(
         np.array([0.0, 0.0, 0.2], dtype=np.float64),
         np.array([0.1, -0.3, 0.8], dtype=np.float64),
     )
-    t_table_target = dat._transform_from_rvec_tvec(
+    t_table_target = rvec_tvec_to_transform(
         np.array([0.05, -0.1, 0.15], dtype=np.float64),
         np.array([0.2, 0.05, -0.02], dtype=np.float64),
     )

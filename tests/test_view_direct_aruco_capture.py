@@ -4,7 +4,7 @@ import numpy as np
 
 import scripts.view_direct_aruco_overlay as overlay
 from dexslide.visualization import aruco_overlay
-from dexslide.world_pose.hand_cube_overlay import make_transform
+from dexslide.kinematics.transforms import make_transform
 from dexslide.world_pose.marker_body_pose_tracker import _smooth_marker_body_pose
 
 

@@ -58,10 +58,17 @@ def test_default_communications_match_connected_dexslide_devices() -> None:
 
 
 def test_camera_stream_profile_comes_from_intrinsics_file() -> None:
+    from dexslide.camera_profile import load_camera_stream_profile
     from dexslide.paths import DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE
 
     payload = json.loads(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE.read_text(encoding="utf-8"))
-    assert (payload["image_width"], payload["image_height"], payload["fps"]) == (1920, 1080, 30.0)
+    profile = load_camera_stream_profile()
+
+    assert (profile.width, profile.height, profile.fps) == (
+        int(payload["image_width"]),
+        int(payload["image_height"]),
+        float(payload["fps"]),
+    )
 
 
 def test_resolvers_prefer_existing_stable_device_paths(tmp_path) -> None:

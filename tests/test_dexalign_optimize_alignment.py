@@ -16,8 +16,8 @@ from dexslide.calibration.dexalign.pipeline_v2 import (
     run_step3_lengths_and_translation,
 )
 from dexslide.calibration.dexalign.types import AlignmentDataset, AlignmentFrame
+from dexslide.kinematics.transforms import make_transform, transform_points
 from dexslide.paths import DEFAULT_SKELETON_FILE
-from dexslide.world_pose.hand_cube_overlay import make_transform, transform_points
 
 
 def _rot_x(rad: float) -> np.ndarray:

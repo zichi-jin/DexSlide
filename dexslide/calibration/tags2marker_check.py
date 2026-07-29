@@ -14,6 +14,11 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from dexslide.kinematics.transforms import (
+    invert_transform,
+    rvec_tvec_to_transform,
+    transform_to_rvec_tvec,
+)
 from dexslide.vision.aruco_pose_tracker import (
     _convert_fisheye_intrinsics_resolution,
     _detect_localize_aruco_tags,
@@ -21,6 +26,7 @@ from dexslide.vision.aruco_pose_tracker import (
     _parse_fisheye_intrinsics,
     _parse_aruco_config,
 )
+from dexslide.visualization.aruco_overlay import project_points
 from dexslide.world_pose.hand_cube_overlay import (
     resolve_marker_body_tag_pose_branches,
     try_load_hand_cube_overlay_config,
@@ -48,12 +54,8 @@ def _transform_body_to_marker(rows: np.ndarray, p: np.ndarray) -> np.ndarray:
 
 def _draw_axis(image, pose, k, d, length=0.025, colors=None, thickness=2):
     pts = np.array([[0, 0, 0], [length, 0, 0], [0, length, 0], [0, 0, length]], dtype=float)
-    rvec = cv2.Rodrigues(pose[:3, :3])[0]
-    if np.asarray(d).size == 4:
-        projected, _ = cv2.fisheye.projectPoints(pts.reshape(-1, 1, 3), rvec, pose[:3, 3], k, d)
-    else:
-        projected, _ = cv2.projectPoints(pts, rvec, pose[:3, 3], k, d)
-    p = projected.reshape(-1, 2).astype(int)
+    rvec, tvec = transform_to_rvec_tvec(pose)
+    p = project_points(pts, rvec, tvec, {"K": k, "D": d}).astype(int)
     o = tuple(p[0])
     if colors is None:
         colors = ((0, 0, 255), (0, 255, 0), (255, 0, 0))
@@ -161,17 +163,14 @@ def main() -> None:
         poses = {}
         tag_poses = {}
         for mid, entry in tags.items():
-            rt, _ = cv2.Rodrigues(entry["rvec"])
-            camera_tag = np.eye(4, dtype=float)
-            camera_tag[:3, :3] = rt
-            camera_tag[:3, 3] = entry["tvec"].reshape(3)
+            camera_tag = rvec_tvec_to_transform(entry["rvec"], entry["tvec"])
             tag_poses[mid] = camera_tag
             # tags2marker 配置实际保存 T_body_marker；要从相机下的 tag
             # 反推出 body，必须乘以其逆矩阵，而不是正向矩阵。
             body_to_marker = _transform_body_to_marker(
                 np.asarray(marker_ids[mid]["rot"]), np.asarray(marker_ids[mid]["p_mm"])
             )
-            poses[mid] = camera_tag @ np.linalg.inv(body_to_marker)
+            poses[mid] = camera_tag @ invert_transform(body_to_marker)
             cv2.polylines(frame, [entry["corners"].astype(int)], True, (255, 255, 0), 2)
         if poses:
             pose_plot.update(poses)

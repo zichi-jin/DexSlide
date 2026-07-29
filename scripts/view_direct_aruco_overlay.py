@@ -67,22 +67,24 @@ from dexslide.vision.aruco_pose_tracker import (
     _parse_capture_source,
     _parse_fisheye_intrinsics,
 )
+from dexslide.kinematics.transforms import (
+    make_transform,
+    rotmat_to_quaternion_xyzw,
+    rvec_tvec_to_transform,
+    transform_points,
+    transform_to_rvec_tvec,
+)
 from dexslide.world_pose.direct_aruco_tracker import (
     _build_direct_aruco_frame_result,
     _detect_relevant_aruco_tags,
     _normalize_target_marker_ids,
-    _transform_from_rvec_tvec,
 )
 from dexslide.world_pose.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     compose_overlay_joint_angles,
-    make_transform,
     marker_to_wrist_asset_transforms,
     resolve_marker_body_tag_pose_branches,
-    rotmat_to_quaternion_xyzw,
-    transform_points,
-    transform_to_rvec_tvec,
     try_load_hand_cube_overlay_config,
 )
 from dexslide.world_pose.marker_body_pose_tracker import MarkerBodyPoseTracker
@@ -888,7 +890,7 @@ def main() -> None:
                 reference_camera_body = None
                 table_tag_for_reference = tag_dict.get(int(args.table_marker_id))
                 if table_tag_for_reference is not None and last_cube_pose is not None:
-                    transform_camera_table_reference = _transform_from_rvec_tvec(
+                    transform_camera_table_reference = rvec_tvec_to_transform(
                         table_tag_for_reference["rvec"],
                         table_tag_for_reference["tvec"],
                     )

@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 
 import scripts.view_dexalign_capture_3d as preview
-from dexslide.world_pose.hand_cube_overlay import make_transform
+from dexslide.kinematics.transforms import make_transform
 
 
 class _FakeDetector:
@@ -80,13 +80,13 @@ def test_drain_camera_preview_commands_returns_space_events() -> None:
     assert command_queue.empty()
 
 
-def test_preview_parser_defaults_to_1280x720() -> None:
+def test_preview_parser_defaults_to_intrinsics_file() -> None:
     parser = preview._build_parser()
 
     args = parser.parse_args([])
 
-    assert args.width == 1280
-    assert args.height == 720
+    assert args.width == 960
+    assert args.height == 540
     assert args.enable_table_frame is False
 
 

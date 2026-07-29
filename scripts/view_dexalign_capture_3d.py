@@ -44,7 +44,7 @@ from dexslide.paths import (  # noqa: E402
 )
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags, _parse_aruco_config  # noqa: E402
 from dexslide.world_pose.direct_aruco_tracker import _build_direct_aruco_frame_result  # noqa: E402
-from dexslide.world_pose.hand_cube_overlay import (  # noqa: E402
+from dexslide.kinematics.transforms import (  # noqa: E402
     invert_transform,
     make_transform,
     transform_points,

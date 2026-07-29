@@ -19,7 +19,7 @@ from dexslide.calibration.dexalign.collect_alignment_dataset import (
 )
 from dexslide.calibration.dexalign.io_utils import load_alignment_dataset, save_alignment_dataset
 from dexslide.calibration.dexalign.types import AlignmentDataset, AlignmentFrame
-from dexslide.world_pose.hand_cube_overlay import make_transform
+from dexslide.kinematics.transforms import make_transform
 
 
 @dataclass

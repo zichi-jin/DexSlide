@@ -4,19 +4,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import cv2
 import numpy as np
 
+from dexslide.kinematics.transforms import (
+    average_rotation_matrices,
+    make_transform,
+    quaternion_xyzw_to_rotmat,
+    relative_rotvec,
+    rotmat_to_quaternion_xyzw,
+    slerp_quaternion_xyzw,
+)
 from dexslide.world_pose.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     MarkerBodyConsistencyReport,
-    average_rotation_matrices,
     diagnose_marker_body_consistency,
     estimate_cube_pose_in_table,
-    make_transform,
-    quaternion_xyzw_to_rotmat,
-    rotmat_to_quaternion_xyzw,
 )
 
 
@@ -78,41 +81,6 @@ def _lowpass_vector(previous: np.ndarray | None, current: np.ndarray, alpha: flo
         return current_arr.copy()
     previous_arr = np.asarray(previous, dtype=np.float64).reshape(-1)
     return (1.0 - float(alpha)) * previous_arr + float(alpha) * current_arr
-
-
-def _relative_rotvec(rot_from: np.ndarray, rot_to: np.ndarray) -> np.ndarray:
-    relative_rot = np.asarray(rot_from, dtype=np.float64).reshape(3, 3).T @ np.asarray(
-        rot_to,
-        dtype=np.float64,
-    ).reshape(3, 3)
-    rotvec, _ = cv2.Rodrigues(relative_rot)
-    return np.asarray(rotvec, dtype=np.float64).reshape(3)
-
-
-def _slerp_quaternion(q1_xyzw: np.ndarray, q2_xyzw: np.ndarray, alpha: float) -> np.ndarray:
-    qa = np.asarray(q1_xyzw, dtype=np.float64).reshape(4)
-    qb = np.asarray(q2_xyzw, dtype=np.float64).reshape(4)
-    qa /= max(float(np.linalg.norm(qa)), 1e-12)
-    qb /= max(float(np.linalg.norm(qb)), 1e-12)
-
-    dot = float(np.dot(qa, qb))
-    if dot < 0.0:
-        qb = -qb
-        dot = -dot
-
-    alpha_clamped = float(np.clip(alpha, 0.0, 1.0))
-    if dot > 0.9995:
-        blended = (1.0 - alpha_clamped) * qa + alpha_clamped * qb
-        return blended / max(float(np.linalg.norm(blended)), 1e-12)
-
-    theta_0 = float(np.arccos(np.clip(dot, -1.0, 1.0)))
-    sin_theta_0 = float(np.sin(theta_0))
-    theta = theta_0 * alpha_clamped
-    sin_theta = float(np.sin(theta))
-    scale_a = float(np.sin(theta_0 - theta) / max(sin_theta_0, 1e-12))
-    scale_b = float(sin_theta / max(sin_theta_0, 1e-12))
-    blended = scale_a * qa + scale_b * qb
-    return blended / max(float(np.linalg.norm(blended)), 1e-12)
 
 
 def _copy_pose_with_transform(pose: CubePoseEstimate, transform_table_cube: np.ndarray) -> CubePoseEstimate:
@@ -208,7 +176,7 @@ class MarkerBodyPoseTracker:
             self._rotation_state.filtered_derivative = np.zeros(3, dtype=np.float64)
             return measured.copy()
 
-        raw_derivative = _relative_rotvec(self._rotation_state.raw_value, measured) / max(float(dt), 1e-6)
+        raw_derivative = relative_rotvec(self._rotation_state.raw_value, measured) / max(float(dt), 1e-6)
         derivative_alpha = _alpha_from_cutoff(dt, self._derivative_cutoff_hz)
         derivative_hat = _lowpass_vector(
             self._rotation_state.filtered_derivative,
@@ -222,7 +190,7 @@ class MarkerBodyPoseTracker:
             value_alpha = _alpha_from_cutoff(dt, cutoff_hz)
             q_prev = rotmat_to_quaternion_xyzw(self._rotation_state.filtered_value)
             q_curr = rotmat_to_quaternion_xyzw(measured)
-            filtered = quaternion_xyzw_to_rotmat(_slerp_quaternion(q_prev, q_curr, value_alpha))
+            filtered = quaternion_xyzw_to_rotmat(slerp_quaternion_xyzw(q_prev, q_curr, value_alpha))
 
         self._rotation_state.raw_value = measured.copy()
         self._rotation_state.filtered_value = filtered.copy()

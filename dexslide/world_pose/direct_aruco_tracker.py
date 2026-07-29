@@ -13,6 +13,11 @@ import cv2
 import numpy as np
 import yaml
 
+from dexslide.kinematics.transforms import (
+    invert_transform,
+    rotmat_to_quaternion_xyzw,
+    rvec_tvec_to_transform,
+)
 from dexslide.vision.aruco_pose_tracker import (
     _convert_fisheye_intrinsics_resolution,
     _detect_localize_aruco_tags,
@@ -40,52 +45,8 @@ def _normalize_target_marker_ids(
     return sorted(out)
 
 
-def _rotmat_to_quaternion(rot: np.ndarray) -> np.ndarray:
-    trace = float(np.trace(rot))
-    if trace > 0.0:
-        s = 2.0 * np.sqrt(trace + 1.0)
-        qw = 0.25 * s
-        qx = (rot[2, 1] - rot[1, 2]) / s
-        qy = (rot[0, 2] - rot[2, 0]) / s
-        qz = (rot[1, 0] - rot[0, 1]) / s
-    elif rot[0, 0] > rot[1, 1] and rot[0, 0] > rot[2, 2]:
-        s = 2.0 * np.sqrt(1.0 + rot[0, 0] - rot[1, 1] - rot[2, 2])
-        qw = (rot[2, 1] - rot[1, 2]) / s
-        qx = 0.25 * s
-        qy = (rot[0, 1] + rot[1, 0]) / s
-        qz = (rot[0, 2] + rot[2, 0]) / s
-    elif rot[1, 1] > rot[2, 2]:
-        s = 2.0 * np.sqrt(1.0 + rot[1, 1] - rot[0, 0] - rot[2, 2])
-        qw = (rot[0, 2] - rot[2, 0]) / s
-        qx = (rot[0, 1] + rot[1, 0]) / s
-        qy = 0.25 * s
-        qz = (rot[1, 2] + rot[2, 1]) / s
-    else:
-        s = 2.0 * np.sqrt(1.0 + rot[2, 2] - rot[0, 0] - rot[1, 1])
-        qw = (rot[1, 0] - rot[0, 1]) / s
-        qx = (rot[0, 2] + rot[2, 0]) / s
-        qy = (rot[1, 2] + rot[2, 1]) / s
-        qz = 0.25 * s
-    quat = np.array([qx, qy, qz, qw], dtype=np.float64)
-    quat /= np.linalg.norm(quat)
-    return quat
-
-
-def _transform_from_rvec_tvec(rvec: np.ndarray, tvec: np.ndarray) -> np.ndarray:
-    rot, _ = cv2.Rodrigues(np.asarray(rvec, dtype=np.float64).reshape(3, 1))
-    transform = np.eye(4, dtype=np.float64)
-    transform[:3, :3] = rot
-    transform[:3, 3] = np.asarray(tvec, dtype=np.float64).reshape(3)
-    return transform
-
-
-def _invert_transform(transform: np.ndarray) -> np.ndarray:
-    rot = np.asarray(transform[:3, :3], dtype=np.float64)
-    trans = np.asarray(transform[:3, 3], dtype=np.float64)
-    inv = np.eye(4, dtype=np.float64)
-    inv[:3, :3] = rot.T
-    inv[:3, 3] = -(rot.T @ trans)
-    return inv
+_transform_from_rvec_tvec = rvec_tvec_to_transform
+_invert_transform = invert_transform
 
 
 def _relative_transform_from_camera_poses(
@@ -96,7 +57,7 @@ def _relative_transform_from_camera_poses(
 
 
 def _pose_dict_from_transform(transform: np.ndarray) -> dict[str, Any]:
-    quat = _rotmat_to_quaternion(np.asarray(transform[:3, :3], dtype=np.float64))
+    quat = rotmat_to_quaternion_xyzw(np.asarray(transform[:3, :3], dtype=np.float64))
     pos = np.asarray(transform[:3, 3], dtype=np.float64)
     return {
         "position_m": [float(x) for x in pos],

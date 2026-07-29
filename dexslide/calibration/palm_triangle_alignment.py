@@ -6,13 +6,16 @@ from pathlib import Path
 
 import numpy as np
 
+from dexslide.kinematics.transforms import (
+    average_transforms,
+    make_transform,
+    rotmat_to_quaternion_xyzw,
+)
 from dexslide.world_pose.hand_cube_overlay import (
     HandCubeOverlayConfig,
     load_marker_to_wrist_asset,
-    make_transform,
     marker_to_wrist_asset_transforms,
     marker_to_wrist_entry_from_transform,
-    rotmat_to_quaternion_xyzw,
 )
 
 
@@ -22,15 +25,6 @@ MEDIAPIPE_RGBD_NOTE = (
     "This calibration uses the MediaPipe palm triangle (wrist, index_mcp, middle_mcp) "
     "together with RGB-D depth and ArUco marker-body pose observations to solve the full body->wrist pose."
 )
-
-
-def _project_rotation_to_so3(rot: np.ndarray) -> np.ndarray:
-    u, _s, vh = np.linalg.svd(np.asarray(rot, dtype=np.float64).reshape(3, 3))
-    projected = u @ vh
-    if np.linalg.det(projected) < 0.0:
-        u[:, -1] *= -1.0
-        projected = u @ vh
-    return np.asarray(projected, dtype=np.float64).reshape(3, 3)
 
 
 def _coerce_transform_samples(
@@ -103,11 +97,7 @@ def average_body_to_wrist_transforms(
     samples_body_to_wrist: list[np.ndarray] | np.ndarray,
 ) -> np.ndarray | None:
     samples = _coerce_transform_samples(samples_body_to_wrist)
-    if samples.shape[0] == 0:
-        return None
-    mean_translation = np.mean(samples[:, :3, 3], axis=0)
-    mean_rotation = _project_rotation_to_so3(np.mean(samples[:, :3, :3], axis=0))
-    return make_transform(mean_rotation, mean_translation)
+    return average_transforms(samples)
 
 
 def apply_body_to_wrist_transform(

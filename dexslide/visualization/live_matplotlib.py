@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
+from dexslide.kinematics.transforms import rotvec_to_rotmat
 from dexslide.kinematics.live_hand import (
     FINGER_OFFSET,
     FINGERS,
@@ -27,25 +28,6 @@ COLORS = {
     "ring": "#ffbe0b",
     "pinky": "#8338ec",
 }
-
-
-def _rotvec_to_matrix(rotvec: np.ndarray) -> np.ndarray:
-    theta = float(np.linalg.norm(rotvec))
-    if theta < 1e-12:
-        return np.eye(3, dtype=np.float64)
-    axis = (rotvec / theta).astype(np.float64)
-    x, y, z = float(axis[0]), float(axis[1]), float(axis[2])
-    c = float(np.cos(theta))
-    s = float(np.sin(theta))
-    cc = 1.0 - c
-    return np.array(
-        [
-            [c + x * x * cc, x * y * cc - z * s, x * z * cc + y * s],
-            [y * x * cc + z * s, c + y * y * cc, y * z * cc - x * s],
-            [z * x * cc - y * s, z * y * cc + x * s, c + z * z * cc],
-        ],
-        dtype=np.float64,
-    )
 
 
 def _apply_rigid(points: np.ndarray, rot: np.ndarray, trans: np.ndarray) -> np.ndarray:
@@ -208,7 +190,7 @@ def run_live_viewer(
                         and rep_rvec is not None
                         and pose_age_ms <= float(aruco_pose_hold_sec) * 1000.0
                     ):
-                        hand_rot = _rotvec_to_matrix(np.asarray(rep_rvec, dtype=np.float64).reshape(3))
+                        hand_rot = rotvec_to_rotmat(np.asarray(rep_rvec, dtype=np.float64).reshape(3))
                         hand_trans = np.asarray(fused_pos, dtype=np.float64).reshape(3) * 1000.0
                         pose_mode = str(fusion.get("mode", "ok"))
                         last_valid_pose["rot"] = hand_rot.copy()

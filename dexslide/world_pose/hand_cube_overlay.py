@@ -11,87 +11,15 @@ import cv2
 import numpy as np
 import yaml
 
-
-def _normalize_quaternion_xyzw(quat_xyzw: np.ndarray) -> np.ndarray:
-    quat = np.asarray(quat_xyzw, dtype=np.float64).reshape(4)
-    norm = float(np.linalg.norm(quat))
-    if norm < 1e-12:
-        return np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float64)
-    return quat / norm
-
-
-def quaternion_xyzw_to_rotmat(quat_xyzw: np.ndarray) -> np.ndarray:
-    x, y, z, w = _normalize_quaternion_xyzw(quat_xyzw)
-    xx, yy, zz = x * x, y * y, z * z
-    xy, xz, yz = x * y, x * z, y * z
-    wx, wy, wz = w * x, w * y, w * z
-    return np.array(
-        [
-            [1.0 - 2.0 * (yy + zz), 2.0 * (xy - wz), 2.0 * (xz + wy)],
-            [2.0 * (xy + wz), 1.0 - 2.0 * (xx + zz), 2.0 * (yz - wx)],
-            [2.0 * (xz - wy), 2.0 * (yz + wx), 1.0 - 2.0 * (xx + yy)],
-        ],
-        dtype=np.float64,
-    )
-
-
-def rotmat_to_quaternion_xyzw(rot: np.ndarray) -> np.ndarray:
-    mat = np.asarray(rot, dtype=np.float64).reshape(3, 3)
-    trace = float(np.trace(mat))
-    if trace > 0.0:
-        s = 2.0 * np.sqrt(trace + 1.0)
-        qw = 0.25 * s
-        qx = (mat[2, 1] - mat[1, 2]) / s
-        qy = (mat[0, 2] - mat[2, 0]) / s
-        qz = (mat[1, 0] - mat[0, 1]) / s
-    elif mat[0, 0] > mat[1, 1] and mat[0, 0] > mat[2, 2]:
-        s = 2.0 * np.sqrt(1.0 + mat[0, 0] - mat[1, 1] - mat[2, 2])
-        qw = (mat[2, 1] - mat[1, 2]) / s
-        qx = 0.25 * s
-        qy = (mat[0, 1] + mat[1, 0]) / s
-        qz = (mat[0, 2] + mat[2, 0]) / s
-    elif mat[1, 1] > mat[2, 2]:
-        s = 2.0 * np.sqrt(1.0 + mat[1, 1] - mat[0, 0] - mat[2, 2])
-        qw = (mat[0, 2] - mat[2, 0]) / s
-        qx = (mat[0, 1] + mat[1, 0]) / s
-        qy = 0.25 * s
-        qz = (mat[1, 2] + mat[2, 1]) / s
-    else:
-        s = 2.0 * np.sqrt(1.0 + mat[2, 2] - mat[0, 0] - mat[1, 1])
-        qw = (mat[1, 0] - mat[0, 1]) / s
-        qx = (mat[0, 2] + mat[2, 0]) / s
-        qy = (mat[1, 2] + mat[2, 1]) / s
-        qz = 0.25 * s
-    return _normalize_quaternion_xyzw(np.array([qx, qy, qz, qw], dtype=np.float64))
-
-
-def make_transform(rot: np.ndarray, trans: np.ndarray) -> np.ndarray:
-    transform = np.eye(4, dtype=np.float64)
-    transform[:3, :3] = np.asarray(rot, dtype=np.float64).reshape(3, 3)
-    transform[:3, 3] = np.asarray(trans, dtype=np.float64).reshape(3)
-    return transform
-
-
-def invert_transform(transform: np.ndarray) -> np.ndarray:
-    rot = np.asarray(transform[:3, :3], dtype=np.float64)
-    trans = np.asarray(transform[:3, 3], dtype=np.float64)
-    inv = np.eye(4, dtype=np.float64)
-    inv[:3, :3] = rot.T
-    inv[:3, 3] = -(rot.T @ trans)
-    return inv
-
-
-def transform_points(transform: np.ndarray, points_xyz: np.ndarray) -> np.ndarray:
-    pts = np.asarray(points_xyz, dtype=np.float64).reshape(-1, 3)
-    rot = np.asarray(transform[:3, :3], dtype=np.float64)
-    trans = np.asarray(transform[:3, 3], dtype=np.float64)
-    return (pts @ rot.T) + trans[None, :]
-
-
-def transform_to_rvec_tvec(transform: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    rot = np.asarray(transform[:3, :3], dtype=np.float64)
-    rvec, _ = cv2.Rodrigues(rot)
-    return rvec.reshape(3), np.asarray(transform[:3, 3], dtype=np.float64).reshape(3)
+from dexslide.kinematics.transforms import (
+    average_rotation_matrices,
+    invert_transform,
+    make_transform,
+    quaternion_xyzw_to_rotmat,
+    rotmat_to_quaternion_xyzw,
+    transform_points,
+    transform_to_rvec_tvec,
+)
 
 
 def _load_structured_document(path: str | Path) -> dict[str, Any]:
@@ -291,34 +219,6 @@ def compose_overlay_joint_angles(
             f"{raw.shape[0]}, {zero.shape[0]}, {base.shape[0]}"
         )
     return (raw - zero) + base
-
-
-def average_rotation_matrices(
-    rotations: list[np.ndarray],
-    weights: list[float] | np.ndarray | None = None,
-) -> np.ndarray:
-    if not rotations:
-        return np.eye(3, dtype=np.float64)
-    if weights is None:
-        weights_arr = np.ones(len(rotations), dtype=np.float64)
-    else:
-        weights_arr = np.asarray(weights, dtype=np.float64).reshape(-1)
-        if weights_arr.shape[0] != len(rotations):
-            raise ValueError(
-                f"Expected {len(rotations)} rotation weights, got {weights_arr.shape[0]}"
-            )
-        weights_arr = np.maximum(weights_arr, 0.0)
-        if float(np.sum(weights_arr)) <= 1e-12:
-            weights_arr = np.ones(len(rotations), dtype=np.float64)
-    accumulator = np.zeros((3, 3), dtype=np.float64)
-    for rot, weight in zip(rotations, weights_arr):
-        accumulator += float(weight) * np.asarray(rot, dtype=np.float64).reshape(3, 3)
-    u, _, vt = np.linalg.svd(accumulator)
-    mean_rot = u @ vt
-    if np.linalg.det(mean_rot) < 0.0:
-        u[:, -1] *= -1.0
-        mean_rot = u @ vt
-    return mean_rot
 
 
 def _sanitize_weights(values: list[float] | np.ndarray) -> np.ndarray:

@@ -43,6 +43,13 @@ from dexslide.vision.aruco_pose_tracker import (
     _parse_fisheye_intrinsics,
 )
 from dexslide.kinematics.glove_pose_filter import GlovePoseFilter
+from dexslide.kinematics.transforms import make_transform, transform_to_rvec_tvec
+from dexslide.visualization.aruco_overlay import (
+    draw_axes as _draw_axes_overlay,
+    draw_hud as _draw_hud,
+    draw_marker_outline as _draw_marker_outline,
+    marker_id_to_color as _marker_id_to_color,
+)
 from dexslide.world_pose.direct_aruco_tracker import (
     _build_direct_aruco_frame_result,
     _detect_relevant_aruco_tags,
@@ -51,7 +58,6 @@ from dexslide.world_pose.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     marker_to_wrist_asset_transforms,
-    transform_to_rvec_tvec,
 )
 from dexslide.world_pose.marker_body_pose_tracker import MarkerBodyPoseTracker
 
@@ -252,13 +258,6 @@ def write_payload(robot: object, payload: IdentifiedPayload) -> None:
         applied = True
     if not applied:
         raise AttributeError("robot does not provide set_torq_sensor_tool_payload/set_payload")
-
-
-def make_transform(rotation: np.ndarray, translation: np.ndarray) -> np.ndarray:
-    transform = np.eye(4, dtype=np.float64)
-    transform[:3, :3] = np.asarray(rotation, dtype=np.float64).reshape(3, 3)
-    transform[:3, 3] = np.asarray(translation, dtype=np.float64).reshape(3)
-    return transform
 
 
 def rotation_y_deg(angle_deg: float) -> np.ndarray:
@@ -595,123 +594,6 @@ def format_increment(delta: np.ndarray) -> str:
         f"drx={math.degrees(values[3]):.2f} deg, dry={math.degrees(values[4]):.2f} deg, "
         f"drz={math.degrees(values[5]):.2f} deg"
     )
-
-
-def _project_points(
-    object_points: np.ndarray,
-    rvec: np.ndarray,
-    tvec: np.ndarray,
-    intr: dict[str, np.ndarray],
-) -> np.ndarray:
-    obj = np.ascontiguousarray(np.asarray(object_points, dtype=np.float64).reshape(-1, 1, 3))
-    rvec = np.ascontiguousarray(np.asarray(rvec, dtype=np.float64).reshape(3, 1))
-    tvec = np.ascontiguousarray(np.asarray(tvec, dtype=np.float64).reshape(3, 1))
-    k = np.ascontiguousarray(np.asarray(intr["K"], dtype=np.float64).reshape(3, 3))
-    d = np.ascontiguousarray(np.asarray(intr["D"], dtype=np.float64))
-    if d.size == 4:
-        img_points, _ = cv2.fisheye.projectPoints(obj, rvec, tvec, k, d)
-    else:
-        img_points, _ = cv2.projectPoints(obj, rvec, tvec, k, d)
-    return img_points.reshape(-1, 2)
-
-
-def _draw_axes_overlay(
-    image: np.ndarray,
-    intr: dict[str, np.ndarray],
-    rvec: np.ndarray,
-    tvec: np.ndarray,
-    axis_length: float,
-    label: str | None,
-    label_color: tuple[int, int, int],
-) -> None:
-    axis_points = np.array(
-        [
-            [0.0, 0.0, 0.0],
-            [axis_length, 0.0, 0.0],
-            [0.0, axis_length, 0.0],
-            [0.0, 0.0, axis_length],
-        ],
-        dtype=np.float64,
-    )
-    projected = _project_points(axis_points, rvec, tvec, intr)
-    origin = tuple(np.round(projected[0]).astype(int))
-    axis_colors = ((0, 0, 255), (0, 255, 0), (255, 0, 0))
-    for idx, axis_color in enumerate(axis_colors, start=1):
-        endpoint = tuple(np.round(projected[idx]).astype(int))
-        cv2.line(image, origin, endpoint, axis_color, 2, lineType=cv2.LINE_AA)
-        cv2.circle(image, endpoint, 3, axis_color, -1, lineType=cv2.LINE_AA)
-    cv2.circle(image, origin, 4, label_color, -1, lineType=cv2.LINE_AA)
-    if label:
-        cv2.putText(
-            image,
-            label,
-            (origin[0] + 6, origin[1] - 6),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            label_color,
-            2,
-            lineType=cv2.LINE_AA,
-        )
-
-
-def _draw_marker_outline(
-    image: np.ndarray,
-    corners: np.ndarray,
-    color: tuple[int, int, int],
-    text: str | None,
-) -> None:
-    pts = np.asarray(corners, dtype=np.float64).reshape(-1, 2)
-    poly = np.round(pts).astype(np.int32).reshape(-1, 1, 2)
-    cv2.polylines(image, [poly], isClosed=True, color=color, thickness=2, lineType=cv2.LINE_AA)
-    if text:
-        anchor = tuple(np.round(pts[0]).astype(int))
-        cv2.putText(
-            image,
-            text,
-            (anchor[0] + 4, anchor[1] - 8),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.55,
-            color,
-            2,
-            lineType=cv2.LINE_AA,
-        )
-
-
-def _draw_hud(image: np.ndarray, lines: list[str]) -> None:
-    y = 26
-    for line in lines:
-        cv2.putText(
-            image,
-            line,
-            (12, y),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.58,
-            (255, 255, 255),
-            3,
-            lineType=cv2.LINE_AA,
-        )
-        cv2.putText(
-            image,
-            line,
-            (12, y),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.58,
-            (24, 24, 24),
-            1,
-            lineType=cv2.LINE_AA,
-        )
-        y += 24
-
-
-def _marker_id_to_color(marker_id: int) -> tuple[int, int, int]:
-    palette = [
-        (80, 255, 80),
-        (80, 180, 255),
-        (180, 120, 255),
-        (255, 180, 80),
-        (255, 120, 180),
-    ]
-    return palette[marker_id % len(palette)]
 
 
 class GloveWristPoseTracker:
@@ -1188,7 +1070,7 @@ def main() -> None:
     )
     print(f"[camera] backend={camera_cfg['backend']} serial={camera_serial} source={camera_source}")
     print(
-        f"[camera] width={camera_cfg['width']} height={camera_cfg['height']} fps={camera_cfg['fps']} "
+        f"[camera] width={camera_stream.width} height={camera_stream.height} fps={camera_stream.fps} "
         f"table_marker_id={args.table_marker_id}"
     )
     print(
