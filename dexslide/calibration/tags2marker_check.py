@@ -27,7 +27,7 @@ from dexslide.vision.aruco_pose_tracker import (
     _parse_aruco_config,
 )
 from dexslide.visualization.aruco_overlay import project_points
-from dexslide.vision.hand_cube_overlay import (
+from dexslide.vision.marker_body_model import (
     resolve_marker_body_tag_pose_branches,
     try_load_hand_cube_overlay_config,
 )

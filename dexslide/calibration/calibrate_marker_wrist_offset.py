@@ -45,15 +45,23 @@ from dexslide.kinematics.transforms import (
     transform_points,
     transform_to_rvec_tvec,
 )
+from dexslide.calibration.depth_projection import (
+    camera_points_to_body_points,
+    deproject_keypoint_points,
+    sample_depth_frame_m,
+    wrist_body_point,
+)
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags
 from dexslide.visualization.aruco_overlay import draw_axes, draw_marker_outline
 from dexslide.vision.hand_cube_overlay import (
-    HandCubeOverlayConfig,
     _build_marker_observations,
     _compute_marker_reprojection_errors,
     _seed_camera_body_pose,
     _solve_body_pose_camera_from_observations,
     resolve_marker_body_tag_pose_branches,
+)
+from dexslide.vision.marker_body_model import (
+    HandCubeOverlayConfig,
     resolve_hand_overlay_asset_paths,
 )
 
@@ -229,87 +237,10 @@ def _estimate_body_pose_in_camera_from_tag_dict(
     )
 
 
-def _sample_depth_m(
-    depth_frame: Any,
-    u: int,
-    v: int,
-    *,
-    window_radius: int,
-) -> float | None:
-    width = int(depth_frame.get_width())
-    height = int(depth_frame.get_height())
-    samples: list[float] = []
-    for dv in range(-int(window_radius), int(window_radius) + 1):
-        for du in range(-int(window_radius), int(window_radius) + 1):
-            uu = int(np.clip(u + du, 0, max(0, width - 1)))
-            vv = int(np.clip(v + dv, 0, max(0, height - 1)))
-            z_m = float(depth_frame.get_distance(uu, vv))
-            if z_m > 0.0:
-                samples.append(z_m)
-    if not samples:
-        return None
-    return float(np.median(np.asarray(samples, dtype=np.float64)))
-
-
-def _deproject_keypoint_points(
-    depth_frame: Any,
-    keypoints_2d: np.ndarray,
-    *,
-    landmark_indices: tuple[int, ...] = PALM_TRIANGLE_LANDMARK_INDICES,
-    window_radius: int,
-) -> np.ndarray | None:
-    keypoints = np.asarray(keypoints_2d, dtype=np.float64).reshape(-1, 2)
-    if keypoints.shape[0] <= max(int(idx) for idx in landmark_indices):
-        return None
-
-    intr = rs.video_stream_profile(depth_frame.profile).get_intrinsics()
-    points_camera_xyz: list[np.ndarray] = []
-    for landmark_idx in landmark_indices:
-        uv = keypoints[int(landmark_idx)]
-        u = int(round(float(uv[0])))
-        v = int(round(float(uv[1])))
-        z_m = _sample_depth_m(depth_frame, u, v, window_radius=window_radius)
-        if z_m is None or z_m <= 0.0:
-            return None
-        point_xyz = rs.rs2_deproject_pixel_to_point(intr, [float(u), float(v)], float(z_m))
-        points_camera_xyz.append(np.asarray(point_xyz, dtype=np.float64).reshape(3))
-    return np.asarray(points_camera_xyz, dtype=np.float64).reshape(len(landmark_indices), 3)
-
-
-def _deproject_wrist_point(
-    depth_frame: Any,
-    wrist_uv: tuple[float, float],
-    *,
-    window_radius: int,
-) -> np.ndarray | None:
-    triangle_points = _deproject_keypoint_points(
-        depth_frame,
-        np.asarray([wrist_uv], dtype=np.float64).reshape(1, 2),
-        landmark_indices=(0,),
-        window_radius=window_radius,
-    )
-    if triangle_points is None:
-        return None
-    return np.asarray(triangle_points[0], dtype=np.float64).reshape(3)
-
-
-def _camera_points_to_body_points(
-    transform_camera_body: np.ndarray,
-    camera_points_xyz: np.ndarray,
-) -> np.ndarray:
-    points = np.asarray(camera_points_xyz, dtype=np.float64).reshape(-1, 3)
-    camera_points_h = np.ones((points.shape[0], 4), dtype=np.float64)
-    camera_points_h[:, :3] = points
-    body_points_h = (invert_transform(transform_camera_body) @ camera_points_h.T).T
-    return np.asarray(body_points_h[:, :3], dtype=np.float64).reshape(points.shape[0], 3)
-
-
-def _wrist_body_point(
-    transform_camera_body: np.ndarray,
-    wrist_camera_xyz: np.ndarray,
-) -> np.ndarray:
-    wrist_body = _camera_points_to_body_points(transform_camera_body, wrist_camera_xyz)
-    return np.asarray(wrist_body[0], dtype=np.float64).reshape(3)
+_sample_depth_m = sample_depth_frame_m
+_deproject_keypoint_points = deproject_keypoint_points
+_camera_points_to_body_points = camera_points_to_body_points
+_wrist_body_point = wrist_body_point
 
 
 def _estimate_bbox_xyxy(

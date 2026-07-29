@@ -29,7 +29,7 @@ from dexslide.paths import (
     DEXALIGN_CALIBRATION_DIR,
 )
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags
-from dexslide.vision.hand_cube_overlay import HandCubeOverlayConfig
+from dexslide.vision.marker_body_model import HandCubeOverlayConfig
 
 from dexslide.calibration.calibrate_marker_wrist_offset import BodyPoseEstimate, _estimate_body_pose_in_camera_from_tag_dict
 from dexslide.calibration.dexalign.io_utils import ensure_session_dir, load_marker2hand_asset_mm, save_alignment_dataset

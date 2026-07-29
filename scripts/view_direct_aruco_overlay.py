@@ -81,13 +81,24 @@ from dexslide.vision.direct_aruco_tracker import (
 )
 from dexslide.vision.hand_cube_overlay import (
     CubePoseEstimate,
+    resolve_marker_body_tag_pose_branches,
+)
+from dexslide.vision.marker_body_model import (
     HandCubeOverlayConfig,
     marker_to_wrist_asset_transforms,
-    resolve_marker_body_tag_pose_branches,
     try_load_hand_cube_overlay_config,
 )
 from dexslide.kinematics.hand_overlay import compose_overlay_joint_angles
 from dexslide.vision.marker_body_pose_tracker import MarkerBodyPoseTracker
+from dexslide.vision.capture_backend import (
+    capture_backend_attempts as _capture_backend_attempts,
+    configure_capture_device as _configure_capture_device,
+    open_capture_with_fallback as _open_capture_with_fallback,
+)
+
+
+def _iter_capture_candidates(source: str | int) -> list[int | str]:
+    return [_parse_capture_source(source)]
 
 try:
     import pyrealsense2 as rs
@@ -192,91 +203,6 @@ def _parse_target_marker_ids(raw_value: str) -> list[int] | None:
             continue
         marker_ids.append(int(item))
     return marker_ids or None
-
-
-def _iter_capture_candidates(source: str | int) -> list[int | str]:
-    requested = _parse_capture_source(source)
-    return [requested]
-
-
-def _capture_backend_attempts(source: int | str) -> list[tuple[str, int | None]]:
-    if isinstance(source, str) and source.startswith("/dev/"):
-        return [("v4l2", cv2.CAP_V4L2), ("default", None)]
-    if isinstance(source, int):
-        return [("default", None), ("v4l2", cv2.CAP_V4L2)]
-    return [("default", None)]
-
-
-def _configure_capture_device(
-    cap: cv2.VideoCapture,
-    *,
-    width: int | None,
-    height: int | None,
-    fps: float | None,
-    buffer_size: int,
-) -> None:
-    if width is not None:
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(width))
-    if height is not None:
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, int(height))
-    if fps is not None:
-        cap.set(cv2.CAP_PROP_FPS, float(fps))
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, int(buffer_size))
-
-
-def _open_capture_with_fallback(
-    *,
-    source: str | int,
-    width: int | None,
-    height: int | None,
-    fps: float | None,
-    buffer_size: int,
-    purpose: str,
-) -> tuple[cv2.VideoCapture, int | str]:
-    requested = _parse_capture_source(source)
-    tried: list[str] = []
-    for candidate in _iter_capture_candidates(source):
-        for backend_label, backend in _capture_backend_attempts(candidate):
-            tried.append(f"{candidate}[{backend_label}]")
-            if backend is None:
-                cap = cv2.VideoCapture(candidate)
-            else:
-                cap = cv2.VideoCapture(candidate, backend)
-            _configure_capture_device(
-                cap,
-                width=width,
-                height=height,
-                fps=fps,
-                buffer_size=buffer_size,
-            )
-            if not cap.isOpened():
-                cap.release()
-                continue
-
-            probe_ok = False
-            frame_shape: tuple[int, ...] | None = None
-            for _ in range(5):
-                ok, frame_bgr = cap.read()
-                if ok and frame_bgr is not None:
-                    probe_ok = True
-                    frame_shape = tuple(int(value) for value in frame_bgr.shape)
-                    break
-                time.sleep(0.03)
-            if not probe_ok:
-                cap.release()
-                continue
-
-            shape_desc = "x".join(str(value) for value in frame_shape) if frame_shape is not None else "unknown"
-            print(
-                f"[camera] requested={requested}  selected={candidate}  "
-                f"backend={backend_label}  frame_shape={shape_desc}"
-            )
-            return cap, candidate
-
-    tried_desc = ", ".join(tried) if tried else "<none>"
-    raise RuntimeError(
-        f"Failed to open capture source for {purpose}: requested={requested}, tried=[{tried_desc}]"
-    )
 
 
 def _ensure_hand_cube_config(
