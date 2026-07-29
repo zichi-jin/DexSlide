@@ -1,0 +1,62 @@
+{
+  "hand": "left",
+  "tags2marker_path": "left_tags2marker.json",
+  "note": "This calibration uses the MediaPipe palm triangle (wrist, index_mcp, middle_mcp) together with RGB-D depth and ArUco marker-body pose observations to solve the full body->wrist pose.",
+  "initial_guess": {
+    "trans": [
+      0.04174223259788892,
+      0.08234226696194671,
+      -0.09004505570441539
+    ],
+    "rot": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "trans_unit": "m"
+  },
+  "result": {
+    "trans": [
+      0.06147447388019968,
+      0.0930607271050633,
+      -0.13041611090206295
+    ],
+    "rot": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "trans_unit": "m",
+    "data_source": "数据取自：left_marker2wrist_dataset.json",
+    "translation_std_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "note": "This calibration uses the MediaPipe palm triangle (wrist, index_mcp, middle_mcp) together with RGB-D depth and ArUco marker-body pose observations to solve the full body->wrist pose."
+  }
+}

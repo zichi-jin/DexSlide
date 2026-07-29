@@ -4,8 +4,8 @@ DexSlide — Main entry point for PC-side software.
 Usage:
     python main.py calibrate-skeleton                           # Offline A4 + manual marking (default)
     python main.py calibrate-skeleton --show-debug              # Show per-image mm skeleton debug window
-    python main.py run --port /dev/ttyACM0
-    python main.py raw --port /dev/ttyACM0
+    python main.py run                                          # Uses global communications config
+    python main.py raw                                          # Uses global communications config
 """
 
 import argparse
@@ -13,12 +13,18 @@ import json
 import time
 from pathlib import Path
 
+from dexslide.communications import (
+    camera_communication,
+    hand_joint_communication,
+    resolve_camera_source,
+    resolve_joint_port,
+)
 from dexslide.paths import (
+    DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE,
     DEFAULT_GLOVE_CALIBRATION_FILE,
     DEFAULT_RESULTS_FILE,
     DEFAULT_SKELETON_FILE,
 )
-from dexslide.serial_angles import pick_default_port
 
 def _load_json(path: str | Path) -> dict:
     with open(path, "r", encoding="utf-8") as f:
@@ -119,7 +125,7 @@ def cmd_run(args):
             "--calib-file <DexSlide>/assets/calibration/glove_calibration.json`."
         )
     if not args.port:
-        raise SystemExit("No serial port found. Use --port /dev/ttyACM0")
+        raise SystemExit("No serial port configured in assets/dexslide_communications.json")
 
     aruco_group_hand_map = _parse_group_hand_map(args.aruco_group_hand_map)
     aruco_tracker = None
@@ -193,7 +199,7 @@ def cmd_raw_monitor(args):
     from dexslide.serial_reader import SerialReader, joint_label
 
     print(f"Raw monitor on {args.port}... (Ctrl+C to stop)")
-    with SerialReader(args.port) as reader:
+    with SerialReader(args.port, args.baud) as reader:
         try:
             while True:
                 frame = reader.read_frame()
@@ -210,6 +216,8 @@ def cmd_raw_monitor(args):
 
 
 def main():
+    joint_communication = hand_joint_communication("left")
+    camera_intrinsics = _load_json(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE)
     parser = argparse.ArgumentParser(description="DexSlide Exoskeleton Data Glove")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -263,9 +271,9 @@ def main():
 
     # Real-time reconstruction
     p_run = subparsers.add_parser("run", help="Real-time hand reconstruction")
-    p_run.add_argument("--port", default=pick_default_port(), help="Serial port")
-    p_run.add_argument("--baud", type=int, default=115200, help="Baud rate")
-    p_run.add_argument("--mode", choices=["raw", "angles"], default="raw")
+    p_run.add_argument("--port", default=resolve_joint_port("left"), help="Serial port")
+    p_run.add_argument("--baud", type=int, default=int(joint_communication["baud"]), help="Baud rate")
+    p_run.add_argument("--mode", choices=["raw", "angles"], default=str(joint_communication["mode"]))
     p_run.add_argument("--skeleton-file", default=str(DEFAULT_SKELETON_FILE))
     p_run.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE))
     p_run.add_argument("--hand", choices=["auto", "left", "right"], default="left")
@@ -277,12 +285,12 @@ def main():
     )
     p_run.add_argument(
         "--aruco-source",
-        default="0",
-        help="ArUco capture source, e.g. 0, /dev/video4, RTSP URL, or video path.",
+        default=resolve_camera_source("primary"),
+        help="ArUco capture source. Defaults to assets/dexslide_communications.json.",
     )
     p_run.add_argument(
         "--aruco-camera-intrinsics",
-        default=None,
+        default=str(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE),
         help="Camera intrinsics json for ArUco pose estimation.",
     )
     p_run.add_argument(
@@ -338,9 +346,9 @@ def main():
         default=0.5,
         help="Drop ArUco pose if snapshot age exceeds this threshold (seconds).",
     )
-    p_run.add_argument("--aruco-width", type=int, default=None, help="Requested ArUco capture width.")
-    p_run.add_argument("--aruco-height", type=int, default=None, help="Requested ArUco capture height.")
-    p_run.add_argument("--aruco-fps", type=float, default=None, help="Requested ArUco capture FPS.")
+    p_run.add_argument("--aruco-width", type=int, default=int(camera_intrinsics["image_width"]), help="Requested ArUco capture width.")
+    p_run.add_argument("--aruco-height", type=int, default=int(camera_intrinsics["image_height"]), help="Requested ArUco capture height.")
+    p_run.add_argument("--aruco-fps", type=float, default=float(camera_intrinsics["fps"]), help="Requested ArUco capture FPS.")
     p_run.add_argument(
         "--aruco-buffer-size",
         type=int,
@@ -357,7 +365,8 @@ def main():
 
     # Debug
     p_raw = subparsers.add_parser("raw", help="Print raw serial values")
-    p_raw.add_argument("--port", required=True, help="Serial port")
+    p_raw.add_argument("--port", default=resolve_joint_port("left"), help="Serial port")
+    p_raw.add_argument("--baud", type=int, default=int(joint_communication["baud"]), help="Baud rate")
     p_raw.set_defaults(func=cmd_raw_monitor)
 
     args = parser.parse_args()

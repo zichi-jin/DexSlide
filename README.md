@@ -1,24 +1,24 @@
 # DexSlide
 
-DexSlide 是一个外骨骼数据手套项目仓库，当前主仓库聚焦上位机 Python 软件，包含 3 条主线：
+DexSlide 是一个外骨骼数据手套项目仓库，当前主仓库聚焦上位机 Python 软件，包含 2 条主线：
 
 - `20 DOF` 手套关节角采集后的手部重建与可视化。
 - 基于桌面参考 ArUco 与目标 ArUco 的直接世界位姿估计。
-- DexSlide 人手重建结果到 OrcaHand 的 retargeting 与 ROS 2 发布桥接。
 
 STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra`。本仓库不再承担下位机固件构建。
 
 ## 当前推荐路线
 
-视觉位姿这条线目前推荐使用 `direct ArUco` 方案，而不是 `umi_mono + ORB-SLAM3`：
+视觉位姿使用 `direct ArUco` 方案：
 
 - 固定桌面参考 tag 作为 `world/table` 原点。
 - 在同一帧中同时检测桌面 tag 和目标 tag。
-- 分别做两次 `PnP`，再用
+- 对普通单目标 tag，分别做两次 `PnP`，再用
   `T_table_target = inv(T_camera_table) @ T_camera_target`
   直接得到目标在世界系下的位姿。
+- 对手背 `18` 面 marker body，则把全部可见 marker 的角点一起做联合 `PnP`，直接解出融合后的 marker body 位姿。
 
-这条路线已经在仓库里有完整实现和可视化脚本，部署复杂度明显低于 SLAM。
+这条路线已经在仓库里有完整实现和可视化脚本。
 
 ## 仓库内容
 
@@ -27,7 +27,6 @@ STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra
 ├── README.md
 ├── main.py
 ├── requirements.txt
-├── requirements-retargeting.txt
 ├── assets/
 │   ├── calibration/
 │   │   ├── glove_calibration.json
@@ -38,27 +37,22 @@ STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra
 ├── dexslide/
 │   ├── calibration/
 │   ├── kinematics/
-│   ├── retargeting/
 │   ├── vision/
 │   ├── visualization/
 │   ├── world_pose/
 │   └── live.py
-├── dex_retargeting/
 ├── robot_manipulation/
 ├── scripts/
 ├── tests/
 ├── third_party/
-└── umi_mono/
+└── third_party/
 ```
 
 说明：
 
 - `dexslide/` 是当前主 Python 包。
-- `dexslide/world_pose/` 放 direct ArUco 世界位姿跟踪。
-- `dexslide/retargeting/` 放 DexSlide -> OrcaHand 的人手模型与 retarget bridge。
-- `dex_retargeting/` 是随仓库一起分发的 vendored retargeting 代码。
+- `dexslide/world_pose/` 暂存 direct ArUco 世界位姿跟踪代码，后续会按视觉职责拆分。
 - `assets/robot_hands/orcahand_description/` 是 vendored OrcaHand 资产。
-- `umi_mono/` 仍保留历史单目 SLAM 与 ROS 2 实验链路，但不再是当前首选方案。
 
 ## 环境安装
 
@@ -82,15 +76,22 @@ pip install -r requirements.txt
 - `matplotlib`
 - `vedo`
 
-### 可选：retargeting 额外依赖
+## 全局通信配置
 
-DexSlide -> OrcaHand 的 retargeting 需要更重的运动学依赖，单独放在：
+除机器人控制连接外，DexSlide 的手套串口和主相机默认参数统一由下面这个文件提供：
 
-```bash
-pip install -r requirements-retargeting.txt
+```text
+assets/dexslide_communications.json
 ```
 
-这会安装 `pin`、`nlopt`、`pytransform3d`、`trimesh`、`torch` 等依赖。
+当前配置包含：
+
+- 左手 joints 串口、稳定 `by-id` 路径、baud、stream mode、启动超时和最大 sample age。
+- 左手 tactile 预留项。
+- 右手 joints / tactile 预留项。
+- 主相机 backend、RealSense serial、OpenCV source、稳定 `by-path` 路径和 `1280x720@30` 参数。
+
+仓库中的 DexSlide viewer、标定和采集脚本都使用这份配置作为默认值，不再自行枚举 `ttyACM/ttyUSB` 或扫描其他 `/dev/video*`。CLI 参数只用于明确的临时覆盖；修改日常连接参数时应只改这一个 JSON。
 
 ## 工作流 A：手套骨骼与实时重建
 
@@ -118,7 +119,7 @@ python main.py calibrate-skeleton --input-dir assets/photos --skeleton-aggregate
 
 ```text
 assets/skeletons/skeleton.json
-assets/skeletons/offline_bone_mm_results.json
+assets/skeletons/photos2skeletons_dataset.json
 ```
 
 ### 3. 标定 ADC 到角度映射
@@ -166,15 +167,18 @@ python main.py run --port /dev/ttyACM0 --mode angles
 
 ```text
 assets/calibration/direct_aruco/d435i_960_540.json
-assets/calibration/direct_aruco/table_aruco_4x4_120mm.yaml
-assets/calibration/direct_aruco/target_aruco_4x4_50mm.yaml
+assets/calibration/direct_aruco/table_aruco.yaml
+assets/calibration/direct_aruco/left_tags2marker.json
+assets/calibration/direct_aruco/left_marker2wrist.json
+assets/calibration/direct_aruco/left_marker2wrist_dataset.json
 ```
 
 当前默认口径：
 
 - 字典：`DICT_4X4_50`
 - 桌面参考 tag：`id=0`，边长 `120 mm`
-- 目标 tag：默认边长 `50 mm`
+- 目标 tag：默认按 `20 mm` 的 ArUco 黑边界做单码 PnP
+- 手部载体：默认使用 `18` 面 marker body，几何关系由 `left_tags2marker.json` 提供
 
 ### 1. 3D 轨迹查看
 
@@ -198,6 +202,10 @@ python scripts/view_direct_aruco_overlay.py \
   --target-marker-ids 5
 ```
 
+更完整的使用说明、参数解释、运行时交互和稳定性调参建议，见：
+
+- [docs/direct_aruco_overlay_usage.md](docs/direct_aruco_overlay_usage.md)
+
 这个脚本会在实时相机图像上直接画出：
 
 - 桌面 tag 轮廓与坐标轴
@@ -205,6 +213,25 @@ python scripts/view_direct_aruco_overlay.py \
 - 当前检测状态与相对位姿信息
 
 它是检查“坐标系是否真正粘在实物上”的首选工具。
+
+如果你现在使用的是手背 `18` 面 marker body，并且希望叠加 DexSlide 骨骼手，推荐直接运行：
+
+```bash
+python scripts/view_direct_aruco_overlay.py \
+  --enable-hand-overlay \
+  --hand left \
+  --corner-refine-mode apriltag \
+  --body-smoothing 0.35 \
+  --body-outlier-threshold-mm 15 \
+  --body-reprojection-threshold-px 4.0
+```
+
+这条命令会：
+
+- 只在画面中显示各 marker 边框。
+- 用联合 `PnP` 解算融合后的 marker body 坐标系。
+- 把实时骨骼手刚性绑定到 marker body 上做 AR 投影。
+- 把运行状态输出到终端，避免往画面堆文字。
 
 ### 3. 代码入口
 
@@ -217,45 +244,6 @@ python scripts/view_direct_aruco_overlay.py \
 
 - 如果桌面参考 tag 完全出画，则 `world/table` 系下的目标位姿会中断。
 - 快速运动时主要瓶颈仍可能来自曝光时间和 motion blur，而不只是检测参数。
-- 若单个桌面 tag 视野受限，建议升级为多 table tags 布局，而不是继续依赖 SLAM。
-
-## 工作流 C：DexSlide -> OrcaHand retargeting
-
-### 1. 实时对比查看
-
-安装完 `requirements-retargeting.txt` 后，可以用下面的 viewer 对比：
-
-```bash
-python scripts/glove_live_retarget_compare.py \
-  --port /dev/ttyACM0 \
-  --mode raw
-```
-
-它会同时显示：
-
-- 由 DexSlide 20 维关节角重建出的人手姿态
-- retarget 到 OrcaHand 后的机器人手姿态
-
-### 2. 发布到 OrcaHand ROS 2 话题
-
-```bash
-python scripts/publish_dex_orca_targets.py \
-  --port /dev/ttyACM0 \
-  --topic /orca_hand/joint_targets
-```
-
-注意：
-
-- 这个发布脚本依赖 `rclpy`。
-- 如果你在 conda 环境里遇到 `_rclpy_pybind11` ABI 问题，通常需要改用与你本机 ROS 2 安装匹配的 Python 解释器运行。
-- 下游话题与单位约定请同步查看 `robot_manipulation/orca_control/orca_hand_ros/README.md`。
-
-### 3. 相关入口
-
-- 共享串口监听：`dexslide/live.py`
-- retarget API：`dexslide/retargeting/`
-- 发布脚本：`scripts/publish_dex_orca_targets.py`
-- 可视化对比：`scripts/glove_live_retarget_compare.py`
 
 ## `main.py` 当前命令
 
@@ -271,19 +259,9 @@ python main.py raw --help
 - `run`
 - `raw`
 
-## `umi_mono` 的位置
-
-`umi_mono/` 仍保留：
-
-- 单目 SLAM / ROS 2 实验链路
-- `dexslide_slam_publisher`
-- 历史标定与数据处理脚本
-
-当前它更适合作为历史实验与备份路径，而不是日常首选部署方案。
-
 ## 测试
 
-纯 Python 单元测试推荐用下面方式运行，避免环境里的 ROS 2 `pytest` 插件污染：
+纯 Python 单元测试可用下面方式运行：
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest tests/test_direct_aruco_tracker.py -q
@@ -297,8 +275,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest tests/test_direct_aruco_tracke
 
 - DexSlide 20 DOF 手套数据的稳定采集与重建。
 - 更稳健的世界位姿方案，优先 direct ArUco / 多参考 tag。
-- DexSlide 到 OrcaHand 的实时 retarget bridge。
-- 机器人侧集成，包括 OrcaHand 与 JAKA/Orca 控制链路。
+- 机器人侧集成，包括 JAKA 控制链路。
 
 ## License
 

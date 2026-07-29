@@ -35,3 +35,13 @@
 {"type":"cli","id":"CLI-1780657014466-1","timestamp":"2026-06-05T10:56:54.466Z","command":"spec load","args":{"keyword":"ui conventions","stdin":false}}
 {"type":"cli","id":"CLI-1780659583650-1","timestamp":"2026-06-05T11:39:43.650Z","command":"spec load","args":{"keyword":"jaka","stdin":false}}
 {"type":"cli","id":"CLI-1780662374304-1","timestamp":"2026-06-05T12:26:14.304Z","command":"spec load","args":{"keyword":"admittance","stdin":false}}
+{"type":"cli","id":"CLI-1783767490722-1","timestamp":"2026-07-11T10:58:10.722Z","command":"spec load","args":{"category":"debug","keyword":"jaka teleop compliance servo 抖动 红灯","stdin":false}}
+{"type":"cli","id":"CLI-1783767490782-1","timestamp":"2026-07-11T10:58:10.782Z","command":"spec load","args":{"category":"arch","keyword":"jaka teleop compliance servo","stdin":false}}
+{"type":"cli","id":"CLI-1783949941433-1","timestamp":"2026-07-13T13:39:01.433Z","command":"spec load","args":{"category":"coding","keyword":"argparse flag default axis payload zero_end_sensor","stdin":false}}
+{"type":"cli","id":"CLI-1784015296168-1","timestamp":"2026-07-14T07:48:16.168Z","command":"spec load","args":{"category":"coding","keyword":"argparse split defaults rotation translation ui","stdin":false}}
+{"type":"cli","id":"CLI-1784779171448-1","timestamp":"2026-07-23T03:59:31.448Z","command":"spec load","args":{"category":"arch","keyword":"vscode workflow build install log ros node","stdin":false}}
+{"type":"cli","id":"CLI-1785049987048-1","timestamp":"2026-07-26T07:13:07.048Z","command":"spec load","args":{"keyword":"teleop","stdin":false}}
+{"type":"cli","id":"CLI-1785064121587-1","timestamp":"2026-07-26T11:08:41.587Z","command":"spec load","args":{"keyword":"teleop","stdin":false}}
+{"type":"cli","id":"CLI-1785065926396-1","timestamp":"2026-07-26T11:38:46.396Z","command":"spec load","args":{"category":"debug","stdin":false}}
+{"type":"cli","id":"CLI-1785116478671-1","timestamp":"2026-07-27T01:41:18.671Z","command":"spec load","args":{"category":"debug","stdin":false}}
+{"type":"cli","id":"CLI-1785123618797-1","timestamp":"2026-07-27T03:40:18.797Z","command":"spec load","args":{"keyword":"aruco","stdin":false}}

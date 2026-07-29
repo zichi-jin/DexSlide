@@ -57,34 +57,25 @@ SKELETON_BONE_MAP: dict[str, dict[str, str]] = {
         "distal": "thumb_distal",
     },
     "index": {
-        "metacarpal": "index_metacarpal",
         "proximal": "index_proximal",
         "middle": "index_middle",
         "distal": "index_distal",
     },
     "middle": {
-        "metacarpal": "middle_metacarpal",
         "proximal": "middle_proximal",
         "middle": "middle_middle",
         "distal": "middle_distal",
     },
     "ring": {
-        "metacarpal": "ring_metacarpal",
         "proximal": "ring_proximal",
         "middle": "ring_middle",
         "distal": "ring_distal",
     },
     "pinky": {
-        "metacarpal": "pinky_metacarpal",
         "proximal": "pinky_proximal",
         "middle": "pinky_middle",
         "distal": "pinky_distal",
     },
-}
-PALM_MCP_MAP = {
-    "index_middle": "palm_mcp_index_middle",
-    "middle_ring": "palm_mcp_middle_ring",
-    "ring_pinky": "palm_mcp_ring_pinky",
 }
 
 
@@ -502,10 +493,6 @@ def build_skeleton_dict(
 
     skeleton["palm"] = {
         "vertices": palm_vertices,
-        "mcp_distances": {
-            k: _aggregate_scalar(stats, v, aggregate) for k, v in PALM_MCP_MAP.items()
-        },
-        "thickness": 25.0,
     }
     return skeleton
 
@@ -614,9 +601,14 @@ def run_offline_pipeline(
             results=results,
             aggregate=skeleton_aggregate,
         )
+        skeleton["note"] = (
+            f"This skeleton was estimated offline from 2D photos in `{input_dir}` and serves as the photo-derived baseline."
+        )
         payload = {
             "meta": {
                 "input_dir": str(input_dir),
+                "source_photos_dir": str(input_dir),
+                "source_photo_paths": [str(path) for path in image_paths],
                 "a4_world_mm_tl_tr_br_bl": A4_WORLD_PTS.astype(float).tolist(),
                 "min_conf": float(min_conf),
                 "reuse_a4": bool(reuse_a4),

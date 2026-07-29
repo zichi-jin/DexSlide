@@ -23,9 +23,10 @@ DEFAULT_SENSOR_BRAND = 10  # 10 表示当前这条内置力传感器路径
 # - ftUser 更像导纳公式里的速度 / 阻尼项系数，可粗略类比为 p'
 # - ftReboundFK 更像位置回正项系数，可粗略类比为 p
 # - 这组接口里没有单独暴露显式的惯性 / 加速度项，所以这里没有可直接单调的 p''
-DEFAULT_FORCE_DAMPING_N = 1e-3  # xyz 平移轴的 ftUser；越大通常越硬
-DEFAULT_TORQUE_DAMPING_NM = 1e-3  # rx/ry/rz 转动轴的 ftUser；越大通常越硬
-DEFAULT_REBOUND_FK = 1.0  # 六轴共用的 ftReboundFK；越大越容易回正，也更容易感觉“拽回去”
+
+DEFAULT_FORCE_DAMPING_N = 5  # xyz 平移轴的 ftUser；越大通常越硬
+DEFAULT_TORQUE_DAMPING_NM = 1  # rx/ry/rz 转动轴的 ftUser；越大通常越硬
+DEFAULT_REBOUND_FK = 1 # 六轴共用的 ftReboundFK；越大越容易回正，也更容易感觉“拽回去”
 
 # servo 轨迹参数。
 # 手册里 servo 是 8 ms 一个插补周期；这里走 servo_p(INCR)，连续小步下发。

@@ -6,6 +6,11 @@ import numpy as np
 
 FINGERS = ["thumb", "index", "middle", "ring", "pinky"]
 FINGER_OFFSET = {"thumb": 0, "index": 4, "middle": 8, "ring": 12, "pinky": 16}
+RUNTIME_PALM_COORDINATE_MODE = "runtime"
+FOUR_FINGER_MCP_FRONT_ZERO_RAD = 0.0
+FOUR_FINGER_MCP_BACK_ZERO_RAD = 0.0
+FOUR_FINGER_FORWARD_AXIS = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+THUMB_CHAIN_RX_FIELD = "thumb_chain_rx_rad"
 
 
 def _thumb_sign(base: np.ndarray, hand: str) -> float:
@@ -16,20 +21,44 @@ def _thumb_sign(base: np.ndarray, hand: str) -> float:
     return -1.0 if float(base[1]) < 0.0 else 1.0
 
 
-def thumb_pp_frame(raw4: np.ndarray, palm: dict[str, np.ndarray], hand: str):
+def thumb_chain_rx_rad(skeleton: dict) -> float:
+    value = float(skeleton.get("palm", {}).get(THUMB_CHAIN_RX_FIELD, 0.0))
+    return value if np.isfinite(value) else 0.0
+
+
+def thumb_pp_frame(
+    raw4: np.ndarray,
+    palm: dict[str, np.ndarray],
+    hand: str,
+    thumb_base_rx_rad: float = 0.0,
+):
     _dip, _pip, mcp_front, mcp_back = [float(v) for v in raw4]
     base = palm["thumb"].copy()
-    thumb_sign = _thumb_sign(base, hand)
-    z_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
-    spread_dir = rot_z(mcp_back) @ np.array([0.0, thumb_sign, 0.0], dtype=np.float64)
-    bend_axis = _unit(np.cross(z_axis, spread_dir), np.array([1.0, 0.0, 0.0], dtype=np.float64))
-    x_pp = _unit(
-        np.cos(mcp_front) * spread_dir - np.sin(mcp_front) * z_axis,
-        spread_dir,
+    r_pp = (
+        rot_x(float(thumb_base_rx_rad))
+        @ rot_x(np.deg2rad(75.0))
+        @ rot_z(np.deg2rad(-90.0) + mcp_back)
+        @ rot_y(np.deg2rad(90.0) + mcp_front)
+        @ rot_x(np.deg2rad(-5.0))
     )
-    y_pp = bend_axis
-    z_pp = _unit(np.cross(x_pp, y_pp), z_axis)
-    return base, x_pp, y_pp, z_pp
+    return base, r_pp[:, 0], r_pp[:, 1], r_pp[:, 2]
+
+
+
+# def thumb_pp_frame(raw4: np.ndarray, palm: dict[str, np.ndarray], hand: str):
+#     _dip, _pip, mcp_front, mcp_back = [float(v) for v in raw4]
+#     base = palm["thumb"].copy()
+#     thumb_sign = _thumb_sign(base, hand)
+#     z_axis = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+#     spread_dir = rot_z(mcp_back) @ np.array([0.0, thumb_sign, 0.0], dtype=np.float64)
+#     bend_axis = _unit(np.cross(z_axis, spread_dir), np.array([1.0, 0.0, 0.0], dtype=np.float64))
+#     x_pp = _unit(
+#         np.cos(mcp_front) * spread_dir - np.sin(mcp_front) * z_axis,
+#         spread_dir,
+#     )
+#     y_pp = bend_axis
+#     z_pp = _unit(np.cross(x_pp, y_pp), z_axis)
+#     return base, x_pp, y_pp, z_pp
 
 
 
@@ -114,7 +143,6 @@ def canonicalize_palm_xoy(skeleton: dict) -> dict[str, np.ndarray]:
     out = {}
     for key, value in palm.items():
         out[key] = (rotation.T @ (value - wrist)).astype(np.float64)
-        out[key][2] = 0.0
     return out
 
 
@@ -128,6 +156,16 @@ def apply_handedness(palm: dict[str, np.ndarray], hand: str) -> dict[str, np.nda
         for key in out:
             out[key][1] *= -1.0
     return out
+
+
+def runtime_palm_points(skeleton: dict, hand: str) -> dict[str, np.ndarray]:
+    palm_payload = skeleton.get("palm", {}) if isinstance(skeleton, dict) else {}
+    coordinate_mode = str(palm_payload.get("coordinate_mode", "")).strip().lower()
+    if coordinate_mode == RUNTIME_PALM_COORDINATE_MODE:
+        palm = extract_palm_points(skeleton)
+    else:
+        palm = canonicalize_palm_xoy(skeleton)
+    return apply_handedness(palm, hand)
 
 
 def finger_lengths(name: str, skeleton: dict) -> list[float]:
@@ -162,6 +200,7 @@ def finger_points(
             np.array([dip, pip, mcp_front, mcp_back]),
             palm,
             hand,
+            thumb_chain_rx_rad(skeleton),
         )
         lengths = finger_lengths(name, skeleton)
         pts = [base]
@@ -175,9 +214,13 @@ def finger_points(
         return np.asarray(pts, dtype=np.float64)
 
     base = palm[name].copy()
-    f = rot_z(mcp_back) @ np.array([1.0, 0.0, 0.0], dtype=np.float64)
+    f = rot_z(FOUR_FINGER_MCP_BACK_ZERO_RAD + mcp_back) @ FOUR_FINGER_FORWARD_AXIS
     lengths = finger_lengths(name, skeleton)
-    angles = [mcp_front, mcp_front + pip, mcp_front + pip + dip]
+    angles = [
+        FOUR_FINGER_MCP_FRONT_ZERO_RAD + mcp_front,
+        FOUR_FINGER_MCP_FRONT_ZERO_RAD + mcp_front + pip,
+        FOUR_FINGER_MCP_FRONT_ZERO_RAD + mcp_front + pip + dip,
+    ]
     pts = [base]
     point = base.copy()
     for length, theta in zip(lengths, angles):

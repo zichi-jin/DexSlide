@@ -1,3 +1,9 @@
+
+'''
+the smoke test of whether jakaS5's admittance control functional or not. Turned out it works.
+'''
+
+
 #!/usr/bin/env python3
 from __future__ import annotations
 
@@ -18,20 +24,42 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 JAKA_SDK_ROOT = PROJECT_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
 PAYLOAD_CONFIG_PATH = PROJECT_ROOT / "JAKA_control" / "config" / "jaka_s5_orcahand_payload.json"
 
+# DEFAULT_IP = "192.168.99.44"
+# DEFAULT_SENSOR_BRAND = 10
+# DEFAULT_FORCE_DAMPING_N = 7
+# DEFAULT_TORQUE_DAMPING_NM = 5
+# DEFAULT_REBOUND_FK = 0.5
+# DEFAULT_TRANSLATION_STEP_MM = 10
+# DEFAULT_ROTATION_STEP_DEG = 1
+# DEFAULT_SERVO_STEP_NUM = 1
+# DEFAULT_REFRESH_MS = 250
+# FT_CTRL_TOOL_FRAME = 0
+# SDK_POWER_ON_WAIT_S = 0.0
+# SDK_ENABLE_WAIT_S = 0.0
+# SDK_SENSOR_BRAND_WAIT_S = 2.0
+# SDK_COMPLIANCE_SWITCH_WAIT_S = 1.0
+# ZERO_SENSOR_SETTLE_S = 0.6
+
 DEFAULT_IP = "192.168.99.44"
 DEFAULT_SENSOR_BRAND = 10
-DEFAULT_FORCE_DAMPING_N = 7
-DEFAULT_TORQUE_DAMPING_NM = 5
-DEFAULT_REBOUND_FK = 0.5
+
+DEFAULT_FORCE_DAMPING_N = 0.5
+# 对应平移轴 x/y/z 的 ftUser，更接近导纳公式里的阻尼 / 速度项系数，可粗略类比 B 
+DEFAULT_TORQUE_DAMPING_NM = 10
+# 对应转动轴 rx/ry/rz 的 ftUser，本质同上，也是阻尼 / 速度项系数，只是作用在旋转自由度上。
+DEFAULT_TRANSLATION_REBOUND_FK = 0.05
+# 对应平移轴 x/y/z 的 ftReboundFK，更接近导纳里的回正 / 弹簧项系数。
+DEFAULT_ROTATION_REBOUND_FK = 10
+# 对应转动轴 rx/ry/rz 的 ftReboundFK；默认略大于平移轴，但仍避免其占主导。
 DEFAULT_TRANSLATION_STEP_MM = 10
 DEFAULT_ROTATION_STEP_DEG = 1
 DEFAULT_SERVO_STEP_NUM = 1
 DEFAULT_REFRESH_MS = 250
 FT_CTRL_TOOL_FRAME = 0
-SDK_POWER_ON_WAIT_S = 0.0
-SDK_ENABLE_WAIT_S = 0.0
-SDK_SENSOR_BRAND_WAIT_S = 2.0
-SDK_COMPLIANCE_SWITCH_WAIT_S = 1.0
+SDK_POWER_ON_WAIT_S = 1.0
+SDK_ENABLE_WAIT_S = 1.0
+SDK_SENSOR_BRAND_WAIT_S = 1.0
+SDK_COMPLIANCE_SWITCH_WAIT_S = 4.0
 ZERO_SENSOR_SETTLE_S = 0.6
 
 
@@ -224,23 +252,32 @@ class JakaCompliantTeleopUI:
             maybe_set_sensor_brand(robot, self.args.sensor_brand)
             ensure_ok(robot.set_torque_sensor_mode(1), "set_torque_sensor_mode")
 
-            payload = load_saved_payload_snapshot()
-            if payload is not None:
-                write_payload(robot, payload)
+            if not self.args.no_saved_payload:
+                payload = load_saved_payload_snapshot()
+                if payload is not None:
+                    write_payload(robot, payload)
 
             zero_fn = getattr(robot, "zero_end_sensor", None)
-            if zero_fn is not None:
-                ensure_ok(zero_fn(), "zero_end_sensor")
-                time.sleep(ZERO_SENSOR_SETTLE_S)
+            if zero_fn is None:
+                raise AttributeError("robot does not provide zero_end_sensor")
+            ensure_ok(zero_fn(), "zero_end_sensor")
+            time.sleep(ZERO_SENSOR_SETTLE_S)
 
             set_frame = getattr(robot, "set_ft_ctrl_frame", None)
             if set_frame is not None:
                 ensure_ok(set_frame(FT_CTRL_TOOL_FRAME), "set_ft_ctrl_frame(tool)")
 
             for axis_index in range(6):
-                damping = self.args.force_damping_n if axis_index < 3 else self.args.torque_damping_nm
+                is_translation_axis = axis_index < 3
+                enable_axis = is_translation_axis or self.args.enable_rotation_compliance
+                damping = self.args.force_damping_n if is_translation_axis else self.args.torque_damping_nm
+                rebound_fk = (
+                    self.args.translation_rebound_fk if is_translation_axis else self.args.rotation_rebound_fk
+                )
+                if not enable_axis:
+                    rebound_fk = 0.0
                 ensure_ok(
-                    robot.set_admit_ctrl_config(axis_index, 1, damping, 0.0, 0, self.args.rebound_fk),
+                    robot.set_admit_ctrl_config(axis_index, 1 if enable_axis else 0, damping, 0.0, 0, rebound_fk),
                     f"set_admit_ctrl_config(axis={axis_index})",
                 )
 
@@ -398,7 +435,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sensor-brand", type=int, default=DEFAULT_SENSOR_BRAND)
     parser.add_argument("--force-damping-n", type=float, default=DEFAULT_FORCE_DAMPING_N)
     parser.add_argument("--torque-damping-nm", type=float, default=DEFAULT_TORQUE_DAMPING_NM)
-    parser.add_argument("--rebound-fk", type=float, default=DEFAULT_REBOUND_FK)
+    parser.add_argument("--translation-rebound-fk", type=float, default=DEFAULT_TRANSLATION_REBOUND_FK)
+    parser.add_argument("--rotation-rebound-fk", type=float, default=DEFAULT_ROTATION_REBOUND_FK)
+    parser.add_argument("--enable-rotation-compliance", action="store_true")
+    parser.add_argument("--no-saved-payload", action="store_true")
     parser.add_argument("--xyz-step-mm", type=float, default=DEFAULT_TRANSLATION_STEP_MM)
     parser.add_argument("--rotation-step-deg", type=float, default=DEFAULT_ROTATION_STEP_DEG)
     parser.add_argument("--servo-step-num", type=int, default=DEFAULT_SERVO_STEP_NUM)
@@ -409,7 +449,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_arg_parser().parse_args()
-    if args.force_damping_n < 0.0 or args.torque_damping_nm < 0.0 or args.rebound_fk < 0.0:
+    if (
+        args.force_damping_n < 0.0
+        or args.torque_damping_nm < 0.0
+        or args.translation_rebound_fk < 0.0
+        or args.rotation_rebound_fk < 0.0
+    ):
         raise SystemExit("导纳参数不能小于 0")
     if args.xyz_step_mm <= 0.0 or args.rotation_step_deg <= 0.0:
         raise SystemExit("步长必须大于 0")

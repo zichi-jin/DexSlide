@@ -10,6 +10,8 @@ Frame format (44 bytes):
 import struct
 import serial
 
+from dexslide.communications import hand_joint_communication, resolve_joint_port
+
 FRAME_HEADER = 0xAA55
 FRAME_SIZE = 44  # 2 + 40 + 1 + 1
 TOTAL_JOINTS = 20
@@ -34,9 +36,16 @@ def joint_label(index: int) -> str:
 class SerialReader:
     """Reads and parses DexSlide joint data frames from USB serial."""
 
-    def __init__(self, port: str, baudrate: int = 115200):
-        self.port = port
-        self.baudrate = baudrate
+    def __init__(
+        self,
+        port: str | None = None,
+        baudrate: int | None = None,
+        *,
+        hand: str = "left",
+    ):
+        communication = hand_joint_communication(hand)
+        self.port = resolve_joint_port(hand) if port is None else str(port)
+        self.baudrate = int(communication["baud"] if baudrate is None else baudrate)
         self.ser = None
 
     def open(self):

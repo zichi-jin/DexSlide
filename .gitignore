@@ -35,20 +35,12 @@ assets/mano/models/*.pkl
 openspec/
 .codex
 AGENTS.md
-umi_mono/docs/
 
 # Workflow / local metadata
 .workflow/
 
 # Nested repos converted to plain directories
-robot_manipulation/JAKA_control/jaka_ros2/.git/
 robot_manipulation/orca_control/orca_dependencies/.git/
-robot_manipulation/JAKA_control/jaka_ros2/build/
-robot_manipulation/JAKA_control/jaka_ros2/install/
-robot_manipulation/JAKA_control/jaka_ros2/log/
-robot_manipulation/JAKA_control/jaka_ros2/src/build/
-robot_manipulation/JAKA_control/jaka_ros2/src/install/
-robot_manipulation/JAKA_control/jaka_ros2/src/log/
 robot_manipulation/orca_control/orca_dependencies/build/
 robot_manipulation/orca_control/orca_dependencies/install/
 robot_manipulation/orca_control/orca_dependencies/log/

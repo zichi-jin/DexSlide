@@ -1,0 +1,51 @@
+{
+  "hand": "left",
+  "input_tags2marker_path": "left_tags2marker.json",
+  "output_marker2wrist_path": "left_marker2wrist.json",
+  "saved_at_unix": 1784084457.7408397,
+  "sample_count": 1,
+  "samples_body_to_wrist_transform_matrix": [
+    [
+      [
+        0.09937820967812905,
+        0.9906833666575341,
+        -0.09311518925107477,
+        0.06147447388019968
+      ],
+      [
+        -0.964022535489804,
+        0.11904304679852894,
+        0.23767478637148767,
+        0.0930607271050633
+      ],
+      [
+        0.2465451733637852,
+        0.06614544607920386,
+        0.966871375858239,
+        -0.13041611090206295
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  ],
+  "samples_body_to_wrist_translation_m": [
+    [
+      0.06147447388019968,
+      0.0930607271050633,
+      -0.13041611090206295
+    ]
+  ],
+  "samples_body_to_wrist_rotation_quaternion_xyzw": [
+    [
+      -0.058016779946324294,
+      -0.11488413865952189,
+      -0.6611448629804176,
+      0.7391367654796536
+    ]
+  ],
+  "note": "This calibration uses the MediaPipe palm triangle (wrist, index_mcp, middle_mcp) together with RGB-D depth and ArUco marker-body pose observations to solve the full body->wrist pose."
+}

@@ -11,11 +11,9 @@ mediapipe==0.10.14
 
 # Numerical processing and visualization
 numpy>=1.24
+scipy>=1.11
 matplotlib>=3.8
 vedo>=2024.5
-
-# Retargeting runtime dependencies are listed separately in
-# `requirements-retargeting.txt` because they pull in heavier kinematics libs.
 
 # Optional MANO overlay script (`scripts/glove_live_mano.py`) uses the bundled
 # MANO model files plus numpy/matplotlib/pickle from the standard library.

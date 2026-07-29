@@ -116,6 +116,7 @@ def _detect_relevant_aruco_tags(
     same_cfg: bool,
     refine_subpix: bool,
     motion_tolerant: bool,
+    corner_refine_mode: str | None = None,
 ) -> dict[int, dict[str, np.ndarray]]:
     combined: dict[int, dict[str, np.ndarray]] = {}
 
@@ -127,6 +128,7 @@ def _detect_relevant_aruco_tags(
             fisheye_intr_dict=intr,
             refine_subpix=refine_subpix,
             motion_tolerant=motion_tolerant,
+            corner_refine_mode=corner_refine_mode,
         )
         for marker_id, tag in all_tags.items():
             if marker_id == table_marker_id:
@@ -143,6 +145,7 @@ def _detect_relevant_aruco_tags(
         fisheye_intr_dict=intr,
         refine_subpix=refine_subpix,
         motion_tolerant=motion_tolerant,
+        corner_refine_mode=corner_refine_mode,
     )
     if table_marker_id in table_tags:
         combined[int(table_marker_id)] = table_tags[int(table_marker_id)]
@@ -154,6 +157,7 @@ def _detect_relevant_aruco_tags(
         fisheye_intr_dict=intr,
         refine_subpix=refine_subpix,
         motion_tolerant=motion_tolerant,
+        corner_refine_mode=corner_refine_mode,
     )
     for marker_id, tag in target_tags.items():
         if marker_id == table_marker_id:
@@ -200,6 +204,9 @@ def _build_direct_aruco_frame_result(
                 "detected": False,
                 "target_in_camera": None,
                 "target_in_table": None,
+                "corners": None,
+                "undistorted_corners": None,
+                "marker_size_m": None,
             }
             continue
 
@@ -215,6 +222,12 @@ def _build_direct_aruco_frame_result(
             "detected": True,
             "target_in_camera": _pose_dict_from_transform(t_camera_target),
             "target_in_table": target_in_table,
+            "corners": np.asarray(target_tag["corners"], dtype=np.float64).reshape(4, 2).tolist(),
+            "undistorted_corners": np.asarray(
+                target_tag.get("undistorted_corners", target_tag["corners"]),
+                dtype=np.float64,
+            ).reshape(4, 2).tolist(),
+            "marker_size_m": float(target_tag.get("marker_size_m", 0.0)),
         }
 
     return {
@@ -252,6 +265,7 @@ class DirectArucoTracker:
         num_workers: int = 1,
         refine_subpix: bool = True,
         motion_tolerant: bool = True,
+        corner_refine_mode: str | None = None,
     ):
         self.source = source
         self.camera_intrinsics = Path(camera_intrinsics)
@@ -270,6 +284,7 @@ class DirectArucoTracker:
         self.num_workers = max(1, int(num_workers))
         self.refine_subpix = bool(refine_subpix)
         self.motion_tolerant = bool(motion_tolerant)
+        self.corner_refine_mode = None if corner_refine_mode is None else str(corner_refine_mode)
 
         self.lock = threading.Lock()
         self.running = False
@@ -312,7 +327,7 @@ class DirectArucoTracker:
                 raw_intr = _parse_fisheye_intrinsics(json.load(handle))
 
             cap_source = _parse_capture_source(self.source)
-            if isinstance(cap_source, str) and cap_source.startswith("/dev/video"):
+            if isinstance(cap_source, str) and cap_source.startswith("/dev/"):
                 cap = cv2.VideoCapture(cap_source, cv2.CAP_V4L2)
             else:
                 cap = cv2.VideoCapture(cap_source)
@@ -355,6 +370,7 @@ class DirectArucoTracker:
                         same_cfg=self.table_aruco_yaml.resolve() == self.target_aruco_yaml.resolve(),
                         refine_subpix=self.refine_subpix,
                         motion_tolerant=self.motion_tolerant,
+                        corner_refine_mode=self.corner_refine_mode,
                     )
                     frame_result = _build_direct_aruco_frame_result(
                         frame_idx=frame_idx,

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from collections import deque
@@ -13,6 +14,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from dexslide.communications import camera_communication, resolve_camera_source
 from dexslide.paths import (
     DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE,
     DEFAULT_DIRECT_ARUCO_TABLE_CONFIG_FILE,
@@ -131,8 +133,9 @@ def _set_equal_limits(ax, points: list[np.ndarray], default_radius: float) -> No
 
 
 def main() -> None:
+    camera_intrinsics = json.loads(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE.read_text(encoding="utf-8"))
     parser = argparse.ArgumentParser(description="Plot direct ArUco relative pose in a table/world frame.")
-    parser.add_argument("--source", default="0", help="Capture source, e.g. 0 or /dev/video4")
+    parser.add_argument("--source", default=resolve_camera_source("primary"), help="Configured capture source")
     parser.add_argument(
         "--camera-intrinsics",
         default=str(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE),
@@ -154,9 +157,9 @@ def main() -> None:
         default="",
         help="Comma-separated target marker ids. Empty means track all non-table ids that are detected.",
     )
-    parser.add_argument("--width", type=int, default=None, help="Capture width override")
-    parser.add_argument("--height", type=int, default=None, help="Capture height override")
-    parser.add_argument("--fps", type=float, default=None, help="Capture fps override")
+    parser.add_argument("--width", type=int, default=int(camera_intrinsics["image_width"]), help="Capture width override")
+    parser.add_argument("--height", type=int, default=int(camera_intrinsics["image_height"]), help="Capture height override")
+    parser.add_argument("--fps", type=float, default=float(camera_intrinsics["fps"]), help="Capture fps override")
     parser.add_argument("--plot-fps", type=float, default=15.0, help="Matplotlib refresh rate")
     parser.add_argument("--history-size", type=int, default=300, help="Trajectory history length")
     parser.add_argument("--axis-length", type=float, default=0.06, help="Axis glyph size in meters")

@@ -29,7 +29,7 @@ def _draw_one(ax, skeleton: dict, label: str, color: str, style: str) -> None:
             continue
         lengths = [float(skeleton[finger].get(k, 0.0)) for k in FINGER_KEYS[finger]]
         direction = mcp2[finger] - wrist2
-        start = mcp2[finger] if finger == "thumb" else wrist2
+        start = mcp2[finger]
         pts = _chain_points_2d(start, direction, lengths)
         arr = np.asarray(pts)
         ax.plot(

@@ -1,0 +1,99 @@
+{
+  "name": "joint_map_dexslide_to_orcahand",
+  "description": "Direct semantic joint mapping from DexSlide glove angles to OrcaHand v1 right-hand joint targets.",
+  "unit": "rad",
+  "dex_joint_ids": [
+    "thumb.DIP",
+    "thumb.PIP",
+    "thumb.MCP_front",
+    "thumb.MCP_back",
+    "index.DIP",
+    "index.PIP",
+    "index.MCP_front",
+    "index.MCP_back",
+    "middle.DIP",
+    "middle.PIP",
+    "middle.MCP_front",
+    "middle.MCP_back",
+    "ring.DIP",
+    "ring.PIP",
+    "ring.MCP_front",
+    "ring.MCP_back",
+    "pinky.DIP",
+    "pinky.PIP",
+    "pinky.MCP_front",
+    "pinky.MCP_back"
+  ],
+  "orcahand_joint_ids": [
+    "thumb_mcp",
+    "thumb_abd",
+    "thumb_pip",
+    "thumb_dip",
+    "index_abd",
+    "index_mcp",
+    "index_pip",
+    "middle_abd",
+    "middle_mcp",
+    "middle_pip",
+    "ring_abd",
+    "ring_mcp",
+    "ring_pip",
+    "pinky_abd",
+    "pinky_mcp",
+    "pinky_pip",
+    "wrist"
+  ],
+  "joint_map": {
+    "thumb_mcp": {
+      "source": "thumb.MCP_back"
+    },
+    "thumb_abd": {
+      "source": "thumb.MCP_front"
+    },
+    "thumb_pip": {
+      "source": "thumb.PIP"
+    },
+    "thumb_dip": {
+      "source": "thumb.DIP"
+    },
+    "index_abd": {
+      "source": "index.MCP_back"
+    },
+    "index_mcp": {
+      "source": "index.MCP_front"
+    },
+    "index_pip": {
+      "source": "index.PIP"
+    },
+    "middle_abd": {
+      "source": "middle.MCP_back"
+    },
+    "middle_mcp": {
+      "source": "middle.MCP_front"
+    },
+    "middle_pip": {
+      "source": "middle.PIP"
+    },
+    "ring_abd": {
+      "source": "ring.MCP_back"
+    },
+    "ring_mcp": {
+      "source": "ring.MCP_front"
+    },
+    "ring_pip": {
+      "source": "ring.PIP"
+    },
+    "pinky_abd": {
+      "source": "pinky.MCP_back"
+    },
+    "pinky_mcp": {
+      "source": "pinky.MCP_front"
+    },
+    "pinky_pip": {
+      "source": "pinky.PIP"
+    },
+    "wrist": {
+      "constant_rad": 0.0
+    }
+  }
+}

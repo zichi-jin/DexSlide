@@ -1,1 +1,0 @@
-/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_hand_ros/build/orca_hand_ros/README.md

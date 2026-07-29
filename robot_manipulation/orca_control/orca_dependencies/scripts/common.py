@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MOCK_CONFIG_PATH = PROJECT_ROOT / "orca_core" / "models" / "v2" / "orcahand_right" / "config.yaml"
+DEFAULT_MOCK_CONFIG_PATH = PROJECT_ROOT / "orca_core" / "models" / "v1" / "orcahand_right" / "config.yaml"
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 

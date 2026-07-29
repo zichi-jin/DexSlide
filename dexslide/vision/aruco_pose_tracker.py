@@ -127,8 +127,17 @@ def _configure_aruco_detector_parameters(
     *,
     refine_subpix: bool,
     motion_tolerant: bool,
+    corner_refine_mode: str | None = None,
 ):
-    if refine_subpix:
+    mode = "subpix" if corner_refine_mode is None and refine_subpix else "none"
+    if corner_refine_mode is not None:
+        mode = str(corner_refine_mode).strip().lower()
+
+    if mode == "apriltag" and hasattr(cv2.aruco, "CORNER_REFINE_APRILTAG"):
+        parameters.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_APRILTAG
+    elif mode == "contour" and hasattr(cv2.aruco, "CORNER_REFINE_CONTOUR"):
+        parameters.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_CONTOUR
+    elif mode == "subpix":
         parameters.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
         parameters.cornerRefinementWinSize = max(int(parameters.cornerRefinementWinSize), 5)
         parameters.cornerRefinementMaxIterations = max(
@@ -176,22 +185,9 @@ def _prepare_aruco_detection_image(img_bgr: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
 
 
-def _estimate_single_marker_pose(
-    corners: np.ndarray,
-    marker_size_m: float,
-    camera_matrix: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray]:
-    if hasattr(cv2.aruco, "estimatePoseSingleMarkers"):
-        rvec, tvec, _marker_points = cv2.aruco.estimatePoseSingleMarkers(
-            corners,
-            marker_size_m,
-            camera_matrix,
-            np.zeros((1, 5), dtype=np.float64),
-        )
-        return rvec.squeeze(), tvec.squeeze()
-
+def _marker_square_object_points(marker_size_m: float) -> np.ndarray:
     half_size = marker_size_m / 2.0
-    object_points = np.array(
+    return np.array(
         [
             [-half_size, half_size, 0.0],
             [half_size, half_size, 0.0],
@@ -200,18 +196,111 @@ def _estimate_single_marker_pose(
         ],
         dtype=np.float64,
     )
+
+
+def _estimate_single_marker_pose_candidates(
+    corners: np.ndarray,
+    marker_size_m: float,
+    camera_matrix: np.ndarray,
+) -> list[dict[str, np.ndarray | float]]:
+    object_points = _marker_square_object_points(marker_size_m)
     image_points = corners.reshape(-1, 2).astype(np.float64)
     solvepnp_flag = getattr(cv2, "SOLVEPNP_IPPE_SQUARE", cv2.SOLVEPNP_ITERATIVE)
+    dist_coeffs = np.zeros((1, 5), dtype=np.float64)
+
+    if hasattr(cv2, "solvePnPGeneric") and solvepnp_flag == getattr(cv2, "SOLVEPNP_IPPE_SQUARE", None):
+        result = cv2.solvePnPGeneric(
+            object_points,
+            image_points,
+            camera_matrix,
+            dist_coeffs,
+            flags=solvepnp_flag,
+        )
+        success = bool(result[0]) if len(result) >= 1 else False
+        rvecs = result[1] if len(result) >= 2 else ()
+        tvecs = result[2] if len(result) >= 3 else ()
+        reprojection_errors = result[3] if len(result) >= 4 else None
+        if success and len(rvecs) > 0 and len(tvecs) > 0:
+            candidates: list[dict[str, np.ndarray | float]] = []
+            for idx, (rvec, tvec) in enumerate(zip(rvecs, tvecs)):
+                reprojection_error_px = 0.0
+                if reprojection_errors is not None and len(reprojection_errors) > idx:
+                    reprojection_error_px = float(np.asarray(reprojection_errors[idx]).reshape(-1)[0])
+                candidates.append(
+                    {
+                        "rvec": np.asarray(rvec, dtype=np.float64).reshape(3),
+                        "tvec": np.asarray(tvec, dtype=np.float64).reshape(3),
+                        "reprojection_error_px": reprojection_error_px,
+                    }
+                )
+            candidates.sort(key=lambda item: float(item["reprojection_error_px"]))
+            deduped: list[dict[str, np.ndarray | float]] = []
+            for candidate in candidates:
+                candidate_rvec = np.asarray(candidate["rvec"], dtype=np.float64).reshape(3)
+                candidate_tvec = np.asarray(candidate["tvec"], dtype=np.float64).reshape(3)
+                is_duplicate = False
+                for existing in deduped:
+                    existing_rvec = np.asarray(existing["rvec"], dtype=np.float64).reshape(3)
+                    existing_tvec = np.asarray(existing["tvec"], dtype=np.float64).reshape(3)
+                    if (
+                        float(np.linalg.norm(candidate_rvec - existing_rvec)) <= 1e-7
+                        and float(np.linalg.norm(candidate_tvec - existing_tvec)) <= 1e-7
+                    ):
+                        is_duplicate = True
+                        break
+                if not is_duplicate:
+                    deduped.append(candidate)
+            if deduped:
+                return deduped
+
+    if hasattr(cv2.aruco, "estimatePoseSingleMarkers"):
+        rvec, tvec, _marker_points = cv2.aruco.estimatePoseSingleMarkers(
+            corners,
+            marker_size_m,
+            camera_matrix,
+            dist_coeffs,
+        )
+        return [
+            {
+                "rvec": np.asarray(rvec, dtype=np.float64).reshape(3),
+                "tvec": np.asarray(tvec, dtype=np.float64).reshape(3),
+                "reprojection_error_px": 0.0,
+            }
+        ]
+
     success, rvec, tvec = cv2.solvePnP(
         object_points,
         image_points,
         camera_matrix,
-        np.zeros((1, 5), dtype=np.float64),
+        dist_coeffs,
         flags=solvepnp_flag,
     )
     if not success:
         raise RuntimeError("cv2.solvePnP failed for ArUco marker pose estimation")
-    return rvec.squeeze(), tvec.squeeze()
+    return [
+        {
+            "rvec": np.asarray(rvec, dtype=np.float64).reshape(3),
+            "tvec": np.asarray(tvec, dtype=np.float64).reshape(3),
+            "reprojection_error_px": 0.0,
+        }
+    ]
+
+
+def _estimate_single_marker_pose(
+    corners: np.ndarray,
+    marker_size_m: float,
+    camera_matrix: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    candidates = _estimate_single_marker_pose_candidates(
+        corners=corners,
+        marker_size_m=marker_size_m,
+        camera_matrix=camera_matrix,
+    )
+    best = candidates[0]
+    return (
+        np.asarray(best["rvec"], dtype=np.float64).reshape(3),
+        np.asarray(best["tvec"], dtype=np.float64).reshape(3),
+    )
 
 
 def _detect_localize_aruco_tags(
@@ -221,6 +310,7 @@ def _detect_localize_aruco_tags(
     fisheye_intr_dict: dict[str, np.ndarray],
     refine_subpix: bool = True,
     motion_tolerant: bool = False,
+    corner_refine_mode: str | None = None,
 ) -> dict[int, dict[str, np.ndarray]]:
     k = fisheye_intr_dict["K"]
     d = fisheye_intr_dict["D"]
@@ -230,14 +320,16 @@ def _detect_localize_aruco_tags(
         _aruco_detector_parameters(),
         refine_subpix=refine_subpix,
         motion_tolerant=motion_tolerant,
+        corner_refine_mode=corner_refine_mode,
     )
     corners, ids, _ = _detect_aruco_markers(detect_img, aruco_dict, param)
     if (ids is None or len(corners) == 0) and motion_tolerant:
         retry_img = cv2.equalizeHist(detect_img)
         retry_param = _configure_aruco_detector_parameters(
             _aruco_detector_parameters(),
-            refine_subpix=False,
+            refine_subpix=refine_subpix,
             motion_tolerant=True,
+            corner_refine_mode=corner_refine_mode,
         )
         corners, ids, _ = _detect_aruco_markers(retry_img, aruco_dict, retry_param)
     if ids is None or len(corners) == 0:
@@ -255,15 +347,26 @@ def _detect_localize_aruco_tags(
         else:
             undistorted = cv2.undistortPoints(this_corners, k, d, P=k)
 
-        rvec, tvec = _estimate_single_marker_pose(
+        pose_candidates = _estimate_single_marker_pose_candidates(
             undistorted,
             marker_size_m,
             k,
         )
+        best_candidate = pose_candidates[0]
         tag_dict[this_id] = {
-            "rvec": np.asarray(rvec, dtype=np.float64).reshape(3),
-            "tvec": np.asarray(tvec, dtype=np.float64).reshape(3),
+            "rvec": np.asarray(best_candidate["rvec"], dtype=np.float64).reshape(3),
+            "tvec": np.asarray(best_candidate["tvec"], dtype=np.float64).reshape(3),
             "corners": this_corners.squeeze(),
+            "undistorted_corners": undistorted.squeeze(),
+            "marker_size_m": float(marker_size_m),
+            "pose_candidates": [
+                {
+                    "rvec": np.asarray(candidate["rvec"], dtype=np.float64).reshape(3),
+                    "tvec": np.asarray(candidate["tvec"], dtype=np.float64).reshape(3),
+                    "reprojection_error_px": float(candidate.get("reprojection_error_px", 0.0)),
+                }
+                for candidate in pose_candidates
+            ],
         }
     return tag_dict
 
@@ -463,7 +566,7 @@ class ArucoPoseTracker:
                     raise ValueError(f"No valid groups found in: {self.fusion_groups_yaml}")
 
             cap_source = _parse_capture_source(self.source)
-            if isinstance(cap_source, str) and cap_source.startswith("/dev/video"):
+            if isinstance(cap_source, str) and cap_source.startswith("/dev/"):
                 cap = cv2.VideoCapture(cap_source, cv2.CAP_V4L2)
             else:
                 cap = cv2.VideoCapture(cap_source)

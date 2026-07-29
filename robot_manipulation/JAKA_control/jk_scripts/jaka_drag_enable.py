@@ -16,8 +16,8 @@ import jkrc
 
 # 4. 测试连接
 print("尝试连接机械臂...")
-robot = jkrc.RC('192.168.99.31')
-# robot = jkrc.RC('192.168.99.44')
+# robot = jkrc.RC('192.168.99.31')
+robot = jkrc.RC('192.168.99.44')
 robot.login()    
 robot.power_on()    
 robot.enable_robot()

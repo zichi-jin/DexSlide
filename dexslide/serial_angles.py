@@ -20,6 +20,9 @@ SENSOR_ORDER = (
     ("I2C2", 0x49, "ring"),
     ("I2C2", 0x4B, "pinky"),
 )
+EXPECTED_RAW_SENSOR_KEYS = frozenset(
+    f"{bus}@0x{addr:02X}" for bus, addr, _finger in SENSOR_ORDER
+)
 
 COUNTS_PER_TURN = 24370.0
 DEFAULT_RATE = COUNTS_PER_TURN / 360.0
@@ -32,18 +35,10 @@ ANGLE_LINE_RE = re.compile(r"([a-z]+\.(?:DIP|PIP|MCP_front|MCP_back)):(-?\d+(?:\
 
 
 def pick_default_port() -> str:
-    try:
-        from serial.tools import list_ports
-    except ImportError:
-        return ""
+    """Compatibility wrapper for the configured left-hand joints port."""
+    from dexslide.communications import resolve_joint_port
 
-    ports = [p.device for p in list_ports.comports()]
-    if not ports:
-        return ""
-    for candidate in ports:
-        if "ttyACM" in candidate or "ttyUSB" in candidate:
-            return candidate
-    return ports[0]
+    return resolve_joint_port("left")
 
 
 def make_joint_order() -> list[dict[str, object]]:
@@ -141,6 +136,7 @@ class AngleStreamReader:
         self.alignment_offsets = {str(j["id"]): 0.0 for j in joint_order}
         self.latest_time = 0.0
         self.latest_line = ""
+        self.last_error = ""
         self.lock = threading.Lock()
         self.running = False
         self.thread: threading.Thread | None = None
@@ -149,6 +145,26 @@ class AngleStreamReader:
         self.running = True
         self.thread = threading.Thread(target=self._worker, daemon=True)
         self.thread.start()
+
+    def wait_for_first_sample(self, timeout_sec: float) -> None:
+        deadline = time.monotonic() + max(0.0, float(timeout_sec))
+        while time.monotonic() < deadline:
+            with self.lock:
+                latest_time = float(self.latest_time)
+                last_error = str(self.last_error)
+            if last_error:
+                raise RuntimeError(f"DexSlide serial reader failed on {self.port}: {last_error}")
+            if latest_time > 0.0:
+                return
+            time.sleep(0.02)
+        raise TimeoutError(
+            f"No valid DexSlide joint frame received from {self.port} within {float(timeout_sec):.1f}s"
+        )
+
+    def sample_age_sec(self) -> float:
+        with self.lock:
+            latest_time = float(self.latest_time)
+        return float("inf") if latest_time <= 0.0 else max(0.0, time.time() - latest_time)
 
     def stop(self) -> None:
         self.running = False
@@ -171,19 +187,24 @@ class AngleStreamReader:
     def _worker(self) -> None:
         import serial
 
-        with serial.Serial(self.port, self.baud, timeout=0.5) as ser:
-            time.sleep(0.2)
-            while self.running:
-                raw = ser.readline()
-                if not raw:
-                    continue
-                line = raw.decode(errors="replace").strip()
-                if not line:
-                    continue
-                if self.mode == "angles":
-                    self._update_angle_line(line)
-                else:
-                    self._update_raw_line(line)
+        try:
+            with serial.Serial(self.port, self.baud, timeout=0.5) as ser:
+                time.sleep(0.2)
+                while self.running:
+                    raw = ser.readline()
+                    if not raw:
+                        continue
+                    line = raw.decode(errors="replace").strip()
+                    if not line:
+                        continue
+                    if self.mode == "angles":
+                        self._update_angle_line(line)
+                    else:
+                        self._update_raw_line(line)
+        except Exception as exc:
+            with self.lock:
+                self.last_error = f"{type(exc).__name__}: {exc}"
+            self.running = False
 
     def _update_angle_line(self, line: str) -> None:
         values = parse_angle_line(line)
@@ -198,7 +219,7 @@ class AngleStreamReader:
 
     def _update_raw_line(self, line: str) -> None:
         sensor_map = parse_raw_sensor_line(line)
-        if not sensor_map:
+        if not EXPECTED_RAW_SENSOR_KEYS.issubset(sensor_map):
             return
         with self.lock:
             for joint in self.joint_order:

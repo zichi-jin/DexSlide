@@ -10,9 +10,8 @@ import numpy as np
 
 from dexslide.kinematics.live_hand import (
     FINGERS,
-    apply_handedness,
-    canonicalize_palm_xoy,
     finger_points,
+    runtime_palm_points,
 )
 from dexslide.paths import DEFAULT_SKELETON_FILE
 from dexslide.serial_angles import JOINT_LABELS
@@ -71,7 +70,7 @@ class DexSlideHumanModel:
         self.mirror_reconstruction = bool(mirror_reconstruction)
         self.joint_names = list(joint_names or DEFAULT_HUMAN_JOINT_NAMES)
         self.unit_scale = float(unit_scale)
-        self.palm = apply_handedness(canonicalize_palm_xoy(self.skeleton), hand)
+        self.palm = runtime_palm_points(self.skeleton, hand)
 
     def _coerce_joint_map(self, joint_angles: np.ndarray | list[float] | Mapping[str, float]) -> dict[str, float]:
         if isinstance(joint_angles, Mapping):
@@ -81,7 +80,7 @@ class DexSlideHumanModel:
         if vector.shape[0] != len(self.joint_names):
             raise ValueError(
                 f"Expected {len(self.joint_names)} human joints, got {vector.shape[0]}. "
-                "If the glove layout changed, pass explicit human_joint_names to create_dex_retargeter()."
+                "If the glove layout changed, pass explicit human_joint_names."
             )
         return {name: float(value) for name, value in zip(self.joint_names, vector)}
 

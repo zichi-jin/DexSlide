@@ -11,10 +11,10 @@ import numpy as np
 FINGER_ORDER = ["thumb", "index", "middle", "ring", "pinky"]
 FINGER_KEYS = {
     "thumb": ["metacarpal", "proximal", "distal"],
-    "index": ["metacarpal", "proximal", "middle", "distal"],
-    "middle": ["metacarpal", "proximal", "middle", "distal"],
-    "ring": ["metacarpal", "proximal", "middle", "distal"],
-    "pinky": ["metacarpal", "proximal", "middle", "distal"],
+    "index": ["proximal", "middle", "distal"],
+    "middle": ["proximal", "middle", "distal"],
+    "ring": ["proximal", "middle", "distal"],
+    "pinky": ["proximal", "middle", "distal"],
 }
 
 
@@ -121,9 +121,8 @@ def show_skeleton_plot(skeleton: dict, title: str = "DexSlide Skeleton Review (2
             continue
         lengths = [float(skeleton[finger].get(k, 0.0)) for k in FINGER_KEYS[finger]]
         direction = mcp2[finger] - wrist2
-        # Thumb links are CMC->MCP->IP->TIP, so start from thumb CMC base.
-        # Other fingers include wrist->MCP metacarpal, so they still start at wrist.
-        chain_start = mcp2[finger] if finger == "thumb" else wrist2
+        # Compact skeleton stores MCP bases in palm.vertices, so every finger chain starts there.
+        chain_start = mcp2[finger]
         pts = _chain_points_2d(chain_start, direction, lengths)
         arr = np.asarray(pts)
         ax.plot(arr[:, 0], arr[:, 1], color=colors[finger], linewidth=2.8)
@@ -133,27 +132,6 @@ def show_skeleton_plot(skeleton: dict, title: str = "DexSlide Skeleton Review (2
 
     ax.scatter([wrist2[0]], [wrist2[1]], color="black", s=28)
     ax.text(wrist2[0], wrist2[1], "wrist", color="black", fontsize=9)
-
-    # Show MCP distances requested by user.
-    palm = skeleton.get("palm", {})
-    mcp_d = palm.get("mcp_distances", {}) if isinstance(palm, dict) else {}
-    if isinstance(mcp_d, dict) and mcp_d:
-        txt = ", ".join(
-            f"{k}={float(v):.1f}mm"
-            for k, v in mcp_d.items()
-            if k in ("index_middle", "middle_ring", "ring_pinky")
-        )
-        if txt:
-            ax.text(
-                0.02,
-                0.98,
-                f"MCP distances: {txt}",
-                transform=ax.transAxes,
-                ha="left",
-                va="top",
-                fontsize=9,
-                bbox={"facecolor": "white", "alpha": 0.8, "edgecolor": "none"},
-            )
 
     plt.tight_layout()
     plt.show()

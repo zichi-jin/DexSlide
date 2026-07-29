@@ -90,7 +90,9 @@ class MotorControlUI:
 
 def main():
     parser = argparse.ArgumentParser(description='Orca Hand Motor Control')
-    parser.add_argument('config_path', type=str, nargs='?', default=None, help='Path to the hand config.yaml file')
+    parser.add_argument('config_path', type=str, nargs='?', default=
+                        "/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_dependencies/orca_core/models/v1/orcahand_right/config.yaml",
+                          help='Path to the hand config.yaml file')
     args = parser.parse_args()
 
     hand = OrcaHand(config_path=args.config_path)

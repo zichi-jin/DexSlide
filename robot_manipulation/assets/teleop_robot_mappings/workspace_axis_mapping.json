@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "name": "workspace_axis_mapping",
+  "description": "DexSlide wrist pose incremental teleop mapping from table ArUco world to JAKA base world.",
+  "table_to_robot": {
+    "translation_m": [0.0, 0.0, 0.0],
+    "rotation_matrix": [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0],
+      [0.0, 0.0, 1.0]
+    ]
+  },
+  "glove_to_orca_same_pose_fixed_rotation": {
+    "note": "For the same physical hand pose, R_orca = R_glove @ Ry(+90deg) @ Rz(-45deg). It is stored here for reference and should not be re-applied to per-frame incremental rotations.",
+    "rotation_matrix": [
+      [0.0, 0.0, 1.0],
+      [-0.7071067811865476, 0.7071067811865476, 0.0],
+      [-0.7071067811865476, -0.7071067811865476, 0.0]
+    ]
+  },
+  "mirror": {
+    "translation_sign": [1.0, -1.0, 1.0],
+    "rotation_vector_sign": [-1.0, 1.0, -1.0]
+  },
+  "translation_scale": [1.0, 1.0, 1.0],
+  "rotation_scale": [1.0, 1.0, 1.0],
+  "safe_start_pose_mmdeg": [-100.0, 400.0, 300.0, -180.0, 0.0, -45.0],
+  "translation_deadband_mm": 0.8,
+  "rotation_deadband_deg": 0.6,
+  "max_translation_step_mm": 3.0,
+  "max_rotation_step_deg": 2.0,
+  "frame_jump_reject_mm": 25.0,
+  "frame_jump_reject_deg": 18.0,
+  "anchor_stable_frames": 5
+}

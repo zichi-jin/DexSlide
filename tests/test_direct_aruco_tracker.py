@@ -66,9 +66,9 @@ def test_direct_aruco_default_assets_exist_and_match_expected_sizes() -> None:
         target_cfg = yaml.safe_load(handle)
 
     assert table_cfg["aruco_dict"]["predefined"] == "DICT_4X4_50"
-    assert table_cfg["marker_size_map"][0] == 0.12
+    assert table_cfg["marker_size_map"]["0"] == 0.195
     assert target_cfg["aruco_dict"]["predefined"] == "DICT_4X4_50"
-    assert target_cfg["marker_size_map"]["default"] == 0.05
+    assert target_cfg["marker_size_map"]["default"] == 0.02
 
 
 def test_build_direct_aruco_frame_result_emits_relative_target_pose() -> None:
@@ -113,6 +113,9 @@ def test_build_direct_aruco_frame_result_emits_relative_target_pose() -> None:
     assert frame_result["n_world_targets"] == 1
     recovered = np.asarray(frame_result["targets"]["5"]["target_in_table"]["matrix"], dtype=np.float64)
     np.testing.assert_allclose(recovered, t_table_target, atol=1e-7)
+    assert frame_result["targets"]["5"]["corners"] == [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
+    assert frame_result["targets"]["5"]["undistorted_corners"] == [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
+    assert frame_result["targets"]["5"]["marker_size_m"] == 0.0
 
 
 def test_motion_tolerant_detector_parameters_expand_detection_range() -> None:
@@ -128,3 +131,63 @@ def test_motion_tolerant_detector_parameters_expand_detection_range() -> None:
     assert param.maxMarkerPerimeterRate >= 4.0
     assert param.polygonalApproxAccuracyRate >= 0.06
     assert param.errorCorrectionRate >= 0.75
+
+
+def test_corner_refine_mode_can_switch_to_apriltag() -> None:
+    param = apt._configure_aruco_detector_parameters(
+        apt._aruco_detector_parameters(),
+        refine_subpix=True,
+        motion_tolerant=False,
+        corner_refine_mode="apriltag",
+    )
+
+    assert param.cornerRefinementMethod == cv2.aruco.CORNER_REFINE_APRILTAG
+
+
+def test_estimate_single_marker_pose_candidates_exposes_ippe_branches() -> None:
+    marker_size_m = 0.03
+    object_points = apt._marker_square_object_points(marker_size_m)
+    camera_matrix = np.array(
+        [
+            [520.0, 0.0, 320.0],
+            [0.0, 520.0, 240.0],
+            [0.0, 0.0, 1.0],
+        ],
+        dtype=np.float64,
+    )
+    rot_x = np.array(
+        [
+            [1.0, 0.0, 0.0],
+            [0.0, np.cos(np.pi * 0.95), -np.sin(np.pi * 0.95)],
+            [0.0, np.sin(np.pi * 0.95), np.cos(np.pi * 0.95)],
+        ],
+        dtype=np.float64,
+    )
+    rot_y = np.array(
+        [
+            [np.cos(0.22), 0.0, np.sin(0.22)],
+            [0.0, 1.0, 0.0],
+            [-np.sin(0.22), 0.0, np.cos(0.22)],
+        ],
+        dtype=np.float64,
+    )
+    transform_camera_marker = dat._transform_from_rvec_tvec(
+        cv2.Rodrigues(rot_y @ rot_x)[0].reshape(3),
+        np.array([0.03, -0.01, 0.45], dtype=np.float64),
+    )
+    rvec_true, _ = cv2.Rodrigues(transform_camera_marker[:3, :3])
+    corners, _ = cv2.projectPoints(
+        object_points.reshape(-1, 1, 3),
+        rvec_true,
+        transform_camera_marker[:3, 3].reshape(3, 1),
+        camera_matrix,
+        np.zeros((1, 5), dtype=np.float64),
+    )
+    candidates = apt._estimate_single_marker_pose_candidates(
+        corners.reshape(1, 4, 2),
+        marker_size_m,
+        camera_matrix,
+    )
+
+    assert len(candidates) >= 2
+    assert float(candidates[0]["reprojection_error_px"]) <= float(candidates[1]["reprojection_error_px"])

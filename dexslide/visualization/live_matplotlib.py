@@ -15,6 +15,7 @@ from dexslide.kinematics.live_hand import (
     canonicalize_palm_xoy,
     finger_points,
     palm_edges,
+    thumb_chain_rx_rad,
     thumb_pp_frame,
 )
 from dexslide.serial_angles import AngleStreamReader, load_calibration, make_joint_order
@@ -236,7 +237,12 @@ def run_live_viewer(
             line.set_data(pts[:, 0], pts[:, 1])
             line.set_3d_properties(pts[:, 2])
 
-        thumb_origin_local, x_pp_local, y_pp_local, z_pp_local = thumb_pp_frame(q[0:4], palm, hand)
+        thumb_origin_local, x_pp_local, y_pp_local, z_pp_local = thumb_pp_frame(
+            q[0:4],
+            palm,
+            hand,
+            thumb_chain_rx_rad(skeleton),
+        )
         thumb_origin = (hand_rot @ thumb_origin_local) + hand_trans
         x_pp = hand_rot @ x_pp_local
         y_pp = hand_rot @ y_pp_local

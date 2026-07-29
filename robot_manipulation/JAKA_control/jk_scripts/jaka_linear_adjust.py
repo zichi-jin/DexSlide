@@ -13,8 +13,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 JAKA_SDK_ROOT = PROJECT_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
 
 DEFAULT_IP = "192.168.99.44"
-DEFAULT_SPEED_MM_S = 30.0
-SDK_POWER_ON_WAIT_S = 8.0
+DEFAULT_SPEED_MM_S = 60.0
+SDK_POWER_ON_WAIT_S = 4.0
 SDK_ENABLE_WAIT_S = 4.0
 
 

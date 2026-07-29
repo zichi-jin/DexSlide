@@ -36,6 +36,7 @@ if ROOT_PARENT not in sys.path:
 import numpy as np
 
 from dexslide.paths import DEFAULT_SKELETON_FILE
+from dexslide.kinematics.live_hand import finger_points, runtime_palm_points
 
 
 FINGERS = ["thumb", "index", "middle", "ring", "pinky"]
@@ -275,7 +276,7 @@ def main() -> None:
     with open(args.skeleton_file, "r", encoding="utf-8") as f:
         skeleton = json.load(f)
 
-    palm = _apply_handedness(_canonicalize_palm_xoy(skeleton), args.hand)
+    palm = runtime_palm_points(skeleton, args.hand)
 
     if args.trajectory_csv:
         traj = _load_csv(Path(args.trajectory_csv), degrees=args.degrees)
@@ -290,8 +291,8 @@ def main() -> None:
             v = palm[k]
             print(f"  {k:6s}: [{v[0]:8.2f}, {v[1]:8.2f}, {v[2]:8.2f}]")
         sample = traj[0]
-        idx_pts = _finger_points("index", sample[4:8], skeleton, palm, args.hand, args.thumb_link_mode)
-        th_pts = _finger_points("thumb", sample[0:4], skeleton, palm, args.hand, args.thumb_link_mode)
+        idx_pts = finger_points("index", sample[4:8], skeleton, palm, args.hand)
+        th_pts = finger_points("thumb", sample[0:4], skeleton, palm, args.hand)
         print(f"index sample:\n{idx_pts}")
         print(f"thumb sample:\n{th_pts}")
         return
@@ -332,7 +333,7 @@ def main() -> None:
 
         for name in FINGERS:
             s = FINGER_OFFSET[name]
-            pts = _finger_points(name, q[s : s + 4], skeleton, palm, args.hand, args.thumb_link_mode)
+            pts = finger_points(name, q[s : s + 4], skeleton, palm, args.hand)
             line = finger_lines[name]
             line.set_data(pts[:, 0], pts[:, 1])
             line.set_3d_properties(pts[:, 2])

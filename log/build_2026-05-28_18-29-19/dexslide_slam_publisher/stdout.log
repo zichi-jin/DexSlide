@@ -1,9 +1,0 @@
-[ 50%] Built target pose_publisher_node
-[ 75%] [32mBuilding CXX object CMakeFiles/realsense_topic_slam_node.dir/src/realsense_topic_slam_node.cpp.o[0m
-[100%] [32m[1mLinking CXX executable realsense_topic_slam_node[0m
-[100%] Built target realsense_topic_slam_node
--- Install configuration: ""
--- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/pose_publisher_node
--- Set non-toolchain portion of runtime path of "/home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/pose_publisher_node" to ""
--- Installing: /home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/realsense_topic_slam_node
--- Set non-toolchain portion of runtime path of "/home/jzq/MyJob/DexSlide/install/dexslide_slam_publisher/lib/dexslide_slam_publisher/realsense_topic_slam_node" to ""

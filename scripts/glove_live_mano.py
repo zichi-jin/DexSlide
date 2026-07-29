@@ -27,13 +27,14 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+from dexslide.communications import hand_joint_communication, resolve_joint_port
 from dexslide.kinematics.live_hand import (
     apply_handedness,
     canonicalize_palm_xoy,
     finger_points,
 )
+from dexslide.live import live_listener
 from dexslide.paths import DEFAULT_GLOVE_CALIBRATION_FILE, DEFAULT_SKELETON_FILE
-from dexslide.serial_angles import AngleStreamReader, load_calibration, make_joint_order, pick_default_port
 
 
 def load_mano_pkl(path: Path):
@@ -49,12 +50,15 @@ def load_mano_pkl(path: Path):
 
 
 def main():
+    communication = hand_joint_communication("left")
     parser = argparse.ArgumentParser(description="Map DexSlide live motion onto MANO mesh (approx)")
     parser.add_argument("--skeleton-file", default=str(DEFAULT_SKELETON_FILE))
     parser.add_argument("--mano-dir", default=str(Path(__file__).resolve().parents[1] / "assets" / "mano" / "models"))
     parser.add_argument("--hand", choices=["left", "right"], default="right")
     parser.add_argument("--live", action="store_true", help="Use live serial stream via AngleStreamReader")
-    parser.add_argument("--port", default=pick_default_port())
+    parser.add_argument("--port", default=resolve_joint_port("left"))
+    parser.add_argument("--baud", type=int, default=int(communication["baud"]))
+    parser.add_argument("--mode", choices=["raw", "angles"], default=str(communication["mode"]))
     parser.add_argument("--calib-file", default=str(DEFAULT_GLOVE_CALIBRATION_FILE))
     parser.add_argument("--fps", type=float, default=30.0)
     args = parser.parse_args()
@@ -79,11 +83,13 @@ def main():
 
     # Setup live reader if requested
     reader = None
-    joint_order = make_joint_order()
-    calibration = load_calibration(Path(args.calib_file), joint_order)
     if args.live:
-        reader = AngleStreamReader(args.port, 115200, "raw", joint_order, calibration)
-        reader.start()
+        reader = live_listener(
+            port=args.port,
+            baud=args.baud,
+            mode=args.mode,
+            calib_file=args.calib_file,
+        )
 
     # Demo trajectory generator (simple sinusoid) for offline testing
     def gen_demo(num_frames=300):

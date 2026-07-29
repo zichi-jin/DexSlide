@@ -5,25 +5,21 @@
     "distal": 19.140500107458102
   },
   "index": {
-    "metacarpal": 93.91178127905911,
     "proximal": 34.54386924688774,
     "middle": 21.47982931204409,
     "distal": 17.87299606788323
   },
   "middle": {
-    "metacarpal": 93.58388747102356,
     "proximal": 37.77715960036421,
     "middle": 24.183775605583662,
     "distal": 18.879880347688758
   },
   "ring": {
-    "metacarpal": 90.05050860756472,
     "proximal": 35.120082105533555,
     "middle": 22.311496566259393,
     "distal": 18.896538545542178
   },
   "pinky": {
-    "metacarpal": 84.34382257117174,
     "proximal": 28.372817191170803,
     "middle": 17.055952692050756,
     "distal": 15.775023152308485
@@ -60,12 +56,9 @@
         82.34102620769806,
         0.0
       ]
-    ],
-    "mcp_distances": {
-      "index_middle": 23.30339081638541,
-      "middle_ring": 20.811141384592098,
-      "ring_pinky": 21.212544734235408
-    },
-    "thickness": 25.0
-  }
+    ]
+
+
+  },
+  "note": "This skeleton was estimated offline from photos and serves as the photo-derived baseline before later optimization."
 }

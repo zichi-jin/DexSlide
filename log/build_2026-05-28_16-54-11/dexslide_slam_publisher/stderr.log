@@ -1,8 +1,0 @@
-[01m[K/home/jzq/MyJob/DexSlide/umi_mono/ros2_ws/dexslide_slam_publisher/src/realsense_topic_slam_node.cpp:30:10:[m[K [01;31m[Kfatal error: [m[Kimu_ring_buffer.hpp: 没有那个文件或目录
-   30 | #include [01;31m[K"imu_ring_buffer.hpp"[m[K
-      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~[m[K
-compilation terminated.
-gmake[2]: *** [CMakeFiles/realsense_topic_slam_node.dir/build.make:76：CMakeFiles/realsense_topic_slam_node.dir/src/realsense_topic_slam_node.cpp.o] 错误 1
-gmake[1]: *** [CMakeFiles/Makefile2:165：CMakeFiles/realsense_topic_slam_node.dir/all] 错误 2
-gmake[1]: *** 正在等待未完成的任务....
-gmake: *** [Makefile:146：all] 错误 2
