@@ -36,6 +36,22 @@ from dexslide.paths import (
     DEFAULT_DIRECT_ARUCO_TABLE_CONFIG_FILE,
     DEFAULT_LEFT_TAGS_TO_MARKER_FILE,
 )
+from robot_manipulation.JAKA_control.paths import (
+    DEFAULT_PAYLOAD_CONFIG_FILE,
+    DEFAULT_WORKSPACE_MAPPING_FILE,
+    JAKA_SDK_DIR,
+)
+from robot_manipulation.JAKA_control.workspace_mapping import (
+    WorkspaceAxisMapping,
+    load_workspace_axis_mapping,
+)
+from robot_manipulation.JAKA_control.sdk import (
+    ensure_ok,
+    load_jkrc,
+    maybe_set_sensor_brand,
+    read_tcp_pose,
+    result_code,
+)
 from dexslide.vision.aruco_pose_tracker import (
     _convert_fisheye_intrinsics_resolution,
     _parse_aruco_config,
@@ -50,20 +66,20 @@ from dexslide.visualization.aruco_overlay import (
     draw_marker_outline as _draw_marker_outline,
     marker_id_to_color as _marker_id_to_color,
 )
-from dexslide.world_pose.direct_aruco_tracker import (
+from dexslide.vision.direct_aruco_tracker import (
     _build_direct_aruco_frame_result,
     _detect_relevant_aruco_tags,
 )
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     marker_to_wrist_asset_transforms,
 )
-from dexslide.world_pose.marker_body_pose_tracker import MarkerBodyPoseTracker
+from dexslide.vision.marker_body_pose_tracker import MarkerBodyPoseTracker
 
-JAKA_SDK_ROOT = ROBOT_MANIP_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
-PAYLOAD_CONFIG_PATH = ROBOT_MANIP_ROOT / "JAKA_control" / "config" / "jaka_s5_orcahand_payload.json"
-DEFAULT_MAPPING_FILE = DEXSLIDE_ROOT / "assets" / "teleop_robot_mappings" / "workspace_axis_mapping.json"
+JAKA_SDK_ROOT = JAKA_SDK_DIR
+PAYLOAD_CONFIG_PATH = DEFAULT_PAYLOAD_CONFIG_FILE
+DEFAULT_MAPPING_FILE = DEFAULT_WORKSPACE_MAPPING_FILE
 DEFAULT_DEXALIGN_SESSION_DIR = (
     DEXSLIDE_ROOT / "assets" / "calibration" / "dexalign" / "test_left_001"
 )
@@ -112,28 +128,6 @@ class DexAlignSessionPaths:
 
 
 @dataclass(frozen=True)
-class WorkspaceAxisMapping:
-    robot_from_table_transform: np.ndarray
-    same_pose_fixed_rotation: np.ndarray
-    mirror_translation_sign: np.ndarray
-    mirror_rotation_sign: np.ndarray
-    translation_scale: np.ndarray
-    rotation_scale: np.ndarray
-    safe_start_pose_mmdeg: tuple[float, float, float, float, float, float]
-    translation_deadband_mm: float
-    rotation_deadband_deg: float
-    max_translation_step_mm: float
-    max_rotation_step_deg: float
-    frame_jump_reject_mm: float
-    frame_jump_reject_deg: float
-    anchor_stable_frames: int
-
-    @property
-    def robot_from_table_rotation(self) -> np.ndarray:
-        return np.asarray(self.robot_from_table_transform[:3, :3], dtype=np.float64)
-
-
-@dataclass(frozen=True)
 class WristPoseSample:
     transform_table_hand: np.ndarray
     frame_idx: int
@@ -179,55 +173,6 @@ class OrcaHandTeleopPlaceholder:
 
     def update(self) -> None:
         return None
-
-
-def load_jkrc() -> object:
-    lib_path = JAKA_SDK_ROOT / "libjakaAPI.so"
-    if not lib_path.exists():
-        raise FileNotFoundError(f"libjakaAPI.so not found: {lib_path}")
-    ctypes.CDLL(str(lib_path))
-    if str(JAKA_SDK_ROOT) not in sys.path:
-        sys.path.insert(0, str(JAKA_SDK_ROOT))
-    import jkrc  # type: ignore
-
-    return jkrc
-
-
-def result_code(result: object) -> int:
-    if isinstance(result, tuple):
-        return int(result[0])
-    if isinstance(result, int):
-        return int(result)
-    raise RuntimeError(f"未知 SDK 返回值：{result!r}")
-
-
-def ensure_ok(result: object, action: str) -> None:
-    code = result_code(result)
-    if code != 0:
-        raise RuntimeError(f"{action} 失败，返回码：{code}，原始结果：{result!r}")
-
-
-def maybe_set_sensor_brand(robot: object, sensor_brand: int) -> None:
-    if sensor_brand == DEFAULT_SENSOR_BRAND:
-        return
-    setter = getattr(robot, "set_torsenosr_brand", None)
-    if setter is None:
-        return
-    ensure_ok(setter(sensor_brand), "set_torsenosr_brand")
-    time.sleep(SDK_SENSOR_BRAND_WAIT_S)
-
-
-def read_tcp_pose(robot: object) -> tuple[float, float, float, float, float, float]:
-    for method_name in ("get_actual_tcp_position", "get_tcp_position"):
-        method = getattr(robot, method_name, None)
-        if method is None:
-            continue
-        result = method()
-        ensure_ok(result, method_name)
-        if not isinstance(result, tuple) or len(result) < 2:
-            raise RuntimeError(f"{method_name} 返回值异常：{result!r}")
-        return tuple(float(value) for value in result[1])
-    raise AttributeError("robot does not provide get_actual_tcp_position/get_tcp_position")
 
 
 def load_saved_payload_snapshot() -> IdentifiedPayload | None:
@@ -295,52 +240,6 @@ def load_dexalign_session_paths(session_dir: str | Path) -> DexAlignSessionPaths
         marker2hand_file=marker2hand_file,
         skeleton_file=skeleton_file,
         joint_calibration_file=joint_calibration_file,
-    )
-
-
-def load_workspace_axis_mapping(path: str | Path) -> WorkspaceAxisMapping:
-    mapping_path = Path(path).expanduser().resolve()
-    payload = json.loads(mapping_path.read_text(encoding="utf-8"))
-    if int(payload.get("schema_version", 0)) != 1:
-        raise ValueError(f"Unsupported workspace axis mapping schema_version in {mapping_path}")
-
-    table_to_robot = payload.get("table_to_robot", {})
-    rotation_matrix = np.asarray(table_to_robot.get("rotation_matrix"), dtype=np.float64).reshape(3, 3)
-    translation_m = np.asarray(table_to_robot.get("translation_m", [0.0, 0.0, 0.0]), dtype=np.float64).reshape(3)
-    robot_from_table = np.eye(4, dtype=np.float64)
-    robot_from_table[:3, :3] = rotation_matrix
-    robot_from_table[:3, 3] = translation_m
-
-    fixed_rotation_payload = payload.get("glove_to_orca_same_pose_fixed_rotation", {})
-    same_pose_fixed_rotation = np.asarray(
-        fixed_rotation_payload.get("rotation_matrix"),
-        dtype=np.float64,
-    ).reshape(3, 3)
-
-    mirror = payload.get("mirror", {})
-    translation_sign = np.asarray(mirror.get("translation_sign"), dtype=np.float64).reshape(3)
-    rotation_sign = np.asarray(mirror.get("rotation_vector_sign"), dtype=np.float64).reshape(3)
-    translation_scale = np.asarray(payload.get("translation_scale", [1.0, 1.0, 1.0]), dtype=np.float64).reshape(3)
-    rotation_scale = np.asarray(payload.get("rotation_scale", [1.0, 1.0, 1.0]), dtype=np.float64).reshape(3)
-    safe_start_pose_mmdeg = tuple(float(x) for x in payload.get("safe_start_pose_mmdeg", []))
-    if len(safe_start_pose_mmdeg) != 6:
-        raise ValueError(f"`safe_start_pose_mmdeg` must contain 6 values in {mapping_path}")
-
-    return WorkspaceAxisMapping(
-        robot_from_table_transform=robot_from_table,
-        same_pose_fixed_rotation=same_pose_fixed_rotation,
-        mirror_translation_sign=translation_sign,
-        mirror_rotation_sign=rotation_sign,
-        translation_scale=translation_scale,
-        rotation_scale=rotation_scale,
-        safe_start_pose_mmdeg=safe_start_pose_mmdeg,  # type: ignore[arg-type]
-        translation_deadband_mm=float(payload.get("translation_deadband_mm", 0.8)),
-        rotation_deadband_deg=float(payload.get("rotation_deadband_deg", 0.6)),
-        max_translation_step_mm=float(payload.get("max_translation_step_mm", 3.0)),
-        max_rotation_step_deg=float(payload.get("max_rotation_step_deg", 2.0)),
-        frame_jump_reject_mm=float(payload.get("frame_jump_reject_mm", 25.0)),
-        frame_jump_reject_deg=float(payload.get("frame_jump_reject_deg", 18.0)),
-        anchor_stable_frames=max(1, int(payload.get("anchor_stable_frames", 5))),
     )
 
 
@@ -840,7 +739,12 @@ class JakaIncrementalTeleopRobot:
         time.sleep(SDK_ENABLE_WAIT_S)
 
         self._ensure_safe_start_pose()
-        maybe_set_sensor_brand(robot, self.args.sensor_brand)
+        maybe_set_sensor_brand(
+            robot,
+            self.args.sensor_brand,
+            default_brand=DEFAULT_SENSOR_BRAND,
+            wait_s=SDK_SENSOR_BRAND_WAIT_S,
+        )
         ensure_ok(robot.set_torque_sensor_mode(1), "set_torque_sensor_mode")
 
         if not self.args.no_saved_payload:

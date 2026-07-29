@@ -14,7 +14,7 @@ from dexslide.calibration.palm_triangle_alignment import (
     select_palm_triangle_points,
 )
 from dexslide.kinematics.transforms import make_transform
-from dexslide.world_pose.hand_cube_overlay import HandCubeOverlayConfig, MarkerMount
+from dexslide.vision.hand_cube_overlay import HandCubeOverlayConfig, MarkerMount
 
 
 def _rot_z(rad: float) -> np.ndarray:

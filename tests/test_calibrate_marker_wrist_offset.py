@@ -13,7 +13,7 @@ from dexslide.calibration.calibrate_marker_wrist_offset import (
     _wrist_body_point,
 )
 from dexslide.kinematics.transforms import make_transform, transform_points
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     HandCubeOverlayConfig,
     MarkerMount,
 )

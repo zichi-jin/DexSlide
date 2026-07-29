@@ -47,7 +47,7 @@ from dexslide.kinematics.transforms import (
 )
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags
 from dexslide.visualization.aruco_overlay import draw_axes, draw_marker_outline
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     HandCubeOverlayConfig,
     _build_marker_observations,
     _compute_marker_reprojection_errors,

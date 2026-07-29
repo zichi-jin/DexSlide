@@ -24,6 +24,7 @@ from dexslide.kinematics.transforms import invert_transform, transform_points
 from .objective import AlignmentEvaluation, KEYPOINT_CLASS_WEIGHTS
 from .skeleton_param import FINGER_BONE_LAYOUT
 from .types import AlignmentDataset, AlignmentFrame
+from .frame_pool import FramePool
 from .weights import (
     KEYPOINT_CLASS_WEIGHT_MAP,
     STEP2_JOINT_BIAS_BOUND_DEG,
@@ -126,65 +127,6 @@ class DexAlignV2RunResult:
     step2: DexAlignStep2Result
     step3: DexAlignStep3Result
     summary: dict[str, Any]
-
-
-@dataclass(frozen=True)
-class FramePool:
-    hand: str
-    frames: tuple[AlignmentFrame, ...]
-    source_labels: tuple[str, ...]
-
-    def __post_init__(self) -> None:
-        if len(self.frames) != len(self.source_labels):
-            raise ValueError("frames and source_labels must have identical length")
-
-    @property
-    def num_frames(self) -> int:
-        return len(self.frames)
-
-    def subset(self, keep_mask: np.ndarray) -> FramePool:
-        mask = np.asarray(keep_mask, dtype=bool).reshape(self.num_frames)
-        return FramePool(
-            hand=self.hand,
-            frames=tuple(frame for frame, keep in zip(self.frames, mask) if keep),
-            source_labels=tuple(label for label, keep in zip(self.source_labels, mask) if keep),
-        )
-
-    def timestamps(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros(0, dtype=np.float64)
-        return np.asarray([frame.timestamp for frame in self.frames], dtype=np.float64)
-
-    def camera_T_marker_array(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros((0, 4, 4), dtype=np.float64)
-        return np.stack([frame.camera_T_marker for frame in self.frames], axis=0)
-
-    def q_encoder_array(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros((0, 20), dtype=np.float64)
-        return np.stack([frame.q_encoder_rad20 for frame in self.frames], axis=0)
-
-    def keypoints_camera_array(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros((0, 21, 3), dtype=np.float64)
-        return np.stack([frame.keypoints_camera_mm for frame in self.frames], axis=0)
-
-    def keypoint_confidence_array(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros((0, 21), dtype=np.float64)
-        return np.stack([frame.keypoint_confidence for frame in self.frames], axis=0)
-
-    def keypoint_valid_mask_array(self) -> np.ndarray:
-        if not self.frames:
-            return np.zeros((0, 21), dtype=bool)
-        return np.stack([frame.keypoint_valid_mask for frame in self.frames], axis=0)
-
-    def finite_q_mask(self) -> np.ndarray:
-        q = self.q_encoder_array()
-        if q.size == 0:
-            return np.zeros(self.num_frames, dtype=bool)
-        return np.isfinite(q).all(axis=1)
 
 
 class SolverProgressLogger:

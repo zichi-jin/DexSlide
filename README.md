@@ -39,9 +39,12 @@ STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra
 │   ├── kinematics/
 │   ├── vision/
 │   ├── visualization/
-│   ├── world_pose/
 │   └── live.py
 ├── robot_manipulation/
+│   ├── JAKA_control/
+│   ├── orca_control/
+│   ├── assets/
+│   └── scripts/
 ├── scripts/
 ├── tests/
 ├── third_party/
@@ -51,8 +54,9 @@ STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra
 说明：
 
 - `dexslide/` 是当前主 Python 包。
-- `dexslide/world_pose/` 暂存 direct ArUco 世界位姿跟踪代码，后续会按视觉职责拆分。
-- `assets/robot_hands/orcahand_description/` 是 vendored OrcaHand 资产。
+- `dexslide/vision/` 包含 direct ArUco、Marker Body 和底层视觉 Pose 跟踪代码。
+- `robot_manipulation/assets/orca_hand/` 是 OrcaHand 的模型、retargeting 和配置资产。
+- `robot_manipulation/assets/jaka/configs/` 保存 JAKA 的 Workspace Mapping 和 Payload Identification 结果。
 
 ## 环境安装
 
@@ -235,7 +239,7 @@ python scripts/view_direct_aruco_overlay.py \
 
 ### 3. 代码入口
 
-- 跟踪器：`dexslide/world_pose/direct_aruco_tracker.py`
+- 跟踪器：`dexslide/vision/direct_aruco_tracker.py`
 - 底层检测：`dexslide/vision/aruco_pose_tracker.py`
 - 3D plot：`scripts/plot_aruco_relative_pose_3d.py`
 - 相机 overlay：`scripts/view_direct_aruco_overlay.py`

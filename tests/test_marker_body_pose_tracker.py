@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 from dexslide.kinematics.transforms import make_transform, transform_points
-from dexslide.world_pose.marker_body_pose_tracker import MarkerBodyPoseTracker
+from dexslide.vision.marker_body_pose_tracker import MarkerBodyPoseTracker
 from tests.test_hand_cube_overlay import _marker_object_points, _rot_x, _rot_y, _rot_z, _sample_cfg
 
 

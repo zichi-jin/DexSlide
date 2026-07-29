@@ -14,6 +14,8 @@ import cv2
 import numpy as np
 import yaml
 
+from dexslide.vision.marker_geometry import marker_square_object_points
+
 
 def _parse_capture_source(source: str | int) -> int | str:
     src = str(source).strip()
@@ -186,16 +188,7 @@ def _prepare_aruco_detection_image(img_bgr: np.ndarray) -> np.ndarray:
 
 
 def _marker_square_object_points(marker_size_m: float) -> np.ndarray:
-    half_size = marker_size_m / 2.0
-    return np.array(
-        [
-            [-half_size, half_size, 0.0],
-            [half_size, half_size, 0.0],
-            [half_size, -half_size, 0.0],
-            [-half_size, -half_size, 0.0],
-        ],
-        dtype=np.float64,
-    )
+    return marker_square_object_points(marker_size_m)
 
 
 def _estimate_single_marker_pose_candidates(

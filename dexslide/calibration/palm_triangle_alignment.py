@@ -11,7 +11,7 @@ from dexslide.kinematics.transforms import (
     make_transform,
     rotmat_to_quaternion_xyzw,
 )
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     HandCubeOverlayConfig,
     load_marker_to_wrist_asset,
     marker_to_wrist_asset_transforms,

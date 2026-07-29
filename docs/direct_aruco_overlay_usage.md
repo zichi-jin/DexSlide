@@ -392,7 +392,7 @@ assets/skeletons/skeleton.json
 ## 七、相关代码入口
 
 - 主脚本：`scripts/view_direct_aruco_overlay.py`
-- direct ArUco 跟踪：`dexslide/world_pose/direct_aruco_tracker.py`
+- direct ArUco 跟踪：`dexslide/vision/direct_aruco_tracker.py`
 - marker 检测：`dexslide/vision/aruco_pose_tracker.py`
-- marker body 融合与手部挂载：`dexslide/world_pose/hand_cube_overlay.py`
+- marker body 融合与手部挂载：`dexslide/vision/hand_cube_overlay.py`
 - 单独 3D 世界轨迹查看：`scripts/plot_aruco_relative_pose_3d.py`

@@ -11,7 +11,7 @@ from dexslide.kinematics.transforms import (
     transform_to_rvec_tvec,
 )
 from dexslide.paths import DIRECT_ARUCO_CALIBRATION_DIR
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     HandCubeOverlayConfig,
     MarkerMount,
     compose_overlay_joint_angles,

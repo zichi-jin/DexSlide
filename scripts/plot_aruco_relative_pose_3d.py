@@ -20,7 +20,7 @@ from dexslide.paths import (
     DEFAULT_DIRECT_ARUCO_TABLE_CONFIG_FILE,
     DEFAULT_DIRECT_ARUCO_TARGET_CONFIG_FILE,
 )
-from dexslide.world_pose import DirectArucoTracker
+from dexslide.vision import DirectArucoTracker
 
 
 COLOR_CYCLE = [

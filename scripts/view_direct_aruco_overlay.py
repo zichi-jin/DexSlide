@@ -74,20 +74,20 @@ from dexslide.kinematics.transforms import (
     transform_points,
     transform_to_rvec_tvec,
 )
-from dexslide.world_pose.direct_aruco_tracker import (
+from dexslide.vision.direct_aruco_tracker import (
     _build_direct_aruco_frame_result,
     _detect_relevant_aruco_tags,
     _normalize_target_marker_ids,
 )
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
-    compose_overlay_joint_angles,
     marker_to_wrist_asset_transforms,
     resolve_marker_body_tag_pose_branches,
     try_load_hand_cube_overlay_config,
 )
-from dexslide.world_pose.marker_body_pose_tracker import MarkerBodyPoseTracker
+from dexslide.kinematics.hand_overlay import compose_overlay_joint_angles
+from dexslide.vision.marker_body_pose_tracker import MarkerBodyPoseTracker
 
 try:
     import pyrealsense2 as rs

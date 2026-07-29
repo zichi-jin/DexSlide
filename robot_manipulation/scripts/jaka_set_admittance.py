@@ -11,7 +11,11 @@ from typing import Iterable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-JAKA_SDK_ROOT = PROJECT_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
+DEXSLIDE_ROOT = PROJECT_ROOT.parent
+if str(DEXSLIDE_ROOT) not in sys.path:
+    sys.path.insert(0, str(DEXSLIDE_ROOT))
+from robot_manipulation.JAKA_control.paths import JAKA_SDK_DIR
+JAKA_SDK_ROOT = JAKA_SDK_DIR
 DEFAULT_IP = "192.168.99.44"
 DEFAULT_FORCE_THRESHOLD_N = 10.0
 DEFAULT_SENSOR_BRAND = 10

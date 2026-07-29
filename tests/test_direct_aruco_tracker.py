@@ -7,7 +7,7 @@ import yaml
 from dexslide.kinematics.transforms import invert_transform, rvec_tvec_to_transform
 from dexslide import paths
 from dexslide.vision import aruco_pose_tracker as apt
-from dexslide.world_pose import direct_aruco_tracker as dat
+from dexslide.vision import direct_aruco_tracker as dat
 
 
 def test_normalize_target_marker_ids_excludes_duplicates_and_table() -> None:

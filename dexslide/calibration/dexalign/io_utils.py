@@ -9,7 +9,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from dexslide.paths import DEXALIGN_CALIBRATION_DIR
-from dexslide.world_pose.hand_cube_overlay import marker_to_wrist_asset_transforms
+from dexslide.calibration.marker_assets import marker_to_wrist_asset_transforms
 
 from .types import AlignmentDataset, AlignmentFrame, CAPTURE_KINDS, NUM_KEYPOINTS
 

@@ -12,7 +12,11 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-JAKA_SDK_ROOT = PROJECT_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
+DEXSLIDE_ROOT = PROJECT_ROOT.parent
+if str(DEXSLIDE_ROOT) not in sys.path:
+    sys.path.insert(0, str(DEXSLIDE_ROOT))
+from robot_manipulation.JAKA_control.paths import DEFAULT_PAYLOAD_CONFIG_FILE, JAKA_SDK_DIR
+JAKA_SDK_ROOT = JAKA_SDK_DIR
 
 # 连接配置
 DEFAULT_IP = "192.168.99.44"  # JAKA 控制器 IP
@@ -43,7 +47,7 @@ MAX_ROTATION_AMPLITUDE_DEG = 40.0
 DEFAULT_PAYLOAD_RETURN_SPEED_DEG_S = 10.0  # 负载辨识完成后回原位的关节速度
 DEFAULT_IDENTIFY_DELTA_DEG = 30.0  # 负载辨识时腕部 3 轴默认偏转角
 PAYLOAD_IDENTIFY_POLL_S = 1.0  # 轮询辨识状态的间隔
-PAYLOAD_CONFIG_PATH = PROJECT_ROOT / "JAKA_control" / "config" / "jaka_s5_orcahand_payload.json"
+PAYLOAD_CONFIG_PATH = DEFAULT_PAYLOAD_CONFIG_FILE
 WRIST_JOINT_LIMITS_RAD = (
     math.radians(265.0),  # j4 上限
     math.radians(320.0),  # j5 上限

@@ -21,8 +21,12 @@ from tkinter import messagebox, ttk
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-JAKA_SDK_ROOT = PROJECT_ROOT / "JAKA_control" / "JAKA_dependecies" / "x86_64-linux-gnu"
-PAYLOAD_CONFIG_PATH = PROJECT_ROOT / "JAKA_control" / "config" / "jaka_s5_orcahand_payload.json"
+DEXSLIDE_ROOT = PROJECT_ROOT.parent
+if str(DEXSLIDE_ROOT) not in sys.path:
+    sys.path.insert(0, str(DEXSLIDE_ROOT))
+from robot_manipulation.JAKA_control.paths import DEFAULT_PAYLOAD_CONFIG_FILE, JAKA_SDK_DIR
+JAKA_SDK_ROOT = JAKA_SDK_DIR
+PAYLOAD_CONFIG_PATH = DEFAULT_PAYLOAD_CONFIG_FILE
 
 # DEFAULT_IP = "192.168.99.44"
 # DEFAULT_SENSOR_BRAND = 10

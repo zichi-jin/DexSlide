@@ -5,7 +5,7 @@ import numpy as np
 import scripts.view_direct_aruco_overlay as overlay
 from dexslide.visualization import aruco_overlay
 from dexslide.kinematics.transforms import make_transform
-from dexslide.world_pose.marker_body_pose_tracker import _smooth_marker_body_pose
+from dexslide.vision.marker_body_pose_tracker import _smooth_marker_body_pose
 
 
 def test_default_overlay_result_paths_prefer_latest_dexalign_outputs(tmp_path, monkeypatch) -> None:

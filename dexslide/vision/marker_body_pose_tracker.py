@@ -14,7 +14,7 @@ from dexslide.kinematics.transforms import (
     rotmat_to_quaternion_xyzw,
     slerp_quaternion_xyzw,
 )
-from dexslide.world_pose.hand_cube_overlay import (
+from dexslide.vision.hand_cube_overlay import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     MarkerBodyConsistencyReport,
