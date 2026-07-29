@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import sys
 import time
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -52,17 +50,20 @@ from dexslide.calibration.depth_projection import (
     wrist_body_point,
 )
 from dexslide.vision.aruco_pose_tracker import _detect_localize_aruco_tags
-from dexslide.visualization.aruco_overlay import draw_axes, draw_marker_outline
-from dexslide.vision.hand_cube_overlay import (
-    _build_marker_observations,
-    _compute_marker_reprojection_errors,
-    _seed_camera_body_pose,
-    _solve_body_pose_camera_from_observations,
-    resolve_marker_body_tag_pose_branches,
-)
 from dexslide.vision.marker_body_model import (
     HandCubeOverlayConfig,
     resolve_hand_overlay_asset_paths,
+)
+from dexslide.calibration.marker_wrist_pose import (
+    BodyPoseEstimate,
+    _estimate_body_pose_in_camera_from_tag_dict,
+    _make_camera_frame_result_from_tag_dict,
+)
+from dexslide.calibration.marker_wrist_visualization import (
+    _compose_display_frame,
+    _draw_marker_outlines,
+    _draw_projected_axes,
+    _draw_status_lines,
 )
 
 try:
@@ -74,16 +75,6 @@ except ImportError:  # pragma: no cover - runtime dependency
 VIEW_CHOICES = ("color", "depth", "split")
 
 
-@dataclass(frozen=True)
-class BodyPoseEstimate:
-    transform_camera_body: np.ndarray
-    source_marker_ids: tuple[int, ...]
-    max_position_deviation_m: float
-    mean_reprojection_error_px: float
-    max_reprojection_error_px: float
-    resolved_tag_dict: dict[int, dict[str, Any]]
-
-
 def _default_hand_overlay_config_path(hand: str) -> Path:
     requested = str(hand).strip().lower()
     if requested in {"left", "right"}:
@@ -92,234 +83,42 @@ def _default_hand_overlay_config_path(hand: str) -> Path:
 
 
 def _default_output_config_path(config_path: Path) -> Path:
-    asset_paths = resolve_hand_overlay_asset_paths(config_path)
-    return asset_paths["marker_to_wrist"]
+    return resolve_hand_overlay_asset_paths(config_path)["marker_to_wrist"]
 
 
 def _default_output_report_path(config_path: Path) -> Path:
-    asset_paths = resolve_hand_overlay_asset_paths(config_path)
-    return asset_paths["marker_to_wrist_dataset"]
+    return resolve_hand_overlay_asset_paths(config_path)["marker_to_wrist_dataset"]
 
 
 def _optional_path_arg(raw: str | None) -> Path | None:
     text = "" if raw is None else str(raw).strip()
-    if not text:
-        return None
-    return Path(text).expanduser().resolve()
+    return Path(text).expanduser().resolve() if text else None
 
 
 def _rs_intrinsics_to_opencv_dict(intr: Any) -> dict[str, np.ndarray]:
     return {
         "DIM": np.array([int(intr.width), int(intr.height)], dtype=np.int64),
-        "K": np.array(
-            [
-                [float(intr.fx), 0.0, float(intr.ppx)],
-                [0.0, float(intr.fy), float(intr.ppy)],
-                [0.0, 0.0, 1.0],
-            ],
-            dtype=np.float64,
-        ),
+        "K": np.array([[float(intr.fx), 0.0, float(intr.ppx)], [0.0, float(intr.fy), float(intr.ppy)], [0.0, 0.0, 1.0]], dtype=np.float64),
         "D": np.asarray(list(intr.coeffs), dtype=np.float64).reshape(-1, 1),
     }
 
 
-def _make_camera_frame_result_from_tag_dict(tag_dict: dict[int, dict[str, Any]]) -> dict[str, Any]:
-    targets: dict[str, dict[str, Any]] = {}
-    for marker_id, tag in tag_dict.items():
-        targets[str(int(marker_id))] = {
-            "detected": True,
-            "target_in_camera": {
-                "matrix": rvec_tvec_to_transform(tag["rvec"], tag["tvec"]).tolist(),
-            },
-            "undistorted_corners": np.asarray(
-                tag.get("undistorted_corners", tag.get("corners")),
-                dtype=np.float64,
-            ).reshape(4, 2).tolist(),
-        }
-    return {"targets": targets}
-
-
-def _estimate_body_pose_in_camera_from_tag_dict(
-    tag_dict: dict[int, dict[str, Any]],
-    config: HandCubeOverlayConfig,
-    camera_matrix: np.ndarray,
-    *,
-    reference_camera_body: np.ndarray | None = None,
-    outlier_threshold_m: float,
-    reprojection_error_threshold_px: float,
-) -> BodyPoseEstimate | None:
-    resolved_tag_dict: dict[int, dict[str, Any]] = copy.deepcopy(tag_dict)
-    resolve_marker_body_tag_pose_branches(
-        resolved_tag_dict,
-        config,
-        reference_camera_body=reference_camera_body,
-    )
-
-    frame_result = _make_camera_frame_result_from_tag_dict(resolved_tag_dict)
-    observations = _build_marker_observations(frame_result, config)
-    if not observations:
-        return None
-
-    seed_camera_body, active_observations, seed_spread_m = _seed_camera_body_pose(
-        observations,
-        outlier_threshold_m=outlier_threshold_m,
-    )
-    if seed_camera_body is None or not active_observations:
-        return None
-
-    final_transform_camera_body = seed_camera_body
-    final_observations = list(active_observations)
-    final_errors = _compute_marker_reprojection_errors(
-        final_observations,
-        transform_camera_body=final_transform_camera_body,
-        camera_matrix=camera_matrix,
-    )
-
-    while active_observations:
-        solved_transform = _solve_body_pose_camera_from_observations(
-            active_observations,
-            camera_matrix=np.asarray(camera_matrix, dtype=np.float64),
-            initial_transform=seed_camera_body,
-            reprojection_error_threshold_px=reprojection_error_threshold_px,
-        )
-        if solved_transform is None:
-            break
-
-        current_errors = _compute_marker_reprojection_errors(
-            active_observations,
-            transform_camera_body=solved_transform,
-            camera_matrix=camera_matrix,
-        )
-        final_transform_camera_body = solved_transform
-        final_observations = list(active_observations)
-        final_errors = current_errors
-
-        if len(active_observations) <= 1:
-            break
-
-        worst_error = max(
-            current_errors,
-            key=lambda item: (float(item["mean_error_px"]), float(item["max_error_px"])),
-        )
-        if float(worst_error["mean_error_px"]) <= float(reprojection_error_threshold_px):
-            break
-
-        active_observations = [
-            obs for obs in active_observations if obs.marker_id != int(worst_error["marker_id"])
-        ]
-        seed_camera_body, active_observations, seed_spread_m = _seed_camera_body_pose(
-            active_observations,
-            outlier_threshold_m=outlier_threshold_m,
-        )
-        if seed_camera_body is None or not active_observations:
-            break
-
-    max_position_deviation_m = seed_spread_m
-    if final_observations:
-        final_positions = np.stack(
-            [obs.transform_camera_body_single[:3, 3] for obs in final_observations],
-            axis=0,
-        )
-        diffs = final_positions - final_transform_camera_body[:3, 3][None, :]
-        max_position_deviation_m = float(np.max(np.linalg.norm(diffs, axis=-1)))
-
-    return BodyPoseEstimate(
-        transform_camera_body=np.asarray(final_transform_camera_body, dtype=np.float64).reshape(4, 4).copy(),
-        source_marker_ids=tuple(int(obs.marker_id) for obs in final_observations),
-        max_position_deviation_m=float(max_position_deviation_m),
-        mean_reprojection_error_px=(
-            0.0 if not final_errors else float(np.mean([err["mean_error_px"] for err in final_errors]))
-        ),
-        max_reprojection_error_px=(
-            0.0 if not final_errors else float(np.max([err["max_error_px"] for err in final_errors]))
-        ),
-        resolved_tag_dict=resolved_tag_dict,
-    )
+def _estimate_bbox_xyxy(keypoints_2d: np.ndarray, image_shape: tuple[int, ...], padding_px: int = 24) -> tuple[int, int, int, int]:
+    height, width = int(image_shape[0]), int(image_shape[1])
+    pts = np.asarray(keypoints_2d, dtype=np.float32).reshape(-1, 2)
+    if pts.size == 0:
+        return (0, 0, max(0, width - 1), max(0, height - 1))
+    x0 = int(np.clip(np.floor(float(np.min(pts[:, 0]))) - padding_px, 0, max(0, width - 1)))
+    y0 = int(np.clip(np.floor(float(np.min(pts[:, 1]))) - padding_px, 0, max(0, height - 1)))
+    x1 = int(np.clip(np.ceil(float(np.max(pts[:, 0]))) + padding_px, 0, max(0, width - 1)))
+    y1 = int(np.clip(np.ceil(float(np.max(pts[:, 1]))) + padding_px, 0, max(0, height - 1)))
+    return (x0, y0, x1, y1)
 
 
 _sample_depth_m = sample_depth_frame_m
 _deproject_keypoint_points = deproject_keypoint_points
 _camera_points_to_body_points = camera_points_to_body_points
 _wrist_body_point = wrist_body_point
-
-
-def _estimate_bbox_xyxy(
-    keypoints_2d: np.ndarray,
-    image_shape: tuple[int, ...],
-    padding_px: int = 24,
-) -> tuple[int, int, int, int]:
-    height, width = int(image_shape[0]), int(image_shape[1])
-    pts = np.asarray(keypoints_2d, dtype=np.float32).reshape(-1, 2)
-    if pts.size == 0:
-        return (0, 0, max(0, width - 1), max(0, height - 1))
-    x0 = int(np.floor(float(np.min(pts[:, 0])))) - int(padding_px)
-    y0 = int(np.floor(float(np.min(pts[:, 1])))) - int(padding_px)
-    x1 = int(np.ceil(float(np.max(pts[:, 0])))) + int(padding_px)
-    y1 = int(np.ceil(float(np.max(pts[:, 1])))) + int(padding_px)
-    x0 = int(np.clip(x0, 0, max(0, width - 1)))
-    y0 = int(np.clip(y0, 0, max(0, height - 1)))
-    x1 = int(np.clip(x1, 0, max(0, width - 1)))
-    y1 = int(np.clip(y1, 0, max(0, height - 1)))
-    return (x0, y0, x1, y1)
-
-
-def _draw_projected_axes(
-    image_bgr: np.ndarray,
-    camera_matrix: np.ndarray,
-    transform_camera_body: np.ndarray,
-    *,
-    axis_length_m: float,
-    label: str,
-) -> None:
-    rvec, tvec = transform_to_rvec_tvec(transform_camera_body)
-    draw_axes(
-        image_bgr,
-        {
-            "K": np.asarray(camera_matrix, dtype=np.float64).reshape(3, 3),
-            "D": np.zeros((1, 5), dtype=np.float64),
-        },
-        rvec,
-        tvec,
-        axis_length_m,
-        label,
-        (255, 255, 255),
-    )
-
-
-def _draw_marker_outlines(image_bgr: np.ndarray, tag_dict: dict[int, dict[str, Any]]) -> None:
-    for marker_id, tag in sorted(tag_dict.items(), key=lambda item: int(item[0])):
-        corners = np.asarray(tag.get("corners"), dtype=np.float64).reshape(4, 2)
-        draw_marker_outline(image_bgr, corners, (0, 215, 255), str(int(marker_id)))
-
-
-def _draw_status_lines(image_bgr: np.ndarray, lines: list[str]) -> np.ndarray:
-    out = image_bgr.copy()
-    line_height = 24
-    box_height = max(36, 12 + line_height * len(lines))
-    cv2.rectangle(out, (8, 8), (900, box_height), (15, 15, 15), -1)
-    cv2.rectangle(out, (8, 8), (900, box_height), (90, 90, 90), 1)
-    for idx, line in enumerate(lines):
-        cv2.putText(
-            out,
-            line,
-            (18, 32 + idx * line_height),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.56,
-            (240, 240, 240),
-            1,
-            cv2.LINE_AA,
-        )
-    return out
-
-
-def _compose_display_frame(color_bgr: np.ndarray, depth_bgr: np.ndarray, *, view: str) -> np.ndarray:
-    if view == "color":
-        return color_bgr
-    if view == "depth":
-        return depth_bgr
-    if view != "split":
-        raise ValueError(f"Unsupported view: {view}")
-    return np.hstack([color_bgr, depth_bgr])
 
 
 def _save_alignment_outputs(

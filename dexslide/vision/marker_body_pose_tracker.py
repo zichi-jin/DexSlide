@@ -14,10 +14,12 @@ from dexslide.kinematics.transforms import (
     rotmat_to_quaternion_xyzw,
     slerp_quaternion_xyzw,
 )
-from dexslide.vision.hand_cube_overlay import (
+from dexslide.vision.marker_body_model_impl import (
     CubePoseEstimate,
     HandCubeOverlayConfig,
     MarkerBodyConsistencyReport,
+)
+from dexslide.vision.marker_body_pose import (
     diagnose_marker_body_consistency,
     estimate_cube_pose_in_table,
 )

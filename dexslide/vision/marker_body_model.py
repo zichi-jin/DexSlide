@@ -4,7 +4,7 @@ The implementation is currently shared with the pose solver for backward
 compatibility; new callers should import configuration/model symbols here.
 """
 
-from dexslide.vision.marker_body_pose import (
+from dexslide.vision.marker_body_model_impl import (
     HandCubeOverlayConfig,
     load_marker_to_wrist_asset,
     MarkerBodyConsistencyItem,
