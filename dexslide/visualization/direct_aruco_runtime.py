@@ -125,7 +125,10 @@ except ImportError:  # pragma: no cover - runtime dependency
     rs = None
 
 def main() -> None:
-    # Phase 1: build the command-line contract and load communication defaults.
+    # -----------------------------------------------------------------------
+    # Phase 1 — CLI and static defaults
+    # Build the command-line contract and load communication defaults.
+    # -----------------------------------------------------------------------
     joint_communication = hand_joint_communication("left")
     camera = camera_communication("primary")
     camera_intrinsics = json.loads(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE.read_text(encoding="utf-8"))
@@ -324,7 +327,10 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    # Phase 2: normalize detector options and decide which runtime features are active.
+    # -----------------------------------------------------------------------
+    # Phase 2 — Runtime feature selection
+    # Normalize detector options and decide which optional pipelines are active.
+    # -----------------------------------------------------------------------
     corner_refine_mode = (
         str(args.corner_refine_mode).strip().lower()
         if str(args.corner_refine_mode).strip()
@@ -354,7 +360,10 @@ def main() -> None:
     if realsense_backend_enabled and rs is None:
         raise SystemExit("启用 RealSense 后端需要 pyrealsense2。")
 
-    # Phase 3: resolve optional hand-overlay and wrist-alignment configuration.
+    # -----------------------------------------------------------------------
+    # Phase 3 — Hand-overlay and wrist-alignment configuration
+    # Resolve marker-body assets, wrist output paths, and joint-space offsets.
+    # -----------------------------------------------------------------------
     parsed_target_ids = _parse_target_marker_ids(args.target_marker_ids)
 
     hand_overlay_cfg: HandCubeOverlayConfig | None = None
@@ -417,7 +426,10 @@ def main() -> None:
             f"{list(zip(PALM_TRIANGLE_LANDMARK_NAMES, PALM_TRIANGLE_LANDMARK_INDICES))}"
         )
 
-    # Phase 4: resolve marker selection and load the table/target ArUco definitions.
+    # -----------------------------------------------------------------------
+    # Phase 4 — ArUco scene configuration
+    # Resolve marker selection and load the table/target detector definitions.
+    # -----------------------------------------------------------------------
     target_marker_ids = _resolve_target_marker_ids_for_overlay(
         parsed_target_ids=parsed_target_ids,
         hand_overlay_enabled=marker_body_tracking_enabled,
@@ -438,7 +450,10 @@ def main() -> None:
             with open(args.target_aruco_yaml, "r", encoding="utf-8") as handle:
                 target_cfg = _parse_aruco_config(yaml.safe_load(handle))
 
-    # Phase 5: prepare camera intrinsics and optional glove/pose-tracking services.
+    # -----------------------------------------------------------------------
+    # Phase 5 — Service initialization
+    # Prepare camera intrinsics, glove input, skeleton kinematics, and trackers.
+    # -----------------------------------------------------------------------
     raw_intr = None
     if not realsense_backend_enabled:
         with open(args.camera_intrinsics, "r", encoding="utf-8") as handle:
@@ -485,7 +500,10 @@ def main() -> None:
         )
 
     cap = None
-    # Phase 6: open the selected camera backend and initialize the live processing state.
+    # -----------------------------------------------------------------------
+    # Phase 6 — Camera and live-state initialization
+    # Open the selected backend and create state shared by the frame loop.
+    # -----------------------------------------------------------------------
     rs_pipeline = None
     rs_align = None
     rs_pipeline_started = False
@@ -531,10 +549,13 @@ def main() -> None:
     window_name = "Direct ArUco Overlay"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
 
-    # Phase 7: process frames until the user requests shutdown.
+    # -----------------------------------------------------------------------
+    # Phase 7 — Per-frame processing pipeline
+    # Acquire → detect → estimate pose → overlay hand/wrist → render → input.
+    # -----------------------------------------------------------------------
     try:
         while True:
-            # Step 7.1: acquire one color frame and update intrinsics for its resolution.
+            # 7A. Capture: obtain a frame and keep camera intrinsics aligned with its resolution.
             depth_frame = None
             if realsense_backend_enabled:
                 assert rs_pipeline is not None
@@ -571,8 +592,8 @@ def main() -> None:
                     intr = _convert_fisheye_intrinsics_resolution(raw_intr, target_resolution=resolution)
                     intr_resolution = resolution
 
+            # 7B. Detection and body pose: convert visible markers into a stable scene estimate.
             assert intr is not None
-            # Step 7.2: detect the table marker and the configured target markers.
             tag_dict = _detect_relevant_aruco_tags(
                 frame_bgr=frame_bgr,
                 intr=intr,
@@ -585,7 +606,6 @@ def main() -> None:
                 motion_tolerant=not args.strict_detector,
                 corner_refine_mode=corner_refine_mode,
             )
-            # Step 7.3: resolve marker-body branches before estimating the live body pose.
             if hand_overlay_cfg is not None:
                 reference_camera_body = None
                 table_tag_for_reference = tag_dict.get(int(args.table_marker_id))
@@ -602,7 +622,6 @@ def main() -> None:
                     hand_overlay_cfg,
                     reference_camera_body=reference_camera_body,
                 )
-            # Step 7.4: estimate a camera-to-body transform from the visible marker geometry.
             camera_body_pose = None
             if hand_overlay_cfg is not None:
                 camera_body_pose = _estimate_body_pose_in_camera_from_tag_dict(
@@ -615,7 +634,6 @@ def main() -> None:
                 )
                 if camera_body_pose is not None:
                     last_camera_body_transform = camera_body_pose.transform_camera_body.copy()
-            # Step 7.5: convert raw detections into the shared frame-result schema.
             frame_result = _build_direct_aruco_frame_result(
                 frame_idx=frame_idx,
                 image_size=[width, height],
@@ -624,6 +642,7 @@ def main() -> None:
                 tag_dict=tag_dict,
             )
 
+            # 7C. Marker rendering: draw table and target marker geometry before hand overlays.
             vis = frame_bgr.copy()
             table_tag = tag_dict.get(int(args.table_marker_id))
             if table_tag is not None:
@@ -656,7 +675,6 @@ def main() -> None:
                         label_color=color,
                     )
 
-            # Step 7.6: fuse the table pose and marker-body pose, then apply temporal smoothing.
             tracker_result = None
             if marker_body_tracker is not None:
                 tracker_result = marker_body_tracker.update(
@@ -676,7 +694,7 @@ def main() -> None:
                 camera_body_pose=camera_body_pose,
             )
 
-            # Step 7.7: read glove angles and apply the configured joint-space corrections.
+            # 7D. Hand overlay: transform glove joint angles and project the reconstructed hand.
             raw_joint_angles = np.zeros(20, dtype=np.float64)
             raw_joint_stamp = 0.0
             overlay_joint_angles = np.zeros(20, dtype=np.float64)
@@ -721,7 +739,7 @@ def main() -> None:
                     label_color=(20, 20, 20),
                 )
 
-            # Step 7.8: optionally estimate the wrist pose from the RGB-D palm triangle.
+            # 7E. Wrist alignment: optionally derive body-to-wrist pose from RGB-D landmarks.
             triangle_camera_xyz = None
             triangle_body_xyz = None
             current_body_to_wrist_transform = None
@@ -793,7 +811,7 @@ def main() -> None:
                                 label_color=(32, 32, 32),
                             )
 
-            # Step 7.9: update diagnostics, HUD text, and the rendered frame.
+            # 7F. Presentation and controls: emit diagnostics, draw the HUD, and handle keys.
             now = time.monotonic()
             dt = max(now - last_time, 1e-6)
             inst_fps = 1.0 / dt
@@ -851,7 +869,6 @@ def main() -> None:
                         )
                 _draw_hud(vis, hud_lines)
 
-            # Step 7.10: present the frame and handle interactive wrist-alignment commands.
             cv2.imshow(window_name, vis)
             key = cv2.waitKey(1) & 0xFF
             if key in (27, ord("q")):
@@ -916,7 +933,10 @@ def main() -> None:
                     print(f"[wrist-align] wrote config: {wrist_align_output_config_path}")
                     print(f"[wrist-align] wrote report: {wrist_align_output_report_path}")
             frame_idx += 1
-    # Phase 8: release hardware, detector, window, and terminal state on every exit path.
+    # -----------------------------------------------------------------------
+    # Phase 8 — Shutdown and resource cleanup
+    # Release hardware, detector, windows, and terminal state on every exit path.
+    # -----------------------------------------------------------------------
     finally:
         if cap is not None:
             cap.release()
