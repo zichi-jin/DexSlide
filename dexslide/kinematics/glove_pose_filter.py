@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from collections import deque
 from dataclasses import dataclass
 
 import cv2
@@ -24,6 +25,7 @@ class GlovePoseFilterConfig:
     max_position_step_mm: float = 18.0
     max_rotation_step_deg: float = 18.0
     max_dt_s: float = 0.12
+    robust_window_size: int = 3
 
 
 @dataclass(frozen=True)
@@ -41,15 +43,50 @@ def _alpha_from_tau(dt_s: float, tau_s: float) -> float:
     return float(1.0 - math.exp(-dt / tau))
 
 
+def _rotation_distance_rad(first: np.ndarray, second: np.ndarray) -> float:
+    relative = np.asarray(first, dtype=np.float64).reshape(3, 3).T @ np.asarray(
+        second,
+        dtype=np.float64,
+    ).reshape(3, 3)
+    cosine = float(np.clip((np.trace(relative) - 1.0) * 0.5, -1.0, 1.0))
+    return float(math.acos(cosine))
+
+
+def _robust_pose_observation(observations: list[np.ndarray]) -> np.ndarray:
+    """Return a coordinate median plus rotation medoid for a short pose window."""
+
+    if len(observations) < 3:
+        return observations[-1].copy()
+    translations = np.stack(
+        [np.asarray(transform[:3, 3], dtype=np.float64) for transform in observations]
+    )
+    filtered_translation = np.median(translations, axis=0)
+    rotations = [
+        np.asarray(transform[:3, :3], dtype=np.float64).reshape(3, 3)
+        for transform in observations
+    ]
+    rotation_scores = [
+        sum(_rotation_distance_rad(rotation, other) for other in rotations)
+        for rotation in rotations
+    ]
+    filtered_rotation = rotations[int(np.argmin(rotation_scores))]
+    return make_transform(filtered_rotation, filtered_translation)
+
+
 class GlovePoseFilter:
     def __init__(self, config: GlovePoseFilterConfig | None = None) -> None:
         self._config = config or GlovePoseFilterConfig()
+        window_size = int(self._config.robust_window_size)
+        if window_size < 1 or window_size % 2 == 0:
+            raise ValueError("robust_window_size must be a positive odd integer")
         self._last_transform: np.ndarray | None = None
         self._last_timestamp: float | None = None
+        self._observations: deque[np.ndarray] = deque(maxlen=window_size)
 
     def reset(self) -> None:
         self._last_transform = None
         self._last_timestamp = None
+        self._observations.clear()
 
     def update(
         self,
@@ -62,6 +99,10 @@ class GlovePoseFilter:
             return GlovePoseFilterResult(self._last_transform.copy(), True, False, True, None)
 
         observed = np.asarray(transform_table_hand, dtype=np.float64).reshape(4, 4)
+        if not np.isfinite(observed).all():
+            raise ValueError("transform_table_hand must contain only finite values")
+        self._observations.append(observed.copy())
+        observed = _robust_pose_observation(list(self._observations))
         if self._last_transform is None:
             self._last_transform = observed.copy()
             self._last_timestamp = float(timestamp_s) if timestamp_s is not None else None

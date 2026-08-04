@@ -8,6 +8,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+DEFAULT_MANUAL_CALIBRATION = (
+    Path(__file__).resolve().parents[3]
+    / "assets"
+    / "orca_hand"
+    / "configs"
+    / "calibration.yaml"
+)
+
 from orca_core import OrcaHand
 
 class MotorControlUI:
@@ -93,9 +101,11 @@ def main():
     parser.add_argument('config_path', type=str, nargs='?', default=
                         "/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_dependencies/orca_core/models/v1/orcahand_right/config.yaml",
                           help='Path to the hand config.yaml file')
+    parser.add_argument('--calibration-path', type=str, default=str(DEFAULT_MANUAL_CALIBRATION),
+                        help='Path to the manual motor calibration.yaml file')
     args = parser.parse_args()
 
-    hand = OrcaHand(config_path=args.config_path)
+    hand = OrcaHand(config_path=args.config_path, calibration_path=args.calibration_path)
     status = hand.connect()
     print(status)
 

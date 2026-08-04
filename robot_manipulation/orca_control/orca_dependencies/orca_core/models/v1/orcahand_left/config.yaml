@@ -1,8 +1,8 @@
-port: /dev/cu.usbserial-FTAAMLDU
+port: /dev/ttyUSB0
 version: 0.2.1
 baudrate: 3000000
 max_current: 400
-type: right
+type: left
 control_mode: current_based_position
 motor_ids:
 - 1
@@ -21,7 +21,6 @@ motor_ids:
 - 14
 - 15
 - 16
-- 17
 joint_ids:
 - thumb_mcp
 - thumb_abd
@@ -39,7 +38,6 @@ joint_ids:
 - pinky_abd
 - pinky_mcp
 - pinky_pip
-- wrist
 joint_to_motor_map:
   thumb_mcp: -4
   thumb_abd: -3
@@ -57,7 +55,6 @@ joint_to_motor_map:
   pinky_abd: 12
   pinky_mcp: -10
   pinky_pip: -11
-  wrist: -17
 joint_roms:
   thumb_mcp:
   - -50
@@ -107,9 +104,6 @@ joint_roms:
   pinky_pip:
   - -20
   - 108
-  wrist:
-  - -50
-  - 30
 neutral_position:
   thumb_mcp: -13
   thumb_abd: 43
@@ -127,7 +121,6 @@ neutral_position:
   pinky_abd: -55
   pinky_mcp: 1
   pinky_pip: 0
-  wrist: 0
 calibration_current: 350
 calibration_step_size: 0.1
 calibration_step_period: 0.001

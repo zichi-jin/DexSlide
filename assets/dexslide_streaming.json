@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "communications_file": "dexslide_communications.json",
+  "camera": {
+    "name": "primary",
+    "intrinsics_file": "calibration/direct_aruco/d435i_intrinsic.json",
+    "width": 1920,
+    "height": 1192,
+    "fps": 60,
+    "fourcc": "MJPG",
+    "buffer_size": 2,
+    "num_workers": 4
+  },
+  "world": {
+    "table_marker_id": 0,
+    "table_aruco_file": "calibration/direct_aruco/table_aruco.yaml"
+  },
+  "stream": {
+    "joint_unit": "deg",
+    "joint_mode": "dexalign",
+    "pose_filter_enabled": true,
+    "pose_solver": "joint_pnp",
+    "pose_smoothing": 0.5,
+    "pose_outlier_threshold_mm": 20.0,
+    "reprojection_error_threshold_px": 5.0,
+    "aruco_detection_scale": 0.5
+  },
+  "joint_buffer_size": 512,
+  "hands": {
+    "left": {
+      "communication_hand": "left",
+      "skeleton_file": "calibration/dexalign/test_left_001/optimized_skeleton.json",
+      "glove_calibration_file": "calibration/glove_calibration.json",
+      "tags_to_marker_file": "calibration/direct_aruco/left_tags2marker.json",
+      "marker_to_hand_file": "calibration/dexalign/test_left_001/optimized_marker2hand.json",
+      "joint_calibration_file": "calibration/dexalign/test_left_001/optimized_joint_calibration.json",
+      "dexalign_session": "calibration/dexalign/test_left_001"
+    }
+  }
+}

@@ -167,7 +167,7 @@ def run_motion_test(hand, step_num, duration=60):
 def main():
     parser = argparse.ArgumentParser(description="Full ORCA Hand setup workflow.")
     parser.add_argument(
-        "config_path", type=str, nargs="?", default=None,
+        "config_path", type=str, nargs="?", default="/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_dependencies/orca_core/models/v1/orcahand_right/config.yaml",
         help="Path to the hand config.yaml file"
     )
     args = parser.parse_args()

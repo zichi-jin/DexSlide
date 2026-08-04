@@ -189,6 +189,17 @@ def _build_direct_aruco_frame_result(
                 dtype=np.float64,
             ).reshape(4, 2).tolist(),
             "marker_size_m": float(target_tag.get("marker_size_m", 0.0)),
+            "pose_candidates": [
+                {
+                    "rvec": np.asarray(candidate["rvec"], dtype=np.float64).reshape(3).tolist(),
+                    "tvec": np.asarray(candidate["tvec"], dtype=np.float64).reshape(3).tolist(),
+                    "reprojection_error_px": float(candidate.get("reprojection_error_px", 0.0)),
+                }
+                for candidate in target_tag.get("pose_candidates", [])
+                if isinstance(candidate, dict)
+                and "rvec" in candidate
+                and "tvec" in candidate
+            ],
         }
 
     return {

@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "session_id": "session_20260802_204511",
+  "created_at_unix": 1785674711.9981005,
+  "closed_at_unix": 1785674753.6338346,
+  "units": {
+    "joint_angles": "deg",
+    "translation": "m",
+    "timestamp": "s",
+    "image_coordinates": "px",
+    "reprojection_error": "px"
+  },
+  "joint_mode": "dexalign",
+  "hand_ids": [
+    "left"
+  ],
+  "table_marker_id": 0,
+  "configs": {
+    "streaming_config": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/dexslide_streaming.json",
+      "session_copy": "configs/streaming_config__dexslide_streaming.json",
+      "sha256": "864b586c8c701af96a53470080c7cd27242f2055da2dca783cfabe87b3371a70"
+    },
+    "communications": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/dexslide_communications.json",
+      "session_copy": "configs/communications__dexslide_communications.json",
+      "sha256": "e86f86d006ddc56b986d8d49211ec9bcf421bcc6551b276ed6bac16849cfb0a0"
+    },
+    "camera_intrinsics": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/direct_aruco/d435i_intrinsic.json",
+      "session_copy": "configs/camera_intrinsics__d435i_intrinsic.json",
+      "sha256": "d68a2258fa19ea3daf2934cd2472232d7936405f7575227399b369122c51a4f4"
+    },
+    "table_aruco": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/direct_aruco/table_aruco.yaml",
+      "session_copy": "configs/table_aruco__table_aruco.yaml",
+      "sha256": "a956a55ed76d10af8fabf7dae6f2b87b8a74eb2b2b340a19f13943e55faf9e78"
+    },
+    "left.skeleton": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/dexalign/test_left_001/optimized_skeleton.json",
+      "session_copy": "configs/left__skeleton__optimized_skeleton.json",
+      "sha256": "184e58516ae7d29fe959b0616466070812eac5b063984e59f5cb2efca28d92ce"
+    },
+    "left.glove_calibration": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/glove_calibration.json",
+      "session_copy": "configs/left__glove_calibration__glove_calibration.json",
+      "sha256": "f2dc076dd81f19e88250d807d0af7c062a3ad07db9bcb5f115970a2d92217ac6"
+    },
+    "left.tags_to_marker": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/direct_aruco/left_tags2marker.json",
+      "session_copy": "configs/left__tags_to_marker__left_tags2marker.json",
+      "sha256": "57ca38562073eb0d7393738099b60dd79cb0b04ea857b1bd6ca976933722dee0"
+    },
+    "left.marker_to_hand": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/dexalign/test_left_001/optimized_marker2hand.json",
+      "session_copy": "configs/left__marker_to_hand__optimized_marker2hand.json",
+      "sha256": "ee6ca1ed3f25a3d8f2e8d83bc9af83cf41bd71c003bda59c2d4b22f7fd51b395"
+    },
+    "left.joint_calibration": {
+      "original_path": "/home/jzq/MyJob/DexSlide/assets/calibration/dexalign/test_left_001/optimized_joint_calibration.json",
+      "session_copy": "configs/left__joint_calibration__optimized_joint_calibration.json",
+      "sha256": "48b934c3fcd43bec63ae9c3379e8542fb6096ceaac3ad9d7ee403f1adcbf5906"
+    }
+  },
+  "effective_calibration": {
+    "left": {
+      "effective_T_marker_hand": [
+        [
+          2.220446049250313e-16,
+          1.0,
+          0.0,
+          0.08667014617290807
+        ],
+        [
+          -1.0,
+          2.220446049250313e-16,
+          -0.0,
+          0.10673669112051717
+        ],
+        [
+          -0.0,
+          0.0,
+          1.0,
+          -0.11812700253841443
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "effective_joint_scale": [
+        1.0214784432303585,
+        1.000696766337553,
+        0.7416909348967411,
+        1.8603391304794457,
+        0.9990536577286149,
+        0.9996802747909974,
+        0.9616621337966426,
+        1.0007121912450423,
+        0.9989442351925735,
+        0.9989357217962388,
+        1.0010543708302284,
+        0.9995802696924195,
+        0.999406483383905,
+        0.9993771668485742,
+        1.0002585374248905,
+        0.9995056777919764,
+        0.5000000000000001,
+        1.030552953739611,
+        0.7080215465815478,
+        1.018064254839964
+      ],
+      "effective_joint_bias": [
+        -17.42597423852762,
+        12.140693832505693,
+        -34.99999996294786,
+        -31.07076603161586,
+        -4.064613194568999,
+        2.4410648800816452,
+        -11.034057714877838,
+        1.5285285608535353,
+        -8.776941655561343,
+        7.740496193159551,
+        -8.716159572013916,
+        -6.147350017367188,
+        -9.60254103236083,
+        7.264942409241345,
+        -9.391712909341265,
+        -9.303415927545018,
+        1.2034317407791608,
+        6.326074727518534,
+        -16.270584488388295,
+        -9.048882725331511
+      ],
+      "effective_joint_bias_rad": [
+        -0.30414062583001866,
+        0.21189508085379333,
+        -0.6108652375513335,
+        -0.5422871683685093,
+        -0.07094088306523393,
+        0.04260461941222526,
+        -0.19258063697969996,
+        0.0266778560976647,
+        -0.1531865301449875,
+        0.13509714430872113,
+        -0.15212568266086265,
+        -0.10729149807558803,
+        -0.16759595757255183,
+        0.1267971650090308,
+        -0.1639163126700608,
+        -0.16237523961814276,
+        0.021003846199603268,
+        0.11041083272240154,
+        -0.28397527054629285,
+        -0.15793279718387257
+      ],
+      "joint_unit": "deg",
+      "joint_order": [
+        "thumb.DIP",
+        "thumb.PIP",
+        "thumb.MCP_front",
+        "thumb.MCP_back",
+        "index.DIP",
+        "index.PIP",
+        "index.MCP_front",
+        "index.MCP_back",
+        "middle.DIP",
+        "middle.PIP",
+        "middle.MCP_front",
+        "middle.MCP_back",
+        "ring.DIP",
+        "ring.PIP",
+        "ring.MCP_front",
+        "ring.MCP_back",
+        "pinky.DIP",
+        "pinky.PIP",
+        "pinky.MCP_front",
+        "pinky.MCP_back"
+      ],
+      "handedness": "left"
+    }
+  },
+  "chunks": [
+    {
+      "path": "chunks/000000.npz",
+      "sample_count": 1000,
+      "sha256": "1db69f6bf9bc9fadc7088e1a1838545d504996a83d137a314e3c969c15a3f23b",
+      "units": {
+        "joint_angles": "deg",
+        "translation": "m",
+        "timestamp": "s",
+        "image_coordinates": "px",
+        "reprojection_error": "px"
+      }
+    },
+    {
+      "path": "chunks/000001.npz",
+      "sample_count": 986,
+      "sha256": "f3922e15ac7c4613aea4f498638f324e7c2454050dd287a62576036f04d9d81f",
+      "units": {
+        "joint_angles": "deg",
+        "translation": "m",
+        "timestamp": "s",
+        "image_coordinates": "px",
+        "reprojection_error": "px"
+      }
+    }
+  ],
+  "sample_count": 1986,
+  "first_valid_frame": {
+    "timestamp": 1785674712.0058637,
+    "image_size": [
+      1920,
+      1192
+    ],
+    "table_marker_id": 0,
+    "table_marker_corners_px": [
+      [
+        1406.0,
+        282.0
+      ],
+      [
+        1302.0,
+        280.0
+      ],
+      [
+        1294.0,
+        188.0
+      ],
+      [
+        1396.0,
+        190.0
+      ]
+    ],
+    "camera_T_table": [
+      [
+        -0.9967140950438222,
+        -0.01781309355997548,
+        -0.07901712750282712,
+        0.2760067028995434
+      ],
+      [
+        0.002916879021726714,
+        0.9669931443349198,
+        -0.2547856954894386,
+        -0.26114510767675375
+      ],
+      [
+        0.08094754201176889,
+        -0.25417897731143674,
+        -0.963763738130443,
+        1.02525800965822
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "valid_hands": [
+      "left"
+    ],
+    "image_path": "first_valid_frame.jpg",
+    "sha256": "66304b17dea5678ab33587cb3b117502e3520019de524509b1bac7054bee6bf1"
+  }
+}

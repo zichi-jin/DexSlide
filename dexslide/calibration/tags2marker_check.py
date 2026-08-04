@@ -119,7 +119,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=Path("assets/calibration/direct_aruco/left_tags2marker.json"))
     parser.add_argument("--camera-intrinsics", type=Path, default=Path("assets/calibration/direct_aruco/d435i_intrinsic.json"))
-    parser.add_argument("--source", default="/dev/video4", help="相机编号或视频路径")
+    parser.add_argument("--source", default="/dev/video0", help="相机编号或视频路径")
     parser.add_argument("--position-threshold-mm", type=float, default=5.0)
     parser.add_argument("--rotation-threshold-deg", type=float, default=8.0)
     parser.add_argument("--3d-axis-length-mm", type=float, default=20.0)

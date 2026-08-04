@@ -14,7 +14,13 @@ import cv2
 import numpy as np
 import yaml
 
+from dexslide.kinematics.glove_pose_filter import GlovePoseFilter
+from dexslide.kinematics.transforms import rvec_tvec_to_transform, transform_to_rvec_tvec
+from dexslide.vision.aruco_pose_disambiguation import (
+    filter_camera_facing_aruco_pose_candidates,
+)
 from dexslide.vision.marker_geometry import marker_square_object_points
+from dexslide.vision.pnp import front_facing_pose_candidates
 
 
 def _parse_capture_source(source: str | int) -> int | str:
@@ -296,6 +302,66 @@ def _estimate_single_marker_pose(
     )
 
 
+def stabilize_marker_pose(
+    tag: dict[str, object],
+    *,
+    previous_transform: np.ndarray | None = None,
+    pose_filter: GlovePoseFilter | None = None,
+    timestamp_s: float | None = None,
+) -> np.ndarray | None:
+    """Select a temporally stable, right-handed IPPE branch for one marker.
+
+    A planar square has two valid PnP solutions.  Picking the lowest reprojection
+    error on every frame lets OpenCV alternate between them, which appears as a
+    binary Z-axis flip.  First reuse the shared marker-facing branch filter,
+    then prefer the remaining candidate closest to the previous pose.
+    The selected candidate is written back to ``tag`` so existing consumers keep
+    using the same ``rvec``/``tvec`` fields.
+    """
+    raw_candidates = tag.get("pose_candidates")
+    if not isinstance(raw_candidates, (list, tuple)) or not raw_candidates:
+        return rvec_tvec_to_transform(tag["rvec"], tag["tvec"])  # type: ignore[arg-type]
+
+    candidates = front_facing_pose_candidates(
+        [item for item in raw_candidates if isinstance(item, dict)]
+    )
+    if not candidates:
+        return None
+
+    def candidate_transform(item: dict[str, object]) -> np.ndarray:
+        return rvec_tvec_to_transform(item["rvec"], item["tvec"])  # type: ignore[arg-type]
+
+    def rotation_distance(first: np.ndarray, second: np.ndarray) -> float:
+        relative = np.asarray(first[:3, :3]).T @ np.asarray(second[:3, :3])
+        cosine = float(np.clip((np.trace(relative) - 1.0) * 0.5, -1.0, 1.0))
+        return float(np.arccos(cosine))
+
+    if previous_transform is not None and np.isfinite(previous_transform).all():
+        previous = np.asarray(previous_transform, dtype=np.float64).reshape(4, 4)
+
+        def score(item: dict[str, object]) -> tuple[float, float]:
+            transform = candidate_transform(item)
+            position = float(np.linalg.norm(transform[:3, 3] - previous[:3, 3]))
+            angle = rotation_distance(previous, transform)
+            reprojection = float(item.get("reprojection_error_px", 0.0))
+            return position + 0.08 * angle, reprojection
+    else:
+
+        def score(item: dict[str, object]) -> tuple[float, float]:
+            return 0.0, float(item.get("reprojection_error_px", 0.0))
+
+    selected = min(candidates, key=score)
+    selected_transform = candidate_transform(selected)
+    if pose_filter is not None:
+        filtered = pose_filter.update(selected_transform, timestamp_s)
+        if filtered.transform_table_hand is not None:
+            selected_transform = filtered.transform_table_hand
+    selected_rvec, selected_tvec = transform_to_rvec_tvec(selected_transform)
+    tag["rvec"] = selected_rvec
+    tag["tvec"] = selected_tvec
+    return selected_transform
+
+
 def _detect_localize_aruco_tags(
     img_bgr: np.ndarray,
     aruco_dict: cv2.aruco.Dictionary,
@@ -345,6 +411,9 @@ def _detect_localize_aruco_tags(
             marker_size_m,
             k,
         )
+        pose_candidates = filter_camera_facing_aruco_pose_candidates(pose_candidates)
+        if not pose_candidates:
+            continue
         best_candidate = pose_candidates[0]
         tag_dict[this_id] = {
             "rvec": np.asarray(best_candidate["rvec"], dtype=np.float64).reshape(3),

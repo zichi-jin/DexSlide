@@ -8,7 +8,13 @@ import cv2
 import numpy as np
 
 from dexslide.kinematics.transforms import rvec_tvec_to_transform, transform_to_rvec_tvec
+from dexslide.vision.aruco_pose_disambiguation import filter_camera_facing_aruco_pose_candidates
 from dexslide.vision.marker_geometry import marker_square_object_points
+
+
+def front_facing_pose_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep only camera-facing ArUco PnP branches."""
+    return list(filter_camera_facing_aruco_pose_candidates(candidates))
 
 
 def solve_pnp_transform(
@@ -67,5 +73,9 @@ def reprojection_errors(
     return np.linalg.norm(projected.reshape(-1, 2) - np.asarray(image_points, dtype=np.float64).reshape(-1, 2), axis=1)
 
 
-__all__ = ["marker_square_object_points", "reprojection_errors", "solve_pnp_transform"]
-
+__all__ = [
+    "front_facing_pose_candidates",
+    "marker_square_object_points",
+    "reprojection_errors",
+    "solve_pnp_transform",
+]

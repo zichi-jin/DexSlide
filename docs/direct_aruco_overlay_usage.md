@@ -19,16 +19,16 @@
 
 需要准备：
 
-- 一个固定在桌面上的参考 ArUco，默认 `id=0`，边长 `120 mm`。
+- 一个固定在桌面上的参考 ArUco，默认 `id=0`，当前配置边长 `75 mm`。
 - 一个贴在手背 marker body 上的 target ArUco 集合。默认按 `20 mm` 的 ArUco 黑边界解释各 marker 的角点几何。
 - 一份离线编辑的 tags->marker JSON。默认左手路径是 `assets/calibration/direct_aruco/left_tags2marker.json`。
-- 一台能读到 RGB 画面的相机，通常用 `/dev/video4`。
+- 一台能读到 RGB 画面的 OpenCV 相机，当前默认 source 为 `0`。
 - 如果启用手骨骼 AR 叠加，还需要 DexSlide 手套串口，例如 `/dev/ttyACM0`。
 
 默认依赖的标定文件：
 
 ```text
-assets/calibration/direct_aruco/d435i_960_540.json
+assets/calibration/direct_aruco/d435i_intrinsic.json
 assets/calibration/direct_aruco/table_aruco.yaml
 assets/calibration/direct_aruco/left_tags2marker.json
 assets/calibration/direct_aruco/left_marker2wrist.json
@@ -43,7 +43,7 @@ assets/skeletons/skeleton.json
 
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
 ```
 
@@ -54,7 +54,7 @@ assets/skeletons/skeleton.json
 
 当前画面行为：
 
-- `table` 和 `target` 只显示边框。
+- `table` 显示边框和坐标轴；每个 `target` marker 默认只显示边框。
 - 不再把大量文字堆到画面上。
 - `marker body` 只显示融合后的三轴坐标系。
 - 运行状态滚动输出在终端，而不是画在画面里。
@@ -64,7 +64,7 @@ assets/skeletons/skeleton.json
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
   --enable-hand-overlay \
-  --source /dev/video4 \
+  --source 0 \
   --hand left \
   --glove-port /dev/ttyACM0
 ```
@@ -79,7 +79,7 @@ assets/skeletons/skeleton.json
 
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 \
   --show-target-axes
 ```
@@ -87,14 +87,14 @@ assets/skeletons/skeleton.json
 这个模式用于离线编辑 tags->marker 几何：
 
 1. 常规情况下，画面里每个 target 只显示四角框。
-2. 打开 `--show-target-axes` 后，每个 target 会额外显示自己的局部 `xyz` 三轴和 id。
+2. 打开 `--show-target-axes` 后，每个 target 会额外显示自己的局部 `xyz` 三轴，但不叠加文字 id。
 3. 观察结果后，手动修改 `left_tags2marker.json` 里的 `marker_face_id` 矩阵。
 
 ### 4. 检查某个 marker 是否“写得合法但方向写错”
 
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --hand left \
   --diagnose-marker-body \
   --show-target-axes
@@ -147,21 +147,21 @@ assets/skeletons/skeleton.json
 
 - 默认值：`0`
 - 含义：OpenCV 采集源，可以是数字索引，也可以是 `/dev/video4` 这种设备路径。
-- 备注：如果传入的源打不开，脚本会自动扫描 `/dev/video*` 兜底。
+- 备注：脚本只尝试明确配置的 source，不会自动扫描并偷换到其他 `/dev/video*`。
 
 #### `--width`
 
-- 默认值：`1280`
+- 默认值：来自 `assets/dexslide_streaming.json`，当前为 `1920`
 - 含义：请求的采集宽度。
 
 #### `--height`
 
-- 默认值：`720`
+- 默认值：来自 `assets/dexslide_streaming.json`，当前为 `1192`
 - 含义：请求的采集高度。
 
 #### `--fps`
 
-- 默认值：`None`
+- 默认值：来自 `assets/dexslide_streaming.json`，当前为 `60`
 - 含义：请求的采集帧率。
 
 #### `--buffer-size`
@@ -172,14 +172,14 @@ assets/skeletons/skeleton.json
 
 #### `--num-workers`
 
-- 默认值：`2`
+- 默认值：来自 `assets/dexslide_streaming.json`，当前为 `4`
 - 含义：OpenCV 内部线程数。
 
 ### B. ArUco 与标定文件
 
 #### `--camera-intrinsics`
 
-- 默认值：`assets/calibration/direct_aruco/d435i_960_540.json`
+- 默认值：`assets/calibration/direct_aruco/d435i_intrinsic.json`
 - 含义：相机内参 JSON。
 
 #### `--table-aruco-yaml`
@@ -226,7 +226,7 @@ assets/skeletons/skeleton.json
 
 #### `--body-reprojection-threshold-px` / `--cube-reprojection-threshold-px`
 
-- 默认值：`5.0`
+- 默认值：`1.0`
 - 含义：联合 PnP 后，如果某个 marker 的平均重投影误差超过这个阈值，就把它踢掉再重解一次。
 - 作用：抑制某个 marker 四角抓错时，把整只虚拟手一起带偏。
 
@@ -236,7 +236,7 @@ assets/skeletons/skeleton.json
 
 - 默认值：`0.08`
 - 含义：桌面 tag 坐标轴长度，单位 `m`。
-- 备注：当前主 overlay 画面默认不再显示 table 坐标轴，这个参数主要对早期调试或局部流程保留。
+- 备注：当前主 overlay 会显示 table 坐标轴。
 
 #### `--target-axis-length`
 
@@ -291,19 +291,19 @@ assets/skeletons/skeleton.json
 #### `--hand`
 
 - 可选值：`auto` / `left` / `right`
-- 默认值：`left`
+- 默认值：`auto`
 - 含义：手型选择。
 
 #### `--hand-overlay-config`
 
 - 默认值：空
-- 含义：显式指定 marker body 几何体 YAML 路径。
+- 含义：显式指定 marker body 几何体 JSON 路径。
 - 备注：为空时，会根据 `--hand` 自动选默认路径。
 
 #### `--show-target-axes`
 
 - 默认值：关闭。
-- 含义：为每个已检测 target 画出自己的局部三轴和 id。
+- 含义：为每个已检测 target 画出自己的局部三轴，不显示文字 id。
 - 用途：离线检查 marker 贴装方向，随后手动修改 YAML。
 
 ### F. Marker Body 融合稳定性
@@ -316,7 +316,7 @@ assets/skeletons/skeleton.json
 
 #### `--body-smoothing` / `--cube-smoothing`
 
-- 默认值：`0.55`
+- 默认值：`0.9`
 - 含义：marker body 位姿时间平滑系数。
 - 解释：越接近 `1.0` 越跟手，越接近 `0.0` 越平滑。
 - 备注：`1.0` 等价于不做平滑。
@@ -328,7 +328,7 @@ assets/skeletons/skeleton.json
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
   --enable-hand-overlay \
-  --source /dev/video4 \
+  --source 0 \
   --hand left \
   --glove-port /dev/ttyACM0 \
   --corner-refine-mode apriltag \
@@ -341,7 +341,7 @@ assets/skeletons/skeleton.json
 
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
 ```
 
@@ -349,7 +349,7 @@ assets/skeletons/skeleton.json
 
 ```bash
 /home/jzq/anaconda3/envs/dexslide/bin/python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 \
   --show-target-axes
 ```
@@ -384,10 +384,10 @@ assets/skeletons/skeleton.json
 优先把 `--source` 改成明确设备路径，例如：
 
 ```bash
---source /dev/video4
+--source 0
 ```
 
-脚本也会自动尝试扫描 `/dev/video*`。
+脚本不会自动扫描其他 `/dev/video*`；应在 communications 配置或 `--source` 中明确指定目标设备。
 
 ## 七、相关代码入口
 

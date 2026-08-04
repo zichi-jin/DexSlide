@@ -5,6 +5,8 @@ DexSlide 是一个外骨骼数据手套项目仓库，当前主仓库聚焦上�
 - `20 DOF` 手套关节角采集后的手部重建与可视化。
 - 基于桌面参考 ArUco 与目标 ArUco 的直接世界位姿估计。
 
+> 新用户请先阅读 [DexSlide User Guide](docs/USER_GUIDE.md)。该文档按“能力、入口、参数、输入输出、当前可用状态”整理了整个仓库，是当前使用入口的索引。
+
 STM32 固件、PCB、BOM 和装配资料已拆分到独立仓库 `dexslide_infra`。本仓库不再承担下位机固件构建。
 
 ## 当前推荐路线
@@ -93,7 +95,7 @@ assets/dexslide_communications.json
 - 左手 joints 串口、稳定 `by-id` 路径、baud、stream mode、启动超时和最大 sample age。
 - 左手 tactile 预留项。
 - 右手 joints / tactile 预留项。
-- 主相机 backend、RealSense serial、OpenCV source、稳定 `by-path` 路径和 `1280x720@30` 参数。
+- 主相机 backend 和 OpenCV source。分辨率、FPS、FOURCC 与视觉场景参数由 `assets/dexslide_streaming.json` 管理。
 
 仓库中的 DexSlide viewer、标定和采集脚本都使用这份配置作为默认值，不再自行枚举 `ttyACM/ttyUSB` 或扫描其他 `/dev/video*`。CLI 参数只用于明确的临时覆盖；修改日常连接参数时应只改这一个 JSON。
 
@@ -139,20 +141,18 @@ python scripts/glove_calibrate.py \
 
 ### 4. 实时 3D 重建
 
+Plot3D viewer 与 AR、录制共用同一个 `DexSlideScene`：
+
 ```bash
-python main.py run --port /dev/ttyACM0
+python main.py stream --show-plot3d
+python main.py stream --show-overlay --show-plot3d
 ```
 
-旧入口仍保留：
+兼容命令仍可使用，但内部同样转发到 scene API：
 
 ```bash
-python scripts/glove_live_3d.py --port /dev/ttyACM0
-```
-
-如果串口输入已经是角度流，也可以使用：
-
-```bash
-python main.py run --port /dev/ttyACM0 --mode angles
+python main.py run
+python scripts/glove_live_3d.py
 ```
 
 ## 工作流 B：direct ArUco 世界位姿
@@ -170,7 +170,7 @@ python main.py run --port /dev/ttyACM0 --mode angles
 仓库已经自带一套默认 direct ArUco 配置：
 
 ```text
-assets/calibration/direct_aruco/d435i_960_540.json
+assets/calibration/direct_aruco/d435i_intrinsic.json
 assets/calibration/direct_aruco/table_aruco.yaml
 assets/calibration/direct_aruco/left_tags2marker.json
 assets/calibration/direct_aruco/left_marker2wrist.json
@@ -180,7 +180,7 @@ assets/calibration/direct_aruco/left_marker2wrist_dataset.json
 当前默认口径：
 
 - 字典：`DICT_4X4_50`
-- 桌面参考 tag：`id=0`，边长 `120 mm`
+- 桌面参考 tag：`id=0`，当前配置边长 `75 mm`
 - 目标 tag：默认按 `20 mm` 的 ArUco 黑边界做单码 PnP
 - 手部载体：默认使用 `18` 面 marker body，几何关系由 `left_tags2marker.json` 提供
 
@@ -188,7 +188,7 @@ assets/calibration/direct_aruco/left_marker2wrist_dataset.json
 
 ```bash
 python scripts/plot_aruco_relative_pose_3d.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 5
 ```
 
@@ -202,7 +202,7 @@ python scripts/plot_aruco_relative_pose_3d.py \
 
 ```bash
 python scripts/view_direct_aruco_overlay.py \
-  --source /dev/video4 \
+  --source 0 \
   --target-marker-ids 5
 ```
 
@@ -254,14 +254,18 @@ python scripts/view_direct_aruco_overlay.py \
 ```bash
 python main.py calibrate-skeleton --help
 python main.py run --help
+python main.py stream --help
 python main.py raw --help
 ```
 
-顶层入口当前保留 3 个子命令：
+顶层入口当前有 4 个子命令：
 
 - `calibrate-skeleton`
 - `run`
+- `stream`
 - `raw`
+
+其中 `stream` 是新的实时数据、AR、录制和遥操共享主线。完整说明见 [DexSlide User Guide](docs/USER_GUIDE.md)。
 
 ## 测试
 

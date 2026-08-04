@@ -1,0 +1,508 @@
+{
+  "schema_version": 2,
+  "status": "complete",
+  "source_unit": "deg",
+  "target_unit": "deg",
+  "source_joint_order": [
+    "thumb.DIP",
+    "thumb.PIP",
+    "thumb.MCP_front",
+    "thumb.MCP_back",
+    "index.DIP",
+    "index.PIP",
+    "index.MCP_front",
+    "index.MCP_back",
+    "middle.DIP",
+    "middle.PIP",
+    "middle.MCP_front",
+    "middle.MCP_back",
+    "ring.DIP",
+    "ring.PIP",
+    "ring.MCP_front",
+    "ring.MCP_back",
+    "pinky.DIP",
+    "pinky.PIP",
+    "pinky.MCP_front",
+    "pinky.MCP_back"
+  ],
+  "target_joint_order": [
+    "thumb_mcp",
+    "thumb_abd",
+    "thumb_pip",
+    "thumb_dip",
+    "index_abd",
+    "index_mcp",
+    "index_pip",
+    "middle_abd",
+    "middle_mcp",
+    "middle_pip",
+    "ring_abd",
+    "ring_mcp",
+    "ring_pip",
+    "pinky_abd",
+    "pinky_mcp",
+    "pinky_pip"
+  ],
+  "static_joint_map_name": "joint_map_dexslide_to_orcahand",
+  "joint_map": {
+    "thumb_mcp": {
+      "source": "thumb.MCP_back"
+    },
+    "thumb_abd": {
+      "source": "thumb.MCP_front"
+    },
+    "thumb_pip": {
+      "source": "thumb.PIP"
+    },
+    "thumb_dip": {
+      "source": "thumb.DIP"
+    },
+    "index_abd": {
+      "source": "index.MCP_back"
+    },
+    "index_mcp": {
+      "source": "index.MCP_front"
+    },
+    "index_pip": {
+      "source": "index.PIP"
+    },
+    "middle_abd": {
+      "source": "middle.MCP_back"
+    },
+    "middle_mcp": {
+      "source": "middle.MCP_front"
+    },
+    "middle_pip": {
+      "source": "middle.PIP"
+    },
+    "ring_abd": {
+      "source": "ring.MCP_back"
+    },
+    "ring_mcp": {
+      "source": "ring.MCP_front"
+    },
+    "ring_pip": {
+      "source": "ring.PIP"
+    },
+    "pinky_abd": {
+      "source": "pinky.MCP_back"
+    },
+    "pinky_mcp": {
+      "source": "pinky.MCP_front"
+    },
+    "pinky_pip": {
+      "source": "pinky.PIP"
+    }
+  },
+  "finger_endpoints_deg": {
+    "thumb": {
+      "left": {
+        "thumb.DIP": 64.48170731707317,
+        "thumb.PIP": 47.89907965725166,
+        "thumb.MCP_front": -91.47618216716106,
+        "thumb.MCP_back": 82.76139410187666
+      },
+      "right": {
+        "thumb.DIP": -15.198170731707318,
+        "thumb.PIP": -15.509362107267531,
+        "thumb.MCP_front": -120.2774384924097,
+        "thumb.MCP_back": 36.19302949061662
+      }
+    },
+    "index": {
+      "left": {
+        "thumb.DIP": 22.5609756097561,
+        "thumb.PIP": 1.4709615994922247,
+        "thumb.MCP_front": -115.5819228755889,
+        "thumb.MCP_back": 61.844839142091146,
+        "index.DIP": 54.17694101966012,
+        "index.PIP": 80.72843645230112,
+        "index.MCP_front": 51.45476150059413,
+        "index.MCP_back": 3.6535859269282818,
+        "middle.DIP": 55.80430327868853,
+        "middle.PIP": 90.15581717451524,
+        "middle.MCP_front": 61.710121457489876,
+        "middle.MCP_back": 20.11981945014362,
+        "ring.DIP": 54.829020332717185,
+        "ring.PIP": 87.47954688483323,
+        "ring.MCP_front": 65.27198697068404,
+        "ring.MCP_back": 19.263028313500207,
+        "pinky.DIP": 69.02083686261223,
+        "pinky.PIP": 52.67851622874807,
+        "pinky.MCP_front": 73.21524064171122,
+        "pinky.MCP_back": 28.096840377513338
+      },
+      "right": {
+        "thumb.DIP": 15.960365853658537,
+        "thumb.PIP": -1.7708663916217073,
+        "thumb.MCP_front": -115.44058628511604,
+        "thumb.MCP_back": 59.77882037533512,
+        "index.DIP": 4.888370543152283,
+        "index.PIP": 0.6446205425175251,
+        "index.MCP_front": -0.2749957562383297,
+        "index.MCP_back": -25.483761840324764,
+        "middle.DIP": 55.80430327868853,
+        "middle.PIP": 88.39508310249307,
+        "middle.MCP_front": 56.46315789473684,
+        "middle.MCP_back": 24.521953221173575,
+        "ring.DIP": 57.268946395563766,
+        "ring.PIP": 87.4370673379484,
+        "ring.MCP_front": 48.19543973941368,
+        "ring.MCP_back": 17.948297086581864,
+        "pinky.DIP": 68.68541419617144,
+        "pinky.PIP": 52.63678516228748,
+        "pinky.MCP_front": 60.74699197860963,
+        "pinky.MCP_back": 25.674189577349203
+      }
+    },
+    "middle": {
+      "left": {
+        "thumb.DIP": 11.417682926829269,
+        "thumb.PIP": -1.728022849888924,
+        "thumb.MCP_front": -113.30483336241494,
+        "thumb.MCP_back": 58.029490616621985,
+        "index.DIP": 5.023325558147285,
+        "index.PIP": 0.5074672355989028,
+        "index.MCP_front": 4.5221524359192,
+        "index.MCP_back": -17.53721244925575,
+        "middle.DIP": 58.017418032786885,
+        "middle.PIP": 90.09349030470914,
+        "middle.MCP_front": 56.50688259109312,
+        "middle.MCP_back": 22.35043085761182,
+        "ring.DIP": 57.87892791127541,
+        "ring.PIP": 89.05129011957206,
+        "ring.MCP_front": 63.74755700325732,
+        "ring.MCP_back": 17.815346737792368,
+        "pinky.DIP": 69.9356259529053,
+        "pinky.PIP": 52.66460587326121,
+        "pinky.MCP_front": 70.56818181818181,
+        "pinky.MCP_back": 25.57078375051293
+      },
+      "right": {
+        "thumb.DIP": 11.28048780487805,
+        "thumb.PIP": -1.6851793081561408,
+        "thumb.MCP_front": -117.57633920781716,
+        "thumb.MCP_back": 53.731568364611256,
+        "index.DIP": 5.563145618127291,
+        "index.PIP": 0.4663212435233161,
+        "index.MCP_front": 3.773552877270413,
+        "index.MCP_back": -14.66001353179973,
+        "middle.DIP": 9.728483606557377,
+        "middle.PIP": -0.9816481994459834,
+        "middle.MCP_front": 8.992712550607287,
+        "middle.MCP_back": -7.711120229790726,
+        "ring.DIP": 14.140480591497226,
+        "ring.PIP": 70.8275645059786,
+        "ring.MCP_front": 51.053745928338756,
+        "ring.MCP_back": 19.3959786622897,
+        "pinky.DIP": 61.35185498898865,
+        "pinky.PIP": 48.644513137557965,
+        "pinky.MCP_front": 57.73897058823529,
+        "pinky.MCP_back": 21.700451374640952
+      }
+    },
+    "ring": {
+      "left": {
+        "thumb.DIP": 18.125,
+        "thumb.PIP": -1.6708981275785464,
+        "thumb.MCP_front": -97.82062467283197,
+        "thumb.MCP_back": 52.29892761394101,
+        "index.DIP": 14.305231589470178,
+        "index.PIP": 0.5623285583663518,
+        "index.MCP_front": -0.5805465965031404,
+        "index.MCP_back": -5.967523680649527,
+        "middle.DIP": 9.682377049180328,
+        "middle.PIP": 4.066828254847645,
+        "middle.MCP_front": 0.46639676113360323,
+        "middle.MCP_back": 2.614690192860074,
+        "ring.DIP": 23.622920517560072,
+        "ring.PIP": 86.34675896790435,
+        "ring.MCP_front": 53.47231270358306,
+        "ring.MCP_back": 30.96265900697579,
+        "pinky.DIP": 48.56005420972387,
+        "pinky.PIP": 49.43740340030912,
+        "pinky.MCP_front": 65.36430481283422,
+        "pinky.MCP_back": 26.855970455478047
+      },
+      "right": {
+        "thumb.DIP": 18.15548780487805,
+        "thumb.PIP": -2.7991113932085057,
+        "thumb.MCP_front": -125.71104519281103,
+        "thumb.MCP_back": 54.28954423592493,
+        "index.DIP": 8.487170943018995,
+        "index.PIP": 0.35659859798841814,
+        "index.MCP_front": -6.004074011203532,
+        "index.MCP_back": -7.900879566982409,
+        "middle.DIP": 8.560450819672132,
+        "middle.PIP": 0.7167590027700831,
+        "middle.MCP_front": 2.769230769230769,
+        "middle.MCP_back": 4.653262207632335,
+        "ring.DIP": 7.4861367837338255,
+        "ring.PIP": 6.754247954688483,
+        "ring.MCP_front": -0.6742671009771987,
+        "ring.MCP_back": 11.271235125153877,
+        "pinky.DIP": -3.2170083008639674,
+        "pinky.PIP": 11.10046367851623,
+        "pinky.MCP_front": 62.23596256684491,
+        "pinky.MCP_back": 28.95363151415675
+      }
+    },
+    "pinky": {
+      "left": {
+        "thumb.DIP": 18.201219512195124,
+        "thumb.PIP": -2.7848302126309106,
+        "thumb.MCP_front": -119.25667422788345,
+        "thumb.MCP_back": 56.09919571045576,
+        "index.DIP": 8.652115961346219,
+        "index.PIP": 19.54434623590369,
+        "index.MCP_front": -5.897131217110847,
+        "index.MCP_back": -12.985453315290934,
+        "middle.DIP": 47.30532786885246,
+        "middle.PIP": 64.3213296398892,
+        "middle.MCP_front": -12.825910931174091,
+        "middle.MCP_back": 3.9589659417316376,
+        "ring.DIP": 76.74676524953789,
+        "ring.PIP": 92.91692888609188,
+        "ring.MCP_front": 15.112377850162867,
+        "ring.MCP_back": 14.83135002051703,
+        "pinky.DIP": 82.42249703540573,
+        "pinky.PIP": 53.485316846986095,
+        "pinky.MCP_front": 61.04779411764705,
+        "pinky.MCP_back": 28.141157160443168
+      },
+      "right": {
+        "thumb.DIP": 18.21646341463415,
+        "thumb.PIP": -4.741351951761345,
+        "thumb.MCP_front": -124.077822369569,
+        "thumb.MCP_back": 58.52714477211796,
+        "index.DIP": 5.443185604798401,
+        "index.PIP": 3.648277964035355,
+        "index.MCP_front": -4.308266847733831,
+        "index.MCP_back": -7.672530446549393,
+        "middle.DIP": 6.931352459016394,
+        "middle.PIP": 4.316135734072022,
+        "middle.MCP_front": 2.6963562753036436,
+        "middle.MCP_back": -0.16249487074271646,
+        "ring.DIP": 7.181146025878004,
+        "ring.PIP": 2.1098174952800504,
+        "ring.MCP_front": -0.23452768729641693,
+        "ring.MCP_back": 8.28723840787854,
+        "pinky.DIP": -1.9515500592918853,
+        "pinky.PIP": 7.85935085007728,
+        "pinky.MCP_front": -2.54177807486631,
+        "pinky.MCP_back": 13.457529749692245
+      }
+    }
+  },
+  "joints": {
+    "thumb_mcp": {
+      "source": "thumb.MCP_back",
+      "kind": "swing",
+      "scale": -2.147380541162925,
+      "bias_deg": 127.72020725388603,
+      "target_min_deg": -50.0,
+      "target_max_deg": 50.0,
+      "motor_id": 14,
+      "motor_min_rad": 2.7626993656158447,
+      "motor_max_rad": 3.4284470081329346,
+      "motor_scale_rad_per_deg": -0.006657476425170898,
+      "motor_bias_rad": 3.0955731868743896
+    },
+    "thumb_abd": {
+      "source": "thumb.MCP_front",
+      "kind": "bend",
+      "scale": -2.152683872531201,
+      "bias_deg": -216.91930207197387,
+      "target_min_deg": -20.0,
+      "target_max_deg": 42.0,
+      "motor_id": 13,
+      "motor_min_rad": 1.5631264448165894,
+      "motor_max_rad": 3.1661362648010254,
+      "motor_scale_rad_per_deg": -0.025854997096523162,
+      "motor_bias_rad": 2.649036322870562
+    },
+    "thumb_pip": {
+      "source": "thumb.PIP",
+      "kind": "bend",
+      "scale": -1.8924924924924926,
+      "bias_deg": 78.64864864864865,
+      "target_min_deg": -12.0,
+      "target_max_deg": 108.0,
+      "motor_id": 16,
+      "motor_min_rad": 0.9387962222099304,
+      "motor_max_rad": 2.8393983840942383,
+      "motor_scale_rad_per_deg": -0.015838351349035898,
+      "motor_bias_rad": 2.6493381679058077
+    },
+    "thumb_dip": {
+      "source": "thumb.DIP",
+      "kind": "bend",
+      "scale": -1.6566290415152094,
+      "bias_deg": 86.8222689879472,
+      "target_min_deg": -20.0,
+      "target_max_deg": 112.0,
+      "motor_id": 15,
+      "motor_min_rad": 2.9759228229522705,
+      "motor_max_rad": 4.934816360473633,
+      "motor_scale_rad_per_deg": -0.014840102556980017,
+      "motor_bias_rad": 4.638014309334032
+    },
+    "index_abd": {
+      "source": "index.MCP_back",
+      "kind": "swing",
+      "scale": -2.5396958086613255,
+      "bias_deg": -27.72100313479624,
+      "target_min_deg": -37.0,
+      "target_max_deg": 37.0,
+      "motor_id": 3,
+      "motor_min_rad": -0.0782330185174942,
+      "motor_max_rad": 0.9894176125526428,
+      "motor_scale_rad_per_deg": 0.017453427711230677527,
+      "motor_bias_rad": 0.4555922970175743
+    },
+    "index_mcp": {
+      "source": "index.MCP_front",
+      "kind": "bend",
+      "scale": -2.2230918159742727,
+      "bias_deg": 94.3886591848789,
+      "target_min_deg": -20.0,
+      "target_max_deg": 95.0,
+      "motor_id": 2,
+      "motor_min_rad": -0.14726215600967407,
+      "motor_max_rad": 1.7257283926010132,
+      "motor_scale_rad_per_deg": -0.0174536286874335745105,
+      "motor_bias_rad": 1.3999909058861109
+    },
+    "index_pip": {
+      "source": "index.PIP",
+      "kind": "bend",
+      "scale": -1.598325436242888,
+      "bias_deg": 109.03031340983046,
+      "target_min_deg": -20.0,
+      "target_max_deg": 108.0,
+      "motor_id": 1,
+      "motor_min_rad": 1.382116675376892,
+      "motor_max_rad": 2.954447031021118,
+      "motor_scale_rad_per_deg": -0.0174532283830903470516,
+      "motor_bias_rad": 2.708770412951708
+    },
+    "middle_abd": {
+      "source": "middle.MCP_back",
+      "kind": "swing",
+      "scale": -2.4616161616161616,
+      "bias_deg": 18.018181818181823,
+      "target_min_deg": -37.0,
+      "target_max_deg": 37.0,
+      "motor_id": 4,
+      "motor_min_rad": 1.7533400058746338,
+      "motor_max_rad": 2.7688353061676025,
+      "motor_scale_rad_per_deg": 0.0174533722909463418496,
+      "motor_bias_rad": 2.261087656021118
+    },
+    "middle_mcp": {
+      "source": "middle.MCP_front",
+      "kind": "bend",
+      "scale": -2.3361451942740286,
+      "bias_deg": 112.00828220858895,
+      "target_min_deg": -20.0,
+      "target_max_deg": 91.0,
+      "motor_id": 9,
+      "motor_min_rad": 3.0265440940856934,
+      "motor_max_rad": 4.804427623748779,
+      "motor_scale_rad_per_deg": -0.016016968735703477,
+      "motor_bias_rad": 4.48408824903471
+    },
+    "middle_pip": {
+      "source": "middle.PIP",
+      "kind": "bend",
+      "scale": -1.3944529987643761,
+      "bias_deg": 105.6311377245509,
+      "target_min_deg": -20.0,
+      "target_max_deg": 107.0,
+      "motor_id": 8,
+      "motor_min_rad": 1.1090681552886963,
+      "motor_max_rad": 2.4758450984954834,
+      "motor_scale_rad_per_deg": -0.010762023174856592,
+      "motor_bias_rad": 2.2606046349983515
+    },
+    "ring_abd": {
+      "source": "ring.MCP_back",
+      "kind": "swing",
+      "scale": -3.757981161957156,
+      "bias_deg": 79.35708927231809,
+      "target_min_deg": -37.0,
+      "target_max_deg": 37.0,
+      "motor_id": 12,
+      "motor_min_rad": 4.517573356628418,
+      "motor_max_rad": 5.480913162231445,
+      "motor_scale_rad_per_deg": -0.0174533018105481121992,
+      "motor_bias_rad": 4.999243259429932
+    },
+    "ring_mcp": {
+      "source": "ring.MCP_front",
+      "kind": "bend",
+      "scale": -2.049990976358058,
+      "bias_deg": 89.61775852734162,
+      "target_min_deg": -20.0,
+      "target_max_deg": 91.0,
+      "motor_id": 10,
+      "motor_min_rad": 1.0569127798080444,
+      "motor_max_rad": 2.9191653728485107,
+      "motor_scale_rad_per_deg": -0.01677705038775195,
+      "motor_bias_rad": 2.583624365093472
+    },
+    "ring_pip": {
+      "source": "ring.PIP",
+      "kind": "bend",
+      "scale": -1.595627507956275,
+      "bias_deg": 117.77726383205837,
+      "target_min_deg": -20.0,
+      "target_max_deg": 107.0,
+      "motor_id": 11,
+      "motor_min_rad": 4.011359691619873,
+      "motor_max_rad": 5.945709705352783,
+      "motor_scale_rad_per_deg": -0.015231102470337874,
+      "motor_bias_rad": 5.641087655946025
+    },
+    "pinky_abd": {
+      "source": "pinky.MCP_back",
+      "kind": "swing",
+      "scale": -5.039626648781579,
+      "bias_deg": 104.82092555331994,
+      "target_min_deg": -37.0,
+      "target_max_deg": 37.0,
+      "motor_id": 5,
+      "motor_min_rad": 1.8545827865600586,
+      "motor_max_rad": 2.8915538787841797,
+      "motor_scale_rad_per_deg": 0.0174534013122867893529,
+      "motor_bias_rad": 2.373068332672119
+    },
+    "pinky_mcp": {
+      "source": "pinky.MCP_front",
+      "kind": "bend",
+      "scale": -1.8556501629349313,
+      "bias_deg": 93.28334910122989,
+      "target_min_deg": -20.0,
+      "target_max_deg": 98.0,
+      "motor_id": 7,
+      "motor_min_rad": 4.0635151863098145,
+      "motor_max_rad": 5.98866081237793,
+      "motor_scale_rad_per_deg": -0.016314793441255214,
+      "motor_bias_rad": 5.662364943552825
+    },
+    "pinky_pip": {
+      "source": "pinky.PIP",
+      "kind": "bend",
+      "scale": -2.8054200542005416,
+      "bias_deg": 130.04878048780486,
+      "target_min_deg": -20.0,
+      "target_max_deg": 108.0,
+      "motor_id": 6,
+      "motor_min_rad": 4.631087779998779,
+      "motor_max_rad": 6.114447593688965,
+      "motor_scale_rad_per_deg": -0.011588748544454575,
+      "motor_bias_rad": 5.882672622799873
+    }
+  },
+  "created_at_unix": 1785591172.2114785
+}

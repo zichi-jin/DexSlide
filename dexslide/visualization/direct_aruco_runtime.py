@@ -43,6 +43,7 @@ from dexslide.communications import (
 )
 from dexslide.live import live_listener
 from dexslide.paths import (
+    DEFAULT_DEXSLIDE_STREAMING_FILE,
     DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE,
     DEFAULT_DIRECT_ARUCO_TABLE_CONFIG_FILE,
     DEFAULT_DIRECT_ARUCO_TARGET_CONFIG_FILE,
@@ -53,6 +54,7 @@ from dexslide.paths import (
     DIRECT_ARUCO_CALIBRATION_DIR,
 )
 from dexslide.retargeting.human_model import DexSlideHumanModel
+from dexslide.kinematics.glove_pose_filter import GlovePoseFilter
 from dexslide.visualization.aruco_overlay import (
     draw_axes as _draw_axes_overlay,
     draw_hud as _draw_hud,
@@ -65,6 +67,7 @@ from dexslide.vision.aruco_pose_tracker import (
     _parse_aruco_config,
     _parse_capture_source,
     _parse_fisheye_intrinsics,
+    stabilize_marker_pose,
 )
 from dexslide.kinematics.transforms import (
     make_transform,
@@ -94,6 +97,7 @@ from dexslide.vision.capture_backend import (
     configure_capture_device as _configure_capture_device,
     open_capture_with_fallback as _open_capture_with_fallback,
 )
+from dexslide.vision.camera.stream import CameraStream
 from dexslide.visualization.direct_aruco_config import (
     _apply_overlay_joint_calibration,
     _default_hand_overlay_config_path,
@@ -132,6 +136,9 @@ def main() -> None:
     joint_communication = hand_joint_communication("left")
     camera = camera_communication("primary")
     camera_intrinsics = json.loads(DEFAULT_DIRECT_ARUCO_CAMERA_INTRINSICS_FILE.read_text(encoding="utf-8"))
+    streaming_camera = json.loads(
+        DEFAULT_DEXSLIDE_STREAMING_FILE.read_text(encoding="utf-8")
+    ).get("camera", {})
     parser = argparse.ArgumentParser(
         description="Show direct ArUco marker-body overlay on the live camera feed."
     )
@@ -164,12 +171,13 @@ def main() -> None:
             "or all configured marker-body ids when --enable-hand-overlay is active."
         ),
     )
-    parser.add_argument("--width", type=int, default=int(camera_intrinsics["image_width"]), help="Capture width override")
-    parser.add_argument("--height", type=int, default=int(camera_intrinsics["image_height"]), help="Capture height override")
-    parser.add_argument("--fps", type=float, default=float(camera_intrinsics["fps"]), help="Capture fps override")
-    parser.add_argument("--camera-serial", default=resolve_realsense_serial("primary"), help="RealSense serial number")
+    parser.add_argument("--width", type=int, default=int(streaming_camera.get("width", camera_intrinsics["image_width"])), help="Capture width override")
+    parser.add_argument("--height", type=int, default=int(streaming_camera.get("height", camera_intrinsics["image_height"])), help="Capture height override")
+    parser.add_argument("--fps", type=float, default=float(streaming_camera.get("fps", camera_intrinsics["fps"])), help="Capture fps override")
+    parser.add_argument("--fourcc", default=streaming_camera.get("fourcc"), help="OpenCV FOURCC override")
+    parser.add_argument("--camera-serial", default="", help="RealSense serial number (only used with RealSense backend)")
     parser.add_argument("--buffer-size", type=int, default=2, help="VideoCapture buffer size")
-    parser.add_argument("--num-workers", type=int, default=2, help="OpenCV thread count")
+    parser.add_argument("--num-workers", type=int, default=int(streaming_camera.get("num_workers", 2)), help="OpenCV thread count")
     parser.add_argument("--table-axis-length", type=float, default=0.08, help="Table axis glyph length in meters")
     parser.add_argument("--target-axis-length", type=float, default=0.04, help="Target axis glyph length in meters")
     parser.add_argument(
@@ -500,6 +508,7 @@ def main() -> None:
         )
 
     cap = None
+    camera_stream: CameraStream | None = None
     # -----------------------------------------------------------------------
     # Phase 6 — Camera and live-state initialization
     # Open the selected backend and create state shared by the frame loop.
@@ -528,14 +537,15 @@ def main() -> None:
         else:
             print("[camera] using RealSense RGB backend; MediaPipe wrist align disabled")
     else:
-        cap, _selected_source = _open_capture_with_fallback(
+        camera_stream = CameraStream(
             source=args.source,
             width=args.width,
             height=args.height,
             fps=args.fps,
             buffer_size=args.buffer_size,
-            purpose="main loop",
+            fourcc=args.fourcc,
         )
+        camera_stream.start()
     frame_idx = 0
     last_time = time.monotonic()
     fps_ema = 0.0
@@ -543,6 +553,8 @@ def main() -> None:
     last_diag_emit = 0.0
     last_cube_pose: CubePoseEstimate | None = None
     last_camera_body_transform: np.ndarray | None = None
+    last_camera_table_transform: np.ndarray | None = None
+    table_pose_filter = GlovePoseFilter()
     wrist_align_samples_body_to_wrist: list[np.ndarray] = []
     base_body_to_wrist_transform = None if hand_overlay_cfg is None else hand_overlay_cfg.cube_to_wrist_transform().copy()
 
@@ -579,11 +591,8 @@ def main() -> None:
                     intr = _rs_intrinsics_to_opencv_dict(color_intr)
                     intr_resolution = resolution
             else:
-                assert cap is not None
-                ok, frame_bgr = cap.read()
-                if not ok or frame_bgr is None:
-                    time.sleep(0.01)
-                    continue
+                assert camera_stream is not None
+                _timestamp, frame_bgr = camera_stream.read()
 
                 height, width = frame_bgr.shape[:2]
                 resolution = (int(width), int(height))
@@ -606,6 +615,16 @@ def main() -> None:
                 motion_tolerant=not args.strict_detector,
                 corner_refine_mode=corner_refine_mode,
             )
+            table_tag_for_stability = tag_dict.get(int(args.table_marker_id))
+            if table_tag_for_stability is not None:
+                stable_table = stabilize_marker_pose(
+                    table_tag_for_stability,
+                    previous_transform=last_camera_table_transform,
+                    pose_filter=table_pose_filter,
+                    timestamp_s=time.time(),
+                )
+                if stable_table is not None:
+                    last_camera_table_transform = stable_table.copy()
             if hand_overlay_cfg is not None:
                 reference_camera_body = None
                 table_tag_for_reference = tag_dict.get(int(args.table_marker_id))
@@ -671,7 +690,7 @@ def main() -> None:
                         tag["rvec"],
                         tag["tvec"],
                         axis_length=float(args.target_axis_length),
-                        label=str(target_id),
+                        label=None,
                         label_color=color,
                     )
 
@@ -807,7 +826,7 @@ def main() -> None:
                                 rvec_wrist,
                                 tvec_wrist,
                                 axis_length=float(args.hand_axis_length),
-                                label="mp",
+                                label=None,
                                 label_color=(32, 32, 32),
                             )
 
@@ -940,6 +959,8 @@ def main() -> None:
     finally:
         if cap is not None:
             cap.release()
+        if camera_stream is not None:
+            camera_stream.stop()
         if wrist_detector is not None:
             wrist_detector.close()
         if rs_pipeline_started and rs_pipeline is not None:

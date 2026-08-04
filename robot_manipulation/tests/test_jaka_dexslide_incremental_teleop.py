@@ -33,15 +33,15 @@ def test_mapping_mirrors_translation_and_rotation_vectors() -> None:
     translation_mm = MODULE.map_translation_delta_to_robot_mm(delta_translation_m, mapping)
     rotation_rad = MODULE.map_rotation_delta_to_robot_rad(delta_rotation_rad, mapping)
 
-    np.testing.assert_allclose(translation_mm, np.array([10.0, -20.0, -30.0]), atol=1e-9)
-    np.testing.assert_allclose(rotation_rad, np.array([-0.1, 0.2, -0.3]), atol=1e-9)
+    np.testing.assert_allclose(translation_mm, np.array([-10.0, 20.0, -30.0]), atol=1e-9)
+    np.testing.assert_allclose(rotation_rad, np.array([0.1, -0.2, -0.3]), atol=1e-9)
 
 
 def test_desired_robot_transform_respects_anchor_and_reflection() -> None:
     mapping = MODULE.load_workspace_axis_mapping(MODULE.DEFAULT_MAPPING_FILE)
     anchor = MODULE.TeleopAnchorState(
-        glove_anchor_transform=np.eye(4, dtype=np.float64),
-        robot_anchor_transform=np.eye(4, dtype=np.float64),
+        glove_anchor_translation_m=np.zeros(3, dtype=np.float64),
+        robot_anchor_translation_mm=np.zeros(3, dtype=np.float64),
         previous_desired_robot_transform=np.eye(4, dtype=np.float64),
         anchor_frame_idx=0,
     )
@@ -51,10 +51,10 @@ def test_desired_robot_transform_respects_anchor_and_reflection() -> None:
     )
 
     desired_robot = MODULE.build_desired_robot_transform(current_glove, anchor, mapping)
-    reflection = np.diag([1.0, -1.0, 1.0])
+    reflection = np.diag([-1.0, 1.0, 1.0])
     expected_rotation = reflection @ current_glove[:3, :3] @ reflection
 
-    np.testing.assert_allclose(desired_robot[:3, 3], np.array([10.0, -20.0, -30.0]), atol=1e-9)
+    np.testing.assert_allclose(desired_robot[:3, 3], np.array([-10.0, 20.0, -30.0]), atol=1e-9)
     np.testing.assert_allclose(desired_robot[:3, :3], expected_rotation, atol=1e-9)
 
 

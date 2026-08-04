@@ -12,6 +12,7 @@ from dexslide.vision.marker_body_model_impl import (
     HandCubeOverlayConfig, MarkerMount, _MarkerObservation, _MarkerPoseBranchCandidate,
     _marker_pose_weight, _marker_square_object_points, _sanitize_weights,
 )
+from dexslide.vision.pnp import front_facing_pose_candidates
 
 
 def _rotation_angle_deg(rot_a: np.ndarray, rot_b: np.ndarray) -> float:
@@ -22,14 +23,23 @@ def _rotation_angle_deg(rot_a: np.ndarray, rot_b: np.ndarray) -> float:
 def _pose_candidate_dicts_from_tag_data(target_data: dict[str, Any]) -> list[dict[str, Any]]:
     raw_candidates = target_data.get("pose_candidates")
     if isinstance(raw_candidates, list) and raw_candidates:
-        return raw_candidates
-    return [
-        {
-            "rvec": np.asarray(target_data["rvec"], dtype=np.float64).reshape(3),
-            "tvec": np.asarray(target_data["tvec"], dtype=np.float64).reshape(3),
-            "reprojection_error_px": float(target_data.get("reprojection_error_px", 0.0)),
-        }
-    ]
+        candidates = raw_candidates
+    else:
+        candidates = [
+            {
+                "rvec": np.asarray(target_data["rvec"], dtype=np.float64).reshape(3),
+                "tvec": np.asarray(target_data["tvec"], dtype=np.float64).reshape(3),
+                "reprojection_error_px": float(target_data.get("reprojection_error_px", 0.0)),
+            }
+        ]
+    selected = front_facing_pose_candidates(candidates)
+    indexed: list[dict[str, Any]] = []
+    for candidate in selected:
+        source_index = next(
+            index for index, original in enumerate(candidates) if original is candidate
+        )
+        indexed.append({**candidate, "_source_candidate_index": int(source_index)})
+    return indexed
 
 
 def _marker_body_pose_distance_score(
@@ -95,7 +105,9 @@ def _build_marker_pose_branch_candidates(
             marker_candidates.append(
                 _MarkerPoseBranchCandidate(
                     marker_id=int(marker_id),
-                    candidate_index=int(candidate_index),
+                    candidate_index=int(
+                        candidate.get("_source_candidate_index", candidate_index)
+                    ),
                     transform_camera_marker=transform_camera_marker,
                     transform_camera_body=transform_camera_marker @ transform_marker_body,
                     reprojection_error_px=float(candidate.get("reprojection_error_px", 0.0)),
@@ -226,18 +238,50 @@ def _build_marker_observations(
     config: HandCubeOverlayConfig,
 ) -> list[_MarkerObservation]:
     targets = frame_result.get("targets", {})
+    selected_camera_marker: dict[int, np.ndarray] = {}
+    candidate_tags: dict[int, dict[str, Any]] = {}
+    for marker_id, target_data in targets.items():
+        if not isinstance(target_data, dict) or not bool(target_data.get("detected", False)):
+            continue
+        pose_camera = target_data.get("target_in_camera")
+        if not isinstance(pose_camera, dict) or pose_camera.get("matrix") is None:
+            continue
+        transform_camera_marker = np.asarray(
+            pose_camera["matrix"], dtype=np.float64
+        ).reshape(4, 4)
+        rvec, _ = cv2.Rodrigues(transform_camera_marker[:3, :3])
+        entry: dict[str, Any] = {
+            "rvec": rvec.reshape(3),
+            "tvec": transform_camera_marker[:3, 3].reshape(3),
+        }
+        raw_candidates = target_data.get("pose_candidates")
+        if isinstance(raw_candidates, list) and raw_candidates:
+            entry["pose_candidates"] = raw_candidates
+        candidate_tags[int(marker_id)] = entry
+        selected_camera_marker[int(marker_id)] = transform_camera_marker
+
+    if any(isinstance(item.get("pose_candidates"), list) for item in candidate_tags.values()):
+        resolve_marker_body_tag_pose_branches(candidate_tags, config)
+        for marker_id, tag_data in candidate_tags.items():
+            rvec = np.asarray(tag_data["rvec"], dtype=np.float64).reshape(3, 1)
+            rotation, _ = cv2.Rodrigues(rvec)
+            selected_camera_marker[int(marker_id)] = make_transform(
+                rotation,
+                np.asarray(tag_data["tvec"], dtype=np.float64).reshape(3),
+            )
+
     observations: list[_MarkerObservation] = []
     for marker_id, marker_mount in config.markers.items():
         target_data = targets.get(str(marker_id))
         if not target_data or not bool(target_data.get("detected", False)):
             continue
 
-        pose_camera = target_data.get("target_in_camera")
         undistorted_corners = target_data.get("undistorted_corners")
+        pose_camera = selected_camera_marker.get(int(marker_id))
         if pose_camera is None or undistorted_corners is None:
             continue
 
-        transform_camera_marker = np.asarray(pose_camera["matrix"], dtype=np.float64).reshape(4, 4)
+        transform_camera_marker = np.asarray(pose_camera, dtype=np.float64).reshape(4, 4)
         transform_body_marker = marker_mount.body_to_marker_transform(config.marker_center_radius_m)
         object_points_body_m = transform_points(
             transform_body_marker,
@@ -407,4 +451,3 @@ def _compute_marker_reprojection_errors(
             }
         )
     return marker_errors
-

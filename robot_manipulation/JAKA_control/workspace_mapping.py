@@ -18,6 +18,11 @@ class WorkspaceAxisMapping:
     translation_scale: np.ndarray
     rotation_scale: np.ndarray
     safe_start_pose_mmdeg: tuple[float, float, float, float, float, float]
+    safe_start_speed_mm_s: float
+    task_space_zero_pose_mmdeg: tuple[float, float, float, float, float, float]
+    task_space_zero_speed_mm_s: float
+    teleop_workspace_min_mm: np.ndarray
+    teleop_workspace_max_mm: np.ndarray
     translation_deadband_mm: float
     rotation_deadband_deg: float
     max_translation_step_mm: float
@@ -44,7 +49,30 @@ def load_workspace_axis_mapping(path: str | Path) -> WorkspaceAxisMapping:
     safe_start = tuple(float(x) for x in payload.get("safe_start_pose_mmdeg", []))
     if len(safe_start) != 6:
         raise ValueError(f"`safe_start_pose_mmdeg` must contain 6 values in {mapping_path}")
+    safe_start_speed_mm_s = float(payload.get("safe_start_speed_mm_s", 0.0))
+    if safe_start_speed_mm_s <= 0.0:
+        raise ValueError(f"`safe_start_speed_mm_s` must be positive in {mapping_path}")
+    task_space_zero = tuple(float(x) for x in payload.get("task_space_zero_pose_mmdeg", []))
+    if len(task_space_zero) != 6:
+        raise ValueError(f"`task_space_zero_pose_mmdeg` must contain 6 values in {mapping_path}")
+    task_space_zero_speed_mm_s = float(payload.get("task_space_zero_speed_mm_s", 0.0))
+    if task_space_zero_speed_mm_s <= 0.0:
+        raise ValueError(f"`task_space_zero_speed_mm_s` must be positive in {mapping_path}")
     mirror = payload.get("mirror", {})
+    raw_workspace = payload.get("teleop_workspace_xyz_mm", {})
+    if not isinstance(raw_workspace, dict):
+        raise ValueError(f"teleop_workspace_xyz_mm must be an object in {mapping_path}")
+    try:
+        workspace_bounds = np.asarray(
+            [raw_workspace["x"], raw_workspace["y"], raw_workspace["z"]],
+            dtype=np.float64,
+        ).reshape(3, 2)
+    except (KeyError, ValueError) as exc:
+        raise ValueError(
+            f"teleop_workspace_xyz_mm must define x/y/z [min, max] bounds in {mapping_path}"
+        ) from exc
+    if not np.isfinite(workspace_bounds).all() or np.any(workspace_bounds[:, 0] >= workspace_bounds[:, 1]):
+        raise ValueError(f"teleop_workspace_xyz_mm has invalid bounds in {mapping_path}")
     return WorkspaceAxisMapping(
         robot_from_table_transform=robot_from_table,
         same_pose_fixed_rotation=np.asarray(fixed.get("rotation_matrix"), dtype=np.float64).reshape(3, 3),
@@ -53,6 +81,11 @@ def load_workspace_axis_mapping(path: str | Path) -> WorkspaceAxisMapping:
         translation_scale=np.asarray(payload.get("translation_scale", [1.0, 1.0, 1.0]), dtype=np.float64).reshape(3),
         rotation_scale=np.asarray(payload.get("rotation_scale", [1.0, 1.0, 1.0]), dtype=np.float64).reshape(3),
         safe_start_pose_mmdeg=safe_start,  # type: ignore[arg-type]
+        safe_start_speed_mm_s=safe_start_speed_mm_s,
+        task_space_zero_pose_mmdeg=task_space_zero,  # type: ignore[arg-type]
+        task_space_zero_speed_mm_s=task_space_zero_speed_mm_s,
+        teleop_workspace_min_mm=workspace_bounds[:, 0].copy(),
+        teleop_workspace_max_mm=workspace_bounds[:, 1].copy(),
         translation_deadband_mm=float(payload.get("translation_deadband_mm", 0.8)),
         rotation_deadband_deg=float(payload.get("rotation_deadband_deg", 0.6)),
         max_translation_step_mm=float(payload.get("max_translation_step_mm", 3.0)),
@@ -61,4 +94,3 @@ def load_workspace_axis_mapping(path: str | Path) -> WorkspaceAxisMapping:
         frame_jump_reject_deg=float(payload.get("frame_jump_reject_deg", 18.0)),
         anchor_stable_frames=max(1, int(payload.get("anchor_stable_frames", 5))),
     )
-

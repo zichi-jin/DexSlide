@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import cv2
 import numpy as np
 import pytest
 
 from dexslide.vision.deprojection import sample_depth_m
 from dexslide.vision.marker_geometry import marker_square_object_points, normalize_marker_axes_rows
-from dexslide.vision.pnp import reprojection_errors
+from dexslide.vision.pnp import front_facing_pose_candidates, reprojection_errors
 
 
 def test_marker_geometry_is_canonical_and_right_handed() -> None:
@@ -29,3 +30,25 @@ def test_reprojection_errors_returns_per_point_residuals() -> None:
     projected = np.column_stack((500.0 * points[:, 0] + 320.0, 500.0 * points[:, 1] + 240.0))
     errors = reprojection_errors(points, projected, transform, camera)
     np.testing.assert_allclose(errors, 0.0, atol=1e-8)
+
+
+def test_front_facing_pose_candidates_rejects_mirrored_marker_branch() -> None:
+    front_rotation = np.diag([1.0, -1.0, -1.0])
+    front_rvec, _ = cv2.Rodrigues(front_rotation)
+    candidates = [
+        {
+            "rvec": np.zeros(3, dtype=np.float64),
+            "tvec": np.array([0.0, 0.0, 0.6], dtype=np.float64),
+            "reprojection_error_px": 0.01,
+        },
+        {
+            "rvec": front_rvec.reshape(3),
+            "tvec": np.array([0.0, 0.0, 0.6], dtype=np.float64),
+            "reprojection_error_px": 0.02,
+        },
+    ]
+
+    selected = front_facing_pose_candidates(candidates)
+
+    assert len(selected) == 1
+    assert selected[0] is candidates[1]

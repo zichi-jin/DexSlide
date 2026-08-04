@@ -45,3 +45,26 @@
 {"type":"cli","id":"CLI-1785065926396-1","timestamp":"2026-07-26T11:38:46.396Z","command":"spec load","args":{"category":"debug","stdin":false}}
 {"type":"cli","id":"CLI-1785116478671-1","timestamp":"2026-07-27T01:41:18.671Z","command":"spec load","args":{"category":"debug","stdin":false}}
 {"type":"cli","id":"CLI-1785123618797-1","timestamp":"2026-07-27T03:40:18.797Z","command":"spec load","args":{"keyword":"aruco","stdin":false}}
+{"type":"cli","id":"CLI-1785399580824-1","timestamp":"2026-07-30T08:19:40.824Z","command":"spec load","args":{"category":"arch","stdin":false}}
+{"type":"cli","id":"CLI-1785402689372-1","timestamp":"2026-07-30T09:11:29.372Z","command":"spec load","args":{"category":"debug","stdin":false}}
+{"type":"cli","id":"CLI-1785480451055-1","timestamp":"2026-07-31T06:47:31.055Z","command":"spec load","args":{"category":"arch","stdin":false}}
+{"type":"cli","id":"CLI-1785480451120-1","timestamp":"2026-07-31T06:47:31.120Z","command":"spec load","args":{"category":"coding","stdin":false}}
+{"type":"cli","id":"CLI-1785499418083-1","timestamp":"2026-07-31T12:03:38.083Z","command":"spec load","args":{"category":"arch","stdin":false}}
+{"type":"cli","id":"CLI-1785499418145-1","timestamp":"2026-07-31T12:03:38.145Z","command":"spec load","args":{"category":"coding","stdin":false}}
+{"type":"cli","id":"CLI-1785499423828-1","timestamp":"2026-07-31T12:03:43.828Z","command":"spec load","args":{"keyword":"teleop","stdin":false}}
+{"type":"cli","id":"CLI-1785499423882-1","timestamp":"2026-07-31T12:03:43.882Z","command":"spec load","args":{"keyword":"incremental","stdin":false}}
+{"type":"cli","id":"CLI-1785507128808-1","timestamp":"2026-07-31T14:12:08.808Z","command":"spec load","args":{"category":"coding","stdin":false}}
+{"type":"cli","id":"CLI-1785507128869-1","timestamp":"2026-07-31T14:12:08.869Z","command":"spec load","args":{"category":"arch","stdin":false}}
+{"type":"cli","id":"CLI-1785507128927-1","timestamp":"2026-07-31T14:12:08.927Z","command":"spec load","args":{"category":"test","stdin":false}}
+{"type":"cli","id":"CLI-1785580502788-1","timestamp":"2026-08-01T10:35:02.788Z","command":"spec load","args":{"category":"coding","stdin":false}}
+{"type":"cli","id":"CLI-1785580502861-1","timestamp":"2026-08-01T10:35:02.861Z","command":"spec load","args":{"category":"debug","stdin":false}}
+{"type":"cli","id":"CLI-1785585354673-1","timestamp":"2026-08-01T11:55:54.673Z","command":"spec load","args":{"stdin":false}}
+{"type":"cli","id":"CLI-1785593637294-1","timestamp":"2026-08-01T14:13:57.294Z","command":"spec load","args":{"stdin":false}}
+{"type":"cli","id":"CLI-1785670676004-1","timestamp":"2026-08-02T11:37:56.004Z","command":"spec load","args":{"stdin":false}}
+{"type":"cli","id":"CLI-1785673521336-1","timestamp":"2026-08-02T12:25:21.336Z","command":"spec load","args":{"keyword":"orca teleop calibration","stdin":false}}
+{"type":"cli","id":"CLI-1785678265751-1","timestamp":"2026-08-02T13:44:25.751Z","command":"spec load","args":{"keyword":"JAKA teleop pose mapping","stdin":false}}
+{"type":"cli","id":"CLI-1785766097310-1","timestamp":"2026-08-03T14:08:17.310Z","command":"spec load","args":{"keyword":"robot safety workspace limit","stdin":false}}
+{"type":"cli","id":"CLI-1785811345858-1","timestamp":"2026-08-04T02:42:25.858Z","command":"spec load","args":{"keyword":"JAKA teleop control feedback","stdin":false}}
+{"type":"cli","id":"CLI-1785812100102-1","timestamp":"2026-08-04T02:55:00.102Z","command":"spec load","args":{"keyword":"JAKA teleop mapping","stdin":false}}
+{"type":"cli","id":"CLI-1785837521244-1","timestamp":"2026-08-04T09:58:41.244Z","command":"spec load","args":{"category":"arch","stdin":false}}
+{"type":"cli","id":"CLI-1785839188714-1","timestamp":"2026-08-04T10:26:28.714Z","command":"spec load","args":{"category":"debug","stdin":false}}

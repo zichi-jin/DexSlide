@@ -1,0 +1,7 @@
+aruco_dict:
+  predefined: DICT_4X4_50
+marker_size_map:
+  '0': 0.075
+  default: 0.02
+note: Table reference ArUco config. `default` is the fallback size for non-table tags
+  when a separate target config is not provided.

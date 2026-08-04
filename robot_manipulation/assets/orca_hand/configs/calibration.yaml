@@ -1,0 +1,170 @@
+calibrated: true
+wrist_calibrated: true
+motor_limits:
+  14:
+  - 2.7626993656158447
+  - 3.4284470081329346
+  13:
+  - 1.5631264448165894
+  - 3.1661362648010254
+  16:
+  - 0.9387962222099304
+  - 2.8393983840942383
+  15:
+  - 2.9759228229522705
+  - 4.934816360473633
+  3:
+  - -0.0782330185174942
+  - 0.9894176125526428
+  2:
+  - -0.14726215600967407
+  - 1.7257283926010132
+  1:
+  - 1.382116675376892
+  - 2.954447031021118
+  4:
+  - 1.7533400058746338
+  - 2.7688353061676025
+  9:
+  - 3.0265440940856934
+  - 4.804427623748779
+  8:
+  - 1.1090681552886963
+  - 2.4758450984954834
+  12:
+  - 4.517573356628418
+  - 5.480913162231445
+  10:
+  - 1.0569127798080444
+  - 2.9191653728485107
+  11:
+  - 4.011359691619873
+  - 5.945709705352783
+  5:
+  - 1.8545827865600586
+  - 2.8915538787841797
+  7:
+  - 4.0635151863098145
+  - 5.98866081237793
+  6:
+  - 4.631087779998779
+  - 6.114447593688965
+  17:
+  - 2.693977117538452
+  - 5.310948371887207
+joint_to_motor_ratios:
+  14: 0.006657476425170898
+  13: 0.025854997096523162
+  16: 0.015838351349035898
+  15: 0.014840102556980017
+  3: 0.014427711230677527
+  2: 0.016286874335745105
+  1: 0.012283830903470516
+  4: 0.013722909463418496
+  9: 0.016016968735703477
+  8: 0.010762023174856592
+  12: 0.013018105481121992
+  10: 0.01677705038775195
+  11: 0.015231102470337874
+  5: 0.014013122867893529
+  7: 0.016314793441255214
+  6: 0.011588748544454575
+  17: 0.03271214067935944
+manual_endpoints:
+  thumb_mcp:
+    motor_id: 14
+    angle_lower_deg: -50.0
+    angle_upper_deg: 50.0
+    motor_at_angle_lower_rad: 3.4284470081329346
+    motor_at_angle_upper_rad: 2.7626993656158447
+  thumb_abd:
+    motor_id: 13
+    angle_lower_deg: -20.0
+    angle_upper_deg: 42.0
+    motor_at_angle_lower_rad: 3.1661362648010254
+    motor_at_angle_upper_rad: 1.5631264448165894
+  thumb_pip:
+    motor_id: 16
+    angle_lower_deg: -12.0
+    angle_upper_deg: 108.0
+    motor_at_angle_lower_rad: 2.8393983840942383
+    motor_at_angle_upper_rad: 0.9387962222099304
+  thumb_dip:
+    motor_id: 15
+    angle_lower_deg: -20.0
+    angle_upper_deg: 112.0
+    motor_at_angle_lower_rad: 4.934816360473633
+    motor_at_angle_upper_rad: 2.9759228229522705
+  index_abd:
+    motor_id: 3
+    angle_lower_deg: -37.0
+    angle_upper_deg: 37.0
+    motor_at_angle_lower_rad: -0.0782330185174942
+    motor_at_angle_upper_rad: 0.9894176125526428
+  index_mcp:
+    motor_id: 2
+    angle_lower_deg: -20.0
+    angle_upper_deg: 95.0
+    motor_at_angle_lower_rad: 1.7257283926010132
+    motor_at_angle_upper_rad: -0.14726215600967407
+  index_pip:
+    motor_id: 1
+    angle_lower_deg: -20.0
+    angle_upper_deg: 108.0
+    motor_at_angle_lower_rad: 2.954447031021118
+    motor_at_angle_upper_rad: 1.382116675376892
+  middle_abd:
+    motor_id: 4
+    angle_lower_deg: -37.0
+    angle_upper_deg: 37.0
+    motor_at_angle_lower_rad: 1.7533400058746338
+    motor_at_angle_upper_rad: 2.7688353061676025
+  middle_mcp:
+    motor_id: 9
+    angle_lower_deg: -20.0
+    angle_upper_deg: 91.0
+    motor_at_angle_lower_rad: 4.804427623748779
+    motor_at_angle_upper_rad: 3.0265440940856934
+  middle_pip:
+    motor_id: 8
+    angle_lower_deg: -20.0
+    angle_upper_deg: 107.0
+    motor_at_angle_lower_rad: 2.4758450984954834
+    motor_at_angle_upper_rad: 1.1090681552886963
+  ring_abd:
+    motor_id: 12
+    angle_lower_deg: -37.0
+    angle_upper_deg: 37.0
+    motor_at_angle_lower_rad: 5.480913162231445
+    motor_at_angle_upper_rad: 4.517573356628418
+  ring_mcp:
+    motor_id: 10
+    angle_lower_deg: -20.0
+    angle_upper_deg: 91.0
+    motor_at_angle_lower_rad: 2.9191653728485107
+    motor_at_angle_upper_rad: 1.0569127798080444
+  ring_pip:
+    motor_id: 11
+    angle_lower_deg: -20.0
+    angle_upper_deg: 107.0
+    motor_at_angle_lower_rad: 5.945709705352783
+    motor_at_angle_upper_rad: 4.011359691619873
+  pinky_abd:
+    motor_id: 5
+    angle_lower_deg: -37.0
+    angle_upper_deg: 37.0
+    motor_at_angle_lower_rad: 1.8545827865600586
+    motor_at_angle_upper_rad: 2.8915538787841797
+  pinky_mcp:
+    motor_id: 7
+    angle_lower_deg: -20.0
+    angle_upper_deg: 98.0
+    motor_at_angle_lower_rad: 5.98866081237793
+    motor_at_angle_upper_rad: 4.0635151863098145
+  pinky_pip:
+    motor_id: 6
+    angle_lower_deg: -20.0
+    angle_upper_deg: 108.0
+    motor_at_angle_lower_rad: 6.114447593688965
+    motor_at_angle_upper_rad: 4.631087779998779
+captured_at: '2026-08-01T12:40:22.409339+00:00'

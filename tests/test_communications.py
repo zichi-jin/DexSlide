@@ -50,11 +50,13 @@ def test_default_communications_match_connected_dexslide_devices() -> None:
     assert joints["port"] == "/dev/ttyACM0"
     assert joints["baud"] == 115200
     assert joints["mode"] == "raw"
-    assert camera["serial"] == "332522073507"
+    assert camera["backend"] == "opencv"
+    assert camera["opencv_source"] == "0"
     assert "width" not in camera
     assert "height" not in camera
     assert "fps" not in camera
-    assert resolve_realsense_serial("primary") == "332522073507"
+    with pytest.raises(ValueError, match="not configured with the RealSense backend"):
+        resolve_realsense_serial("primary")
 
 
 def test_camera_stream_profile_comes_from_intrinsics_file() -> None:

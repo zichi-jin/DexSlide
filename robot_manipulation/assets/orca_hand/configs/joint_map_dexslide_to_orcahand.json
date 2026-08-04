@@ -1,7 +1,7 @@
 {
   "name": "joint_map_dexslide_to_orcahand",
   "description": "Direct semantic joint mapping from DexSlide glove angles to OrcaHand v1 right-hand joint targets.",
-  "unit": "rad",
+  "unit": "deg",
   "dex_joint_ids": [
     "thumb.DIP",
     "thumb.PIP",
@@ -40,8 +40,7 @@
     "ring_pip",
     "pinky_abd",
     "pinky_mcp",
-    "pinky_pip",
-    "wrist"
+    "pinky_pip"
   ],
   "joint_map": {
     "thumb_mcp": {
@@ -91,9 +90,6 @@
     },
     "pinky_pip": {
       "source": "pinky.PIP"
-    },
-    "wrist": {
-      "constant_rad": 0.0
     }
   }
 }

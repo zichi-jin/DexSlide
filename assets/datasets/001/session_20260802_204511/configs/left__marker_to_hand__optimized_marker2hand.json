@@ -1,0 +1,55 @@
+{
+  "hand": "left",
+  "note": "DexAlign 2.0 optimized marker2hand translation with fixed rotation from initial_guess.",
+  "initial_guess": {
+    "trans": [
+      0.04174223259788892,
+      0.08234226696194673,
+      -0.09004505570441539
+    ],
+    "rot": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "trans_unit": "m"
+  },
+  "result": {
+    "trans": [
+      0.08667014617290807,
+      0.10673669112051717,
+      -0.11812700253841443
+    ],
+    "rot": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "trans_unit": "m",
+    "data_source": "/home/jzq/MyJob/DexSlide/assets/calibration/dexalign/test_left_001/dataset_s2.npz"
+  }
+}

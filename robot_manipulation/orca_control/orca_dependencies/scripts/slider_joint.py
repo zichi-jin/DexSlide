@@ -8,11 +8,20 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+DEFAULT_MANUAL_CALIBRATION = (
+    Path(__file__).resolve().parents[3]
+    / "assets"
+    / "orca_hand"
+    / "configs"
+    / "calibration.yaml"
+)
+
 from orca_core import OrcaHand
 
 class HandControlUI:
     def __init__(self, root, hand):
         self.hand = hand
+        self._syncing_ui = False
         self.joint_roms = hand.config.joint_roms_dict
         self.joint_ids = hand.config.joint_ids
         self.joint_values = {joint: tk.DoubleVar() for joint in self.joint_ids}
@@ -66,12 +75,27 @@ class HandControlUI:
             self.joint_values[joint].trace_add("write", lambda *args, joint=joint, label=value_label: self.update_value_label(joint, label))
 
     def enable_torque(self):
-        self.hand.enable_torque()
-        print("Torque enabled.")
-        current_joint_positions = self.hand.get_joint_position().as_dict()
-        for joint, pos in current_joint_positions.items():
-            if joint in self.joint_values:
-                self.joint_values[joint].set(pos)
+        try:
+            self.hand.disable_torque()
+            current_motor_positions = self.hand.get_motor_pos()
+            compute_offsets = getattr(self.hand, "_compute_wrap_offsets_dict", None)
+            if compute_offsets is not None:
+                compute_offsets()
+            set_motor = getattr(self.hand, "_set_motor_pos", None)
+            if set_motor is not None:
+                set_motor(current_motor_positions)
+            self.hand.enable_torque()
+            self._syncing_ui = True
+            try:
+                current_joint_positions = self.hand.get_joint_position().as_dict()
+                for joint, pos in current_joint_positions.items():
+                    if joint in self.joint_values and pos is not None:
+                        self.joint_values[joint].set(pos)
+            finally:
+                self._syncing_ui = False
+            print("Torque enabled at current motor positions.")
+        except Exception as exc:
+            print(f"Error enabling torque: {exc}")
 
     def disable_torque(self):
         self.hand.disable_torque()
@@ -81,6 +105,8 @@ class HandControlUI:
         """
         Update the position of a single joint based on the slider value.
         """
+        if self._syncing_ui:
+            return
         try:
             joint_positions = {joint: float(value)}  # Only update the specific joint
             self.hand.set_joint_positions(joint_positions)
@@ -100,9 +126,11 @@ def main():
     parser.add_argument('config_path', type=str, nargs='?', default=
                         '/home/jzq/MyJob/DexSlide/robot_manipulation/orca_control/orca_dependencies/orca_core/models/v1/orcahand_right/config.yaml', 
     help='Path to the hand config.yaml file')
+    parser.add_argument('--calibration-path', type=str, default=str(DEFAULT_MANUAL_CALIBRATION),
+                        help='Path to the manual motor calibration.yaml file')
     args = parser.parse_args()
 
-    hand = OrcaHand(config_path=args.config_path)
+    hand = OrcaHand(config_path=args.config_path, calibration_path=args.calibration_path)
     status = hand.connect()
     print(status)
 

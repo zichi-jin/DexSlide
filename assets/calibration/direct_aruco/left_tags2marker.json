@@ -1,7 +1,7 @@
 {
   "hand": "left",
   "aruco_dict": {
-    "predefined": "DICT_4X4_1000"
+    "predefined": "DICT_4X4_50"
   },
   "aruco_bound_size_mm": 30.0,
   "marker_square_size_mm": 40.0,

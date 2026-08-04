@@ -95,6 +95,13 @@ def test_build_direct_aruco_frame_result_emits_relative_target_pose() -> None:
             "rvec": target_rvec.reshape(3),
             "tvec": t_camera_target[:3, 3],
             "corners": np.zeros((4, 2), dtype=np.float64),
+            "pose_candidates": [
+                {
+                    "rvec": target_rvec.reshape(3),
+                    "tvec": t_camera_target[:3, 3],
+                    "reprojection_error_px": 0.12,
+                }
+            ],
         },
     }
 
@@ -117,6 +124,8 @@ def test_build_direct_aruco_frame_result_emits_relative_target_pose() -> None:
     assert frame_result["targets"]["5"]["corners"] == [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
     assert frame_result["targets"]["5"]["undistorted_corners"] == [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
     assert frame_result["targets"]["5"]["marker_size_m"] == 0.0
+    assert len(frame_result["targets"]["5"]["pose_candidates"]) == 1
+    assert frame_result["targets"]["5"]["pose_candidates"][0]["reprojection_error_px"] == 0.12
 
 
 def test_motion_tolerant_detector_parameters_expand_detection_range() -> None:
@@ -192,3 +201,33 @@ def test_estimate_single_marker_pose_candidates_exposes_ippe_branches() -> None:
 
     assert len(candidates) >= 2
     assert float(candidates[0]["reprojection_error_px"]) <= float(candidates[1]["reprojection_error_px"])
+
+
+def test_stabilize_marker_pose_rejects_back_facing_branch_before_continuity() -> None:
+    front_rotation = np.diag([1.0, -1.0, -1.0])
+    front_rvec, _ = cv2.Rodrigues(front_rotation)
+    translation = np.array([0.0, 0.0, 0.6], dtype=np.float64)
+    back_facing = {
+        "rvec": np.zeros(3, dtype=np.float64),
+        "tvec": translation.copy(),
+        "reprojection_error_px": 0.01,
+    }
+    front_facing = {
+        "rvec": front_rvec.reshape(3),
+        "tvec": translation.copy(),
+        "reprojection_error_px": 0.02,
+    }
+    tag = {
+        "rvec": back_facing["rvec"],
+        "tvec": back_facing["tvec"],
+        "pose_candidates": [back_facing, front_facing],
+    }
+    previous_wrong = rvec_tvec_to_transform(
+        back_facing["rvec"],
+        back_facing["tvec"],
+    )
+
+    selected = apt.stabilize_marker_pose(tag, previous_transform=previous_wrong)
+
+    assert selected is not None
+    np.testing.assert_allclose(selected[:3, :3], front_rotation, atol=1e-7)

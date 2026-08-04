@@ -21,15 +21,15 @@ robot = jkrc.RC('192.168.99.44')
 robot.login()    
 robot.power_on()    
 robot.enable_robot()
-robot.drag_mode_enable(True)
+# robot.drag_mode_enable(True)
 
-while True:
-    ret = robot.is_in_drag_mode()    
-    print(ret)
-    if keyboard.is_pressed('space'):
-        break
+# while True:
+#     ret = robot.is_in_drag_mode()    
+#     print(ret)
+#     if keyboard.is_pressed('space'):
+#         break
     
-robot.drag_mode_enable(False)
-ret = robot.is_in_drag_mode()    
-print(ret)    
-robot.logout()
+# robot.drag_mode_enable(False)
+# ret = robot.is_in_drag_mode()    
+# print(ret)    
+# robot.logout()

@@ -6,6 +6,7 @@ import json
 import re
 import threading
 import time
+from collections import deque
 from pathlib import Path
 
 import numpy as np
@@ -126,6 +127,8 @@ class AngleStreamReader:
         mode: str,
         joint_order: list[dict[str, object]],
         calibration: dict[str, dict[str, float]],
+        *,
+        buffer_size: int = 512,
     ):
         self.port = port
         self.baud = baud
@@ -137,6 +140,9 @@ class AngleStreamReader:
         self.latest_time = 0.0
         self.latest_line = ""
         self.last_error = ""
+        self.samples: deque[tuple[float, np.ndarray, str]] = deque(
+            maxlen=max(1, int(buffer_size))
+        )
         self.lock = threading.Lock()
         self.running = False
         self.thread: threading.Thread | None = None
@@ -173,16 +179,38 @@ class AngleStreamReader:
 
     def snapshot_rad20(self) -> tuple[np.ndarray, float, str]:
         with self.lock:
-            vec = np.zeros(20, dtype=np.float64)
-            for joint in self.joint_order:
-                finger = str(joint["finger"])
-                channel = int(joint["channel"])
-                joint_id = str(joint["id"])
-                idx = FINGER_OFFSET[finger] + channel
-                deg = float(self.latest_deg.get(joint_id, 0.0))
-                offset = float(self.alignment_offsets.get(joint_id, 0.0))
-                vec[idx] = np.deg2rad(deg - offset)
-            return vec, self.latest_time, self.latest_line
+            return self._current_rad20_locked(), self.latest_time, self.latest_line
+
+    def snapshot_nearest_rad20(self, timestamp: float) -> tuple[np.ndarray, float, str]:
+        """Return the buffered joint sample closest to a wall-clock timestamp."""
+
+        target = float(timestamp)
+        with self.lock:
+            if not self.samples:
+                return np.zeros(20, dtype=np.float64), 0.0, ""
+            sample_time, values, raw_line = min(
+                self.samples,
+                key=lambda sample: abs(float(sample[0]) - target),
+            )
+            return values.copy(), float(sample_time), str(raw_line)
+
+    def _current_rad20_locked(self) -> np.ndarray:
+        vec = np.zeros(20, dtype=np.float64)
+        for joint in self.joint_order:
+            finger = str(joint["finger"])
+            channel = int(joint["channel"])
+            joint_id = str(joint["id"])
+            idx = FINGER_OFFSET[finger] + channel
+            deg = float(self.latest_deg.get(joint_id, 0.0))
+            offset = float(self.alignment_offsets.get(joint_id, 0.0))
+            vec[idx] = np.deg2rad(deg - offset)
+        return vec
+
+    def _publish_sample_locked(self, line: str, timestamp: float | None = None) -> None:
+        sample_time = float(time.time() if timestamp is None else timestamp)
+        self.latest_line = str(line)
+        self.latest_time = sample_time
+        self.samples.append((sample_time, self._current_rad20_locked(), str(line)))
 
     def _worker(self) -> None:
         import serial
@@ -214,8 +242,7 @@ class AngleStreamReader:
             for key, value in values.items():
                 if key in self.latest_deg:
                     self.latest_deg[key] = value
-            self.latest_line = line
-            self.latest_time = time.time()
+            self._publish_sample_locked(line)
 
     def _update_raw_line(self, line: str) -> None:
         sensor_map = parse_raw_sensor_line(line)
@@ -232,5 +259,4 @@ class AngleStreamReader:
                     normalize_delta(raw_count - conf["offset"]) / conf["rate"]
                 )
                 self.latest_deg[str(joint["id"])] = angle_deg
-            self.latest_line = line
-            self.latest_time = time.time()
+            self._publish_sample_locked(line)
